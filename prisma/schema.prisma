@@ -11,3 +11,192 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum PropertyType {
+  CONDO
+  HOUSE_AND_LOT
+  LOT_ONLY
+  TOWNHOUSE
+  COMMERCIAL
+  BEACH_VACATION
+}
+
+enum PropertyStatus {
+  FOR_SALE
+  FOR_RENT
+  PRE_SELLING
+  SOLD
+  RENTED
+}
+
+enum ListingType {
+  BRAND_NEW
+  RESALE
+}
+
+enum PaymentSchemeType {
+  SPOT_CASH
+  IN_HOUSE_FINANCING
+  BANK_FINANCING
+  PAG_IBIG_FINANCING
+  RENT_TO_OWN
+}
+
+model Property {
+  id                    String                  @id @default(uuid())
+  title                 String
+  slug                  String                  @unique
+  description           String
+  type                  PropertyType
+  status                PropertyStatus
+  listingType           ListingType             @default(BRAND_NEW)
+  isFeatured            Boolean                 @default(false)
+  address               String
+  city                  String                  @default("Cebu City")
+  barangay              String?
+  latitude              Float?
+  longitude             Float?
+  price                 Float?
+  priceLabel            String?
+  lotArea               Float?
+  floorArea             Float?
+  bedrooms              Int?
+  bathrooms             Int?
+  parking               Int?                    @default(0)
+  monthlyRent           Float?
+  associationDue        Float?
+  floorLevel            String?
+  totalFloors           Int?
+  beachFrontage         Float?
+  hasDock               Boolean                 @default(false)
+  isTourismZoned        Boolean                 @default(false)
+  isAirbnbReady         Boolean                 @default(false)
+  isPagibigAccredited   Boolean                 @default(false)
+  isBankFinancingReady  Boolean                 @default(false)
+  isInHouseFinancing    Boolean                 @default(false)
+  isRentToOwn           Boolean                 @default(false)
+  developerName         String?
+  projectPhase          String?
+  expectedTurnover      String?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  deletedAt             DateTime?
+  images                PropertyImage[]
+  amenities             PropertyAmenity[]
+  units                 PropertyUnit[]
+  paymentSchemes        PropertyPaymentScheme[]
+  landmarks             PropertyLandmark[]
+
+  @@map("properties")
+}
+
+model PropertyUnit {
+  id                  String          @id @default(uuid())
+  propertyId          String
+  label               String
+  status              PropertyStatus?
+  price               Float?
+  priceLabel          String?
+  floorArea           Float?
+  lotArea             Float?
+  bedrooms            Int?
+  bathrooms           Int?
+  parking             Int?            @default(0)
+  towerOrPhase        String?
+  floorPlanImage      String?
+  floorPlanPublicId   String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  property            Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_units")
+}
+
+model PropertyImage {
+  id          String    @id @default(uuid())
+  propertyId  String
+  url         String
+  publicId    String
+  isPrimary   Boolean   @default(false)
+  order       Int       @default(0)
+  caption     String?
+  createdAt   DateTime  @default(now())
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_images")
+}
+
+model PropertyAmenity {
+  id          String    @id @default(uuid())
+  propertyId  String
+  name        String
+  icon        String?
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_amenities")
+}
+
+model PropertyPaymentScheme {
+  id            String            @id @default(uuid())
+  propertyId    String
+  type          PaymentSchemeType
+  description   String?
+  downPayment   Float?
+  monthlyAmount Float?
+  terms         Int?
+  interestRate  Float?
+  property      Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_payment_schemes")
+}
+
+model PropertyLandmark {
+  id          String    @id @default(uuid())
+  propertyId  String
+  name        String
+  category    String?
+  distance    String?
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_landmarks")
+}
+
+model Blog {
+  id                String        @id @default(uuid())
+  title             String
+  slug              String        @unique
+  content           Json
+  excerpt           String
+  coverImage        String?
+  coverPublicId     String?
+  isPublished       Boolean       @default(false)
+  isAiGenerated     Boolean       @default(false)
+  publishedAt       DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  deletedAt         DateTime?
+  metaTitle         String?
+  metaDescription   String?
+  tags              TagsOnBlogs[]
+
+  @@map("blogs")
+}
+
+model BlogTag {
+  id    String        @id @default(uuid())
+  name  String        @unique
+  slug  String        @unique
+  blogs TagsOnBlogs[]
+
+  @@map("blog_tags")
+}
+
+model TagsOnBlogs {
+  blogId  String
+  tagId   String
+  blog    Blog    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag     BlogTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, tagId])
+  @@map("tags_on_blogs")
+}
