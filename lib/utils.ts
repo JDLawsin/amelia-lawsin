@@ -35,3 +35,22 @@ export const formatDate = (date: Date | null): string => {
     year: "numeric",
   }).format(new Date(date));
 };
+
+export const createQueryString = (
+  params: Record<string, string | undefined>,
+  currentSearchParams?: URLSearchParams,
+): string => {
+  const newSearchParams = new URLSearchParams(
+    currentSearchParams?.toString() ?? "",
+  );
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value === null) {
+      newSearchParams.delete(key);
+    } else {
+      newSearchParams.set(key, String(value));
+    }
+  }
+
+  return newSearchParams.toString();
+};
