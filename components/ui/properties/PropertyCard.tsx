@@ -49,7 +49,6 @@ const PropertyCard = ({ property }: { property: PropertyListItem }) => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-4 flex flex-col gap-1.5">
         <h3 className="text-sm font-semibold text-brand-green line-clamp-1 group-hover:text-brand-green/80 transition-colors">
           {property.title}
@@ -61,7 +60,6 @@ const PropertyCard = ({ property }: { property: PropertyListItem }) => {
 
         <p className="text-base font-semibold text-brand-gold mt-1">{price}</p>
 
-        {/* Specs */}
         {(property.bedrooms || property.bathrooms || property.floorArea) && (
           <div className="flex items-center gap-3 pt-1 border-t border-brand-green-muted mt-1">
             {property.bedrooms != null && (

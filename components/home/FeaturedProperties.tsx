@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/shadcn/button";
-import PropertyCard from "../ui/PropertyCard";
+import PropertyCard from "../ui/properties/PropertyCard";
 import { PropertyListItem } from "@/services/property.service";
 
 type Props = {

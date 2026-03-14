@@ -103,3 +103,31 @@ export const COMPANY_LINKS = [
   { href: "/contact", label: "Contact" },
   { href: "/privacy-policy", label: "Privacy Policy" },
 ];
+
+export const BEDROOM_OPTIONS = [
+  { value: "0", label: "Studio" },
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "3", label: "3" },
+  { value: "4", label: "4+" },
+];
+
+export const CEBU_CITIES = [
+  "Cebu City",
+  "Mandaue City",
+  "Lapu-Lapu City",
+  "Consolacion",
+  "Talisay City",
+  "Liloan",
+  "Minglanilla",
+  "Naga City",
+  "Danao City",
+  "Carcar City",
+];
+
+export const SORT_OPTIONS = [
+  { value: "newest", label: "Newest first" },
+  { value: "price_asc", label: "Price: Low to High" },
+  { value: "price_desc", label: "Price: High to Low" },
+  { value: "featured", label: "Featured first" },
+];
