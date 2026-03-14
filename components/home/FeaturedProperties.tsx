@@ -1,29 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/shadcn/button";
-import type { Property, PropertyImage } from "@/app/generated/prisma/client";
 import PropertyCard from "../ui/PropertyCard";
-
-export type FeaturedPropertyItem = Pick<
-  Property,
-  | "id"
-  | "title"
-  | "slug"
-  | "type"
-  | "status"
-  | "price"
-  | "priceLabel"
-  | "city"
-  | "barangay"
-  | "bedrooms"
-  | "bathrooms"
-  | "floorArea"
-  | "isFeatured"
-> & {
-  images: Pick<PropertyImage, "url" | "isPrimary">[];
-};
+import { PropertyListItem } from "@/services/property.service";
 
 type Props = {
-  properties: FeaturedPropertyItem[];
+  properties: PropertyListItem[];
 };
 
 const FeaturedProperties = ({ properties }: Props) => {

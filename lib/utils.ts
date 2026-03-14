@@ -1,4 +1,4 @@
-import { FeaturedPropertyItem } from "@/components/home/FeaturedProperties";
+import { PropertyListItem } from "@/services/property.service";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatPrice = (property: FeaturedPropertyItem): string => {
+export const formatPrice = (property: PropertyListItem): string => {
   if (property.priceLabel) return property.priceLabel;
   if (!property.price) return "Price on request";
   if (property.status === "FOR_RENT")
@@ -15,7 +15,7 @@ export const formatPrice = (property: FeaturedPropertyItem): string => {
 };
 
 export const getPrimaryImage = (
-  images: FeaturedPropertyItem["images"],
+  images: PropertyListItem["images"],
 ): string | null => {
   const primary = images.find((img) => img.isPrimary);
   return primary?.url ?? images[0]?.url ?? null;

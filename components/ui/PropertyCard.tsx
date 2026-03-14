@@ -1,10 +1,10 @@
 import { cn, formatPrice, getPrimaryImage } from "@/lib/utils";
-import { FeaturedPropertyItem } from "../home/FeaturedProperties";
 import Link from "next/link";
 import Image from "next/image";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
+import { PropertyListItem } from "@/services/property.service";
 
-const PropertyCard = ({ property }: { property: FeaturedPropertyItem }) => {
+const PropertyCard = ({ property }: { property: PropertyListItem }) => {
   const imageUrl = getPrimaryImage(property.images);
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
