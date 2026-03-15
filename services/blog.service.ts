@@ -8,6 +8,7 @@ const blogPreviewSelect = {
   excerpt: true,
   coverImage: true,
   publishedAt: true,
+  isAiGenerated: true,
   tags: {
     select: {
       tag: {
@@ -48,7 +49,47 @@ export type BlogDetail = Prisma.BlogGetPayload<{
   select: typeof blogDetailSelect;
 }>;
 
-export async function getLatestBlogs(limit = 3): Promise<BlogPreviewItem[]> {
+export type BlogTag = {
+  id: string;
+  name: string;
+  slug: string;
+  _count: { blogs: number };
+};
+
+export type BlogFilters = {
+  q?: string;
+  tag?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+const buildBlogWhereClause = (
+  filters: BlogFilters = {},
+): Prisma.BlogWhereInput => {
+  const where: Prisma.BlogWhereInput = {
+    isPublished: true,
+    deletedAt: null,
+  };
+
+  if (filters.q) {
+    where.OR = [
+      { title: { contains: filters.q, mode: "insensitive" } },
+      { excerpt: { contains: filters.q, mode: "insensitive" } },
+    ];
+  }
+
+  if (filters.tag) {
+    where.tags = {
+      some: {
+        tag: { slug: filters.tag },
+      },
+    };
+  }
+
+  return where;
+};
+
+export const getLatestBlogs = async (limit = 3): Promise<BlogPreviewItem[]> => {
   return prisma.blog.findMany({
     where: {
       isPublished: true,
@@ -58,4 +99,33 @@ export async function getLatestBlogs(limit = 3): Promise<BlogPreviewItem[]> {
     orderBy: { publishedAt: "desc" },
     take: limit,
   });
-}
+};
+
+export const getAllBlogs = async (
+  filters: BlogFilters = {},
+): Promise<BlogPreviewItem[]> => {
+  const { page = 1, pageSize = 6 } = filters;
+  const where = buildBlogWhereClause(filters);
+
+  return prisma.blog.findMany({
+    where,
+    select: blogPreviewSelect,
+    orderBy: { publishedAt: "desc" },
+    take: page * pageSize,
+  });
+};
+
+export const getBlogsCount = (filters: BlogFilters = {}): Promise<number> => {
+  return prisma.blog.count({
+    where: buildBlogWhereClause(filters),
+  });
+};
+
+export const getAllBlogTags = (): Promise<BlogTag[]> => {
+  return prisma.blogTag.findMany({
+    orderBy: { name: "asc" },
+    include: {
+      _count: { select: { blogs: true } },
+    },
+  });
+};

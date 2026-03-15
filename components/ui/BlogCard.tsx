@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { BlogPreviewItem } from "../home/BlogPreviewSection";
 import Image from "next/image";
 import { estimateReadTime, formatDate } from "@/lib/utils";
+import { BlogPreviewItem } from "@/services/blog.service";
 
 const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
   <Link
