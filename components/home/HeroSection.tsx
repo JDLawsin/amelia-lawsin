@@ -23,7 +23,7 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             "border border-wire bg-ink/10",
           )}
         >
-          Licensed Real Estate Broker · Cebu
+          Licensed Real Estate Agent · Cebu
         </div>
 
         <h1 className="text-4xl xl:text-5xl font-serif font-semibold text-ink leading-tight">

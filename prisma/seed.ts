@@ -1262,7 +1262,7 @@ async function main() {
             content: [
               {
                 type: "text",
-                text: "Reach out to Amelia Lawsin, a licensed real estate broker in Cebu, to get personalized recommendations based on your budget and goals. She specializes in assisting OFWs through the entire buying process — from shortlisting properties to processing your financing.",
+                text: "Reach out to Amelia Lawsin, a licensed real estate Agent in Cebu, to get personalized recommendations based on your budget and goals. She specializes in assisting OFWs through the entire buying process — from shortlisting properties to processing your financing.",
               },
             ],
           },
@@ -1646,7 +1646,7 @@ async function main() {
             content: [
               {
                 type: "text",
-                text: "If you are an OFW or investor with a 3-5 year horizon and want to maximize appreciation, pre-selling is a smart choice. If you need to move in soon or want to generate rental income immediately, RFO is the way to go. The best approach is to consult a trusted broker who knows both the developer reputation and the local market.",
+                text: "If you are an OFW or investor with a 3-5 year horizon and want to maximize appreciation, pre-selling is a smart choice. If you need to move in soon or want to generate rental income immediately, RFO is the way to go. The best approach is to consult a trusted agent who knows both the developer reputation and the local market.",
               },
             ],
           },
@@ -1762,11 +1762,11 @@ async function main() {
                       {
                         type: "text",
                         marks: [{ type: "bold" }],
-                        text: "Work with a licensed broker. ",
+                        text: "Work with a licensed agent. ",
                       },
                       {
                         type: "text",
-                        text: "A PRC-licensed real estate broker represents your interests, not the developer's. Their commission is typically paid by the seller — so their help costs you nothing.",
+                        text: "A PRC-licensed real estate agent represents your interests, not the developer's. Their commission is typically paid by the seller — so their help costs you nothing.",
                       },
                     ],
                   },
@@ -2039,7 +2039,7 @@ async function main() {
                     content: [
                       {
                         type: "text",
-                        text: "Work with a broker who knows the local area well",
+                        text: "Work with a agent who knows the local area well",
                       },
                     ],
                   },

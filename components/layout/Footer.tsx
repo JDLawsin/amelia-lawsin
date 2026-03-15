@@ -51,7 +51,7 @@ const Footer = () => (
         <div className="md:col-span-1 flex flex-col gap-4">
           <Logo variant="dark" />
           <p className="text-xs text-white/50 leading-relaxed">
-            Licensed Real Estate Broker in Cebu, Philippines. Helping buyers,
+            Licensed Real Estate Agent in Cebu, Philippines. Helping buyers,
             OFWs, and investors find their dream property.
           </p>
           <div className="flex gap-2 mt-1">
@@ -148,7 +148,7 @@ const Footer = () => (
       <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <span className="text-xs text-white/30">
           © {new Date().getFullYear()} {SITE_CONFIG.name} · Licensed Real Estate
-          Broker · PRC Lic. No. {SITE_CONFIG.prcLicenseNo}
+          Agent · PRC Lic. No. {SITE_CONFIG.prcLicenseNo}
         </span>
         <span className="text-xs text-white/30">Built with ♥ in Cebu</span>
       </div>

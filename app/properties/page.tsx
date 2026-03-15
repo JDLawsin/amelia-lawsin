@@ -87,10 +87,10 @@ export async function generateMetadata({ searchParams }: Props) {
   const title =
     parts.length > 0
       ? `${parts.join(" ")} properties | Amelia Lawsin`
-      : "Properties | Amelia Lawsin Real Estate Cebu";
+      : "Properties | Amelia Lawsin Real Estate Agent Cebu";
 
   return {
     title,
-    description: `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate broker Amelia Lawsin.`,
+    description: `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`,
   };
 }

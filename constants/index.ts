@@ -9,7 +9,7 @@ export const STATIC_STATS = {
 export const SITE_CONFIG = {
   // Basic info
   name: "Amelia Lawsin",
-  tagline: "Licensed Real Estate Broker · Cebu, Philippines",
+  tagline: "Licensed Real Estate Agent · Cebu, Philippines",
   prcLicenseNo: "XXXXX",
 
   // Contact

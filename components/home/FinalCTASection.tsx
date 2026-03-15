@@ -47,7 +47,7 @@ const FinalCTASection = () => (
       </div>
 
       <p className="text-xs text-ash mt-2">
-        {"Licensed Real Estate Broker · PRC Lic. No."}{" "}
+        {"Licensed Real Estate Agent · PRC Lic. No."}{" "}
         {SITE_CONFIG.prcLicenseNo}
       </p>
     </div>
