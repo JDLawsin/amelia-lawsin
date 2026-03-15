@@ -3,60 +3,80 @@ type Props = {
 };
 
 const Logo = ({ variant = "light" }: Props) => {
-  const textColor = variant === "dark" ? "#ffffff" : "#1A3A2A";
+  const isLight = variant === "light";
+
+  const boxFill = isLight ? "#1d1d1f" : "#ffffff";
+  const strokeColor = isLight ? "#ffffff" : "#1d1d1f";
+  const doorFill = isLight ? "#ffffff" : "#1d1d1f";
+  const doorLine = isLight ? "#1d1d1f" : "#ffffff";
+  const textColor = isLight ? "#1d1d1f" : "#ffffff";
+  const subColor = isLight ? "#6e6e73" : "rgba(255,255,255,0.45)";
+  const divider = isLight ? "#e5e5e7" : "rgba(255,255,255,0.15)";
 
   return (
     <svg
-      width="180"
-      height="48"
-      viewBox="0 0 180 48"
+      width="170"
+      height="44"
+      viewBox="0 0 170 44"
       xmlns="http://www.w3.org/2000/svg"
+      aria-label="Amelia Lawsin"
     >
-      <rect width="42" height="42" x="3" y="3" rx="6" fill="#1A3A2A" />
-      <polygon
-        points="24,10 39,22 39,38 9,38 9,22"
-        fill="#1A3A2A"
-        stroke="#C9A84C"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <polygon
-        points="24,10 39,22 9,22"
-        fill="#C9A84C"
-        strokeLinejoin="round"
-      />
-      <rect x="19" y="28" width="10" height="10" rx="1" fill="#C9A84C" />
-      <line x1="24" y1="28" x2="24" y2="38" stroke="#1A3A2A" strokeWidth="1" />
-      <line x1="19" y1="33" x2="29" y2="33" stroke="#1A3A2A" strokeWidth="1" />
+      {/* Box */}
+      <rect x="2" y="2" width="38" height="38" rx="9" fill={boxFill} />
 
+      {/* A-house path — Z closes the right leg back to peak */}
+      <path
+        d="M21 9 L9 35 L33 35 Z"
+        fill="none"
+        stroke={strokeColor}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* Crossbar — the A's bar doubles as window ledge */}
+      <line
+        x1="14"
+        y1="26"
+        x2="28"
+        y2="26"
+        stroke={strokeColor}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+
+      {/* Door */}
+      <rect x="17" y="26" width="8" height="9" rx="1" fill={doorFill} />
+
+      {/* Door center line */}
+      <line x1="21" y1="26" x2="21" y2="35" stroke={doorLine} strokeWidth="1" />
+
+      {/* Vertical divider between mark and wordmark */}
+      <line x1="50" y1="8" x2="50" y2="38" stroke={divider} strokeWidth="0.8" />
+
+      {/* Wordmark */}
       <text
-        x="52"
-        y="22"
+        x="60"
+        y="24"
         fontFamily="Georgia, serif"
-        fontSize="15"
+        fontSize="13"
         fontWeight="600"
         fill={textColor}
+        letterSpacing="-0.2"
       >
-        {"Amelia"}
+        Amelia
       </text>
       <text
-        x="52"
+        x="60"
         y="38"
         fontFamily="Georgia, serif"
-        fontSize="15"
-        fontWeight="600"
-        fill={textColor}
+        fontSize="11"
+        fontWeight="400"
+        fill={subColor}
+        letterSpacing="1.5"
       >
-        {"Lawsin"}
+        LAWSIN
       </text>
-      <line
-        x1="52"
-        y1="25"
-        x2="172"
-        y2="25"
-        stroke="#C9A84C"
-        strokeWidth="0.8"
-      />
     </svg>
   );
 };

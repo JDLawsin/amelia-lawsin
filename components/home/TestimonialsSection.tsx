@@ -44,7 +44,7 @@ const TestimonialsSection = () => (
 
             <div className="flex items-center gap-3 pt-3 border-t border-wire">
               <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center shrink-0">
-                <span className="text-xs font-semibold text-ink">
+                <span className="text-xs font-semibold text-white">
                   {testimonial.initials}
                 </span>
               </div>

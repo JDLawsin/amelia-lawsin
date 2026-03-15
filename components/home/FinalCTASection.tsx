@@ -18,7 +18,7 @@ const FinalCTASection = () => (
       <div className="flex flex-wrap justify-center gap-3 mt-2">
         <Button
           asChild
-          className="h-11 px-6 bg-ink text-white hover:bg-ink/90 font-medium"
+          className="h-11 px-6 bg-white text-ink hover:bg-white/90 [a]:hover:bg-white/90 font-medium"
         >
           <a
             href={SITE_CONFIG.messengerUrl}
