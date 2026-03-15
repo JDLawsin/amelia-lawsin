@@ -61,3 +61,21 @@ export const formatEnumLabel = (value: string): string => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 };
+
+export const getPropertyLabel = (property: PropertyListItem): string => {
+  const parts: string[] = [];
+  if (property.bedrooms === 0) parts.push("Studio");
+  else if (property.bedrooms) parts.push(`${property.bedrooms}BR`);
+  const typeLabel: Record<string, string> = {
+    CONDO: "Condo",
+    HOUSE_AND_LOT: "House & Lot",
+    LOT_ONLY: "Lot",
+    TOWNHOUSE: "Townhouse",
+    COMMERCIAL: "Commercial",
+    BEACH_VACATION: "Beach Property",
+  };
+  if (property.type) parts.push(typeLabel[property.type] ?? "");
+  if (property.barangay) parts.push(property.barangay);
+  else if (property.city) parts.push(property.city);
+  return parts.filter(Boolean).join(" · ");
+};

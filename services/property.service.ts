@@ -287,3 +287,15 @@ export const getRelatedProperties = async (
     take: limit,
   });
 };
+
+export async function getLatestListing(): Promise<PropertyListItem | null> {
+  return prisma.property.findFirst({
+    where: {
+      deletedAt: null,
+      status: { notIn: ["SOLD", "RENTED"] },
+      images: { some: {} },
+    },
+    select: propertyListSelect,
+    orderBy: { createdAt: "desc" },
+  });
+}

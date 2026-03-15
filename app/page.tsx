@@ -10,6 +10,7 @@ import type { BlogPreviewItem } from "@/components/home/BlogPreviewSection";
 import {
   getActiveListingsCount,
   getFeaturedProperties,
+  getLatestListing,
 } from "@/services/property.service";
 
 export const SAMPLE_BLOGS: BlogPreviewItem[] = [
@@ -67,14 +68,16 @@ export const SAMPLE_BLOGS: BlogPreviewItem[] = [
 ];
 
 export const Home = async () => {
-  const [featuredProperties, activeListingsCount] = await Promise.all([
-    getFeaturedProperties(),
-    getActiveListingsCount(),
-  ]);
+  const [featuredProperties, activeListingsCount, latestListing] =
+    await Promise.all([
+      getFeaturedProperties(),
+      getActiveListingsCount(),
+      getLatestListing(),
+    ]);
 
   return (
     <main>
-      <HeroSection />
+      <HeroSection latestListing={latestListing} />
       <StatsBar activeListings={activeListingsCount} />
       <FeaturedProperties properties={featuredProperties} />
       <WhyChooseSection />
