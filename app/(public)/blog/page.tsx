@@ -106,7 +106,7 @@ const BlogPage = async ({ searchParams }: Props) => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-6">
         <Suspense fallback={<BlogPageSkeleton />}>
           <BlogClient
             blogs={blogs}

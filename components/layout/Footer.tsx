@@ -46,7 +46,7 @@ const ViberIcon = () => (
 
 const Footer = () => (
   <footer className="bg-ink text-white">
-    <div className="max-w-5xl mx-auto px-4 py-12">
+    <div className="max-w-7xl mx-auto py-12">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 flex flex-col gap-4">
           <Logo variant="dark" />
@@ -145,7 +145,7 @@ const Footer = () => (
     </div>
 
     <div className="border-t border-white/10">
-      <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div className="max-w-7xl mx-auto py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <span className="text-xs text-white/30">
           © {new Date().getFullYear()} {SITE_CONFIG.name} · Licensed Real Estate
           Agent · PRC Lic. No. {SITE_CONFIG.prcLicenseNo}

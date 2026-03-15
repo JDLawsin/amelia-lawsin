@@ -27,7 +27,7 @@ const BlogClient = ({
     </Suspense>
 
     {/* All articles grid */}
-    <div className="px-6 pt-8">
+    <div className="pt-8">
       <p className="text-xs font-medium text-fog uppercase tracking-widest mb-5">
         All articles
       </p>

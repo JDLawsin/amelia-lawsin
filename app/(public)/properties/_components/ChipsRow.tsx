@@ -77,7 +77,7 @@ const ChipsRow = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-6 pt-3 overflow-x-auto scrollbar-none pb-1">
+    <div className="flex flex-wrap items-center gap-2 px-6 pt-3 overflow-x-auto scrollbar-none pb-1">
       <Chip
         key="ALL"
         label="All"

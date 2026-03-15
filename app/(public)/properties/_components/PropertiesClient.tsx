@@ -36,7 +36,7 @@ const PropertiesClient = ({ properties, total, pageSize }: Props) => {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col pb-10">
+    <div className="flex flex-col pb-10 max-w-7xl mx-auto">
       <SearchBar
         isFilterOpen={isFilterOpen}
         onFilterToggle={() => setIsFilterOpen((prev) => !prev)}
