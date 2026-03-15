@@ -36,17 +36,17 @@ const SearchBar = ({
   return (
     <div className="flex items-center gap-3 px-6 pt-5">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-green-light" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash" />
         <Input
           ref={inputRef}
           defaultValue={searchParams.get("q") ?? ""}
           onChange={handleSearch}
           placeholder="Search by location, developer, or keyword..."
           className={clsx(
-            "pl-9 h-11 bg-brand-green-subtle",
-            "border-brand-green-muted text-brand-green",
-            "placeholder:text-brand-green-light/60",
-            "focus-visible:ring-brand-green/30 focus-visible:border-brand-green",
+            "pl-9 h-11 bg-cloud",
+            "border-wire text-ink",
+            "placeholder:text-ash/60",
+            "focus-visible:ring-bg-ink/30 focus-visible:border-wire",
             "rounded-xl text-sm",
           )}
         />
@@ -57,10 +57,10 @@ const SearchBar = ({
         onClick={onFilterToggle}
         className={clsx(
           "h-11 px-4 gap-2 rounded-xl text-sm font-medium",
-          "border-brand-green-muted transition-colors",
+          "border-wire transition-colors",
           isFilterOpen
-            ? "bg-brand-green text-white border-brand-green hover:bg-brand-green/90 hover:text-white"
-            : "text-brand-green hover:bg-brand-green-subtle hover:text-brand-green",
+            ? "bg-ink text-white border-wire hover:bg-ink/90 hover:text-white"
+            : "text-ink hover:bg-cloud hover:text-ink",
         )}
       >
         <SlidersHorizontal className="w-4 h-4" />
@@ -69,9 +69,7 @@ const SearchBar = ({
           <Badge
             className={clsx(
               "h-4 w-4 p-0 flex items-center justify-center text-[10px] rounded-full",
-              isFilterOpen
-                ? "bg-brand-gold text-white"
-                : "bg-brand-gold text-white",
+              isFilterOpen ? "bg-ink text-white" : "bg-ink text-white",
             )}
           >
             {activeFilterCount}

@@ -10,7 +10,7 @@ type PropertyGridProps = {
 
 const EmptyState = () => (
   <div className="col-span-3 flex flex-col items-center justify-center py-20 text-center">
-    <div className="w-14 h-14 rounded-full bg-brand-green-subtle border border-brand-green-muted flex items-center justify-center mb-4">
+    <div className="w-14 h-14 rounded-full bg-cloud border border-wire flex items-center justify-center mb-4">
       <svg
         width="24"
         height="24"
@@ -23,10 +23,8 @@ const EmptyState = () => (
         <circle cx="12" cy="10" r="3" />
       </svg>
     </div>
-    <p className="text-sm font-medium text-brand-green mb-1">
-      No properties found
-    </p>
-    <p className="text-xs text-brand-green-light max-w-xs">
+    <p className="text-sm font-medium text-ink mb-1">No properties found</p>
+    <p className="text-xs text-ash max-w-xs">
       Try adjusting your filters or search terms to find what you&apos;re
       looking for.
     </p>
@@ -58,7 +56,7 @@ const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
     <div
       className={clsx(
         "px-6 grid gap-px rounded-xl overflow-hidden",
-        "border border-brand-green-muted bg-brand-green-muted",
+        "border border-wire bg-cloud",
         "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
       )}
     >

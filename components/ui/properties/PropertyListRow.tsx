@@ -33,9 +33,9 @@ const PropertyListRow = ({ property }: PropertyListRowProps) => {
   return (
     <Link
       href={`/properties/${property.slug}`}
-      className="group flex gap-4 bg-white rounded-xl border border-brand-green-muted p-3 hover:border-brand-green hover:shadow-sm transition-all duration-200"
+      className="group flex gap-4 bg-white rounded-xl border border-wire p-3 hover:border-wire hover:shadow-sm transition-all duration-200"
     >
-      <div className="relative w-28 h-20 shrink-0 rounded-lg overflow-hidden bg-brand-green-muted">
+      <div className="relative w-28 h-20 shrink-0 rounded-lg overflow-hidden bg-cloud">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -45,14 +45,12 @@ const PropertyListRow = ({ property }: PropertyListRowProps) => {
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[9px] text-brand-green-light opacity-40">
-              No photo
-            </span>
+            <span className="text-[9px] text-ash opacity-40">No photo</span>
           </div>
         )}
         {property.isFeatured && (
           <div className="absolute top-1.5 left-1.5">
-            <span className="text-[8px] font-medium bg-brand-gold text-white px-1.5 py-0.5 rounded uppercase tracking-wide">
+            <span className="text-[8px] font-medium bg-ink text-white px-1.5 py-0.5 rounded uppercase tracking-wide">
               Featured
             </span>
           </div>
@@ -63,16 +61,16 @@ const PropertyListRow = ({ property }: PropertyListRowProps) => {
       <div className="flex-1 flex flex-col justify-between min-w-0">
         <div>
           <div className="flex items-start justify-between gap-4">
-            <p className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-brand-green transition-colors">
+            <p className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-ink transition-colors">
               {property.title}
             </p>
-            <span className="text-base font-serif font-medium text-brand-green shrink-0">
+            <span className="text-base font-serif font-medium text-ink shrink-0">
               {price}
             </span>
           </div>
 
           {location && (
-            <div className="flex items-center gap-1 text-xs text-brand-green-light mt-0.5">
+            <div className="flex items-center gap-1 text-xs text-ash mt-0.5">
               <MapPin className="w-3 h-3 shrink-0" />
               {location}
             </div>
@@ -80,7 +78,7 @@ const PropertyListRow = ({ property }: PropertyListRowProps) => {
         </div>
 
         <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-3 text-xs text-brand-green-light">
+          <div className="flex items-center gap-3 text-xs text-ash">
             {property.bedrooms != null && (
               <span>
                 {property.bedrooms === 0
@@ -110,12 +108,12 @@ const PropertyListRow = ({ property }: PropertyListRowProps) => {
               {STATUS_LABELS[property.status]}
             </span>
             {property.isPagibigAccredited && (
-              <span className="text-[9px] px-2 py-0.5 rounded-md bg-brand-gold/8 text-brand-gold border border-brand-gold/25">
+              <span className="text-[9px] px-2 py-0.5 rounded-md bg-ink/8 text-ink border border-wire/25">
                 Pag-IBIG
               </span>
             )}
             {property.isRentToOwn && (
-              <span className="text-[9px] px-2 py-0.5 rounded-md bg-brand-gold/8 text-brand-gold border border-brand-gold/25">
+              <span className="text-[9px] px-2 py-0.5 rounded-md bg-ink/8 text-ink border border-wire/25">
                 Rent-to-Own
               </span>
             )}

@@ -36,16 +36,12 @@ const ResultsMeta = ({ total, showing }: ResultsMetaProps) => {
   return (
     <div className="flex items-center justify-between px-6 py-3">
       <div className="flex items-baseline gap-1.5">
-        <span className="text-xl font-serif font-medium text-brand-green">
-          {total}
-        </span>
-        <span className="text-sm text-brand-green-light">
+        <span className="text-xl font-serif font-medium text-ink">{total}</span>
+        <span className="text-sm text-ash">
           {total === 1 ? "property" : "properties"} found
         </span>
         {showing < total && (
-          <span className="text-xs text-brand-green-light/70">
-            · showing {showing}
-          </span>
+          <span className="text-xs text-ash/70">· showing {showing}</span>
         )}
       </div>
 
@@ -54,9 +50,9 @@ const ResultsMeta = ({ total, showing }: ResultsMetaProps) => {
           <SelectTrigger
             className={clsx(
               "h-8 px-3 text-xs gap-2 rounded-lg",
-              "border-brand-green-muted text-brand-green-light",
-              "hover:border-brand-green hover:text-brand-green",
-              "focus:ring-brand-green/20 w-auto",
+              "border-wire text-ash",
+              "hover:border-wire hover:text-ink",
+              "focus:ring-bg-ink/20 w-auto",
             )}
           >
             <SelectValue />
@@ -70,14 +66,14 @@ const ResultsMeta = ({ total, showing }: ResultsMetaProps) => {
           </SelectContent>
         </Select>
 
-        <div className="flex border border-brand-green-muted rounded-lg overflow-hidden">
+        <div className="flex border border-wire rounded-lg overflow-hidden">
           <button
             onClick={() => handleView("grid")}
             className={clsx(
               "w-8 h-8 flex items-center justify-center transition-colors",
               activeView === "grid"
-                ? "bg-brand-green text-white"
-                : "bg-white text-brand-green-light hover:bg-brand-green-subtle hover:text-brand-green",
+                ? "bg-ink text-white"
+                : "bg-white text-ash hover:bg-cloud hover:text-ink",
             )}
           >
             <LayoutGrid className="w-3.5 h-3.5" />
@@ -85,10 +81,10 @@ const ResultsMeta = ({ total, showing }: ResultsMetaProps) => {
           <button
             onClick={() => handleView("list")}
             className={clsx(
-              "w-8 h-8 flex items-center justify-center transition-colors border-l border-brand-green-muted",
+              "w-8 h-8 flex items-center justify-center transition-colors border-l border-wire",
               activeView === "list"
-                ? "bg-brand-green text-white"
-                : "bg-white text-brand-green-light hover:bg-brand-green-subtle hover:text-brand-green",
+                ? "bg-ink text-white"
+                : "bg-white text-ash hover:bg-cloud hover:text-ink",
             )}
           >
             <List className="w-3.5 h-3.5" />

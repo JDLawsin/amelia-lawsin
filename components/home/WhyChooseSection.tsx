@@ -111,29 +111,24 @@ const WhyChooseSection = () => (
   <section className="border-y bg-white py-12 px-4">
     <div className="max-w-5xl mx-auto">
       <div className="flex flex-col items-center mb-8">
-        <h2 className="text-2xl font-serif font-semibold text-brand-green">
+        <h2 className="text-2xl font-serif font-semibold text-ink">
           {"Why Choose Amelia?"}
         </h2>
-        <div className="w-8 h-0.5 bg-brand-gold mt-2 mb-2" />
-        <span className="text-sm text-brand-green-light">
+        <div className="w-8 h-0.5 bg-ink mt-2 mb-2" />
+        <span className="text-sm text-ash">
           {"Your trusted partner every step of the way"}
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {WHY_CHOOSE.map((item) => (
-          <Card
-            key={item.title}
-            className="bg-brand-green-subtle border border-brand-green-muted"
-          >
+          <Card key={item.title} className="bg-cloud border border-wire">
             <CardContent className="flex flex-col items-center text-center gap-3 pt-6">
-              <div className="w-12 h-12 rounded-full bg-brand-green flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-ink flex items-center justify-center">
                 {item.icon}
               </div>
-              <h3 className="text-sm font-semibold text-brand-green">
-                {item.title}
-              </h3>
-              <span className="text-xs text-brand-green-light leading-relaxed">
+              <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
+              <span className="text-xs text-ash leading-relaxed">
                 {item.description}
               </span>
             </CardContent>

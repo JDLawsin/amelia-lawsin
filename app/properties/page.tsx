@@ -39,24 +39,22 @@ const PropertiesPage = async ({ searchParams }: Props) => {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="bg-brand-green-subtle border-b border-brand-green-muted px-6 py-5">
-        <p className="text-xs text-brand-green-light mb-1">
+      <div className="bg-cloud border-b border-wire px-6 py-5">
+        <p className="text-xs text-ash mb-1">
           {"Home"} <span className="mx-1 opacity-50">/</span> {"Properties"}
         </p>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-serif font-semibold text-brand-green leading-tight">
+            <h1 className="text-2xl font-serif font-semibold text-ink leading-tight">
               {"All Properties"}
             </h1>
-            <p className="text-sm text-brand-green-light mt-0.5">
+            <p className="text-sm text-ash mt-0.5">
               {"Explore listings across Cebu — condos, houses, lots & more"}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-serif font-medium text-brand-gold">
-              {total}
-            </p>
-            <p className="text-xs text-brand-green-light">
+            <p className="text-2xl font-serif font-medium text-ink">{total}</p>
+            <p className="text-xs text-ash">
               {filters.status || filters.type || filters.q
                 ? "matching results"
                 : "active listings"}

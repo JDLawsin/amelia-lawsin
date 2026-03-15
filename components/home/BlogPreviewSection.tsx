@@ -20,14 +20,14 @@ const BlogPreviewSection = ({ blogs }: Props) => {
   if (!blogs.length) return null;
 
   return (
-    <section className="py-14 px-4 bg-brand-green-subtle border-b border-brand-green-muted">
+    <section className="py-14 px-4 bg-cloud border-b border-wire">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col items-center text-center mb-10">
-          <h2 className="text-2xl font-serif font-semibold text-brand-green">
+          <h2 className="text-2xl font-serif font-semibold text-ink">
             {"Latest from the Blog"}
           </h2>
-          <div className="w-8 h-0.5 bg-brand-gold mt-2 mb-3" />
-          <p className="text-sm text-brand-green-light">
+          <div className="w-8 h-0.5 bg-ink mt-2 mb-3" />
+          <p className="text-sm text-ash">
             {"Real estate tips, guides & market insights"}
           </p>
         </div>
@@ -42,7 +42,7 @@ const BlogPreviewSection = ({ blogs }: Props) => {
           <Button
             asChild
             variant="outline"
-            className="border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition-colors"
+            className="border-wire text-ink hover:bg-ink hover:text-white transition-colors"
           >
             <Link href="/blog">{"Read all articles"}</Link>
           </Button>

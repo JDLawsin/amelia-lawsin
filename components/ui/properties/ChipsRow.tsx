@@ -13,7 +13,7 @@ const SPECIAL_FILTERS = [
 ];
 
 const Divider = () => (
-  <div className="w-px bg-brand-green-muted h-5 mx-1 shrink-0 self-center" />
+  <div className="w-px bg-cloud h-5 mx-1 shrink-0 self-center" />
 );
 
 const Chip = ({
@@ -32,10 +32,10 @@ const Chip = ({
     className={clsx(
       "h-8 px-3 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-colors border",
       active
-        ? "bg-brand-green text-white border-brand-green"
+        ? "bg-ink text-white border-wire"
         : gold
-          ? "bg-brand-gold/8 text-brand-gold border-brand-gold/40 hover:bg-brand-gold/15"
-          : "bg-white text-brand-green-light border-brand-green-muted hover:bg-brand-green-subtle hover:text-brand-green",
+          ? "bg-ink/8 text-ink border-wire/40 hover:bg-ink/15"
+          : "bg-white text-ash border-wire hover:bg-cloud hover:text-ink",
     )}
   >
     {label}

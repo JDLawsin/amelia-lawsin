@@ -26,7 +26,7 @@ const StatsBar = ({ activeListings }: Props) => {
               index !== stats.length - 1 && [
                 "after:absolute after:content-['']",
                 "after:bottom-0 after:left-1/2 after:-translate-x-1/2",
-                "after:h-px after:w-12 after:bg-brand-green-muted",
+                "after:h-px after:w-12 after:bg-cloud",
                 "md:after:bottom-auto md:after:left-auto",
                 "md:after:right-0 md:after:top-1/2",
                 "md:after:h-12 md:after:w-px",
@@ -34,10 +34,10 @@ const StatsBar = ({ activeListings }: Props) => {
               ],
             )}
           >
-            <span className="text-2xl font-serif font-semibold text-brand-gold">
+            <span className="text-2xl font-serif font-semibold text-ink">
               {stat.value}
             </span>
-            <span className="text-sm text-brand-green-light">{stat.label}</span>
+            <span className="text-sm text-ash">{stat.label}</span>
           </div>
         ))}
       </div>

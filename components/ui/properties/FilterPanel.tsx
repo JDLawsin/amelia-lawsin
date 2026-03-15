@@ -22,7 +22,7 @@ const FilterSection = ({
   children: React.ReactNode;
 }) => (
   <div className="flex flex-col gap-2">
-    <p className="text-[10px] font-medium text-brand-green-light uppercase tracking-wider">
+    <p className="text-[10px] font-medium text-ash uppercase tracking-wider">
       {label}
     </p>
     {children}
@@ -43,8 +43,8 @@ const OptionPill = ({
     className={clsx(
       "px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors",
       active
-        ? "bg-brand-green text-white border-brand-green"
-        : "bg-white text-brand-green-light border-brand-green-muted hover:bg-brand-green-subtle hover:text-brand-green hover:border-brand-green",
+        ? "bg-ink text-white border-wire"
+        : "bg-white text-ash border-wire hover:bg-cloud hover:text-ink hover:border-wire",
     )}
   >
     {label}
@@ -116,7 +116,7 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="mx-6 mt-3 bg-brand-green-subtle border border-brand-green-muted rounded-2xl p-5">
+    <div className="mx-6 mt-3 bg-cloud border border-wire rounded-2xl p-5">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
         <FilterSection label="Price range">
           <div className="flex flex-wrap gap-2">
@@ -130,8 +130,8 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
             ))}
           </div>
           <div className="flex gap-2 mt-1">
-            <div className="flex-1 bg-white border border-brand-green-muted rounded-lg px-3 py-2">
-              <p className="text-[9px] text-brand-green-light">Min</p>
+            <div className="flex-1 bg-white border border-wire rounded-lg px-3 py-2">
+              <p className="text-[9px] text-ash">Min</p>
               <input
                 value={
                   localMinPrice
@@ -142,14 +142,14 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
                   setLocalMinPrice(e.target.value.replace(/[^0-9]/g, ""))
                 }
                 placeholder="₱ Min"
-                className="text-xs font-medium text-brand-green w-full bg-transparent outline-none placeholder:text-brand-green-light/50"
+                className="text-xs font-medium text-ink w-full bg-transparent outline-none placeholder:text-ash/50"
               />
             </div>
-            <div className="flex items-center justify-center text-brand-green-light text-xs pt-3">
+            <div className="flex items-center justify-center text-ash text-xs pt-3">
               —
             </div>
-            <div className="flex-1 bg-white border border-brand-green-muted rounded-lg px-3 py-2">
-              <p className="text-[9px] text-brand-green-light">Max</p>
+            <div className="flex-1 bg-white border border-wire rounded-lg px-3 py-2">
+              <p className="text-[9px] text-ash">Max</p>
               <input
                 value={
                   localMaxPrice
@@ -160,7 +160,7 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
                   setLocalMaxPrice(e.target.value.replace(/[^0-9]/g, ""))
                 }
                 placeholder="₱ Max"
-                className="text-xs font-medium text-brand-green w-full bg-transparent outline-none placeholder:text-brand-green-light/50"
+                className="text-xs font-medium text-ink w-full bg-transparent outline-none placeholder:text-ash/50"
               />
             </div>
           </div>
@@ -224,17 +224,13 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
                 }
                 className={clsx(
                   "flex items-center gap-2 text-xs py-1 text-left transition-colors",
-                  isActive
-                    ? "text-brand-green font-medium"
-                    : "text-brand-green-light hover:text-brand-green",
+                  isActive ? "text-ink font-medium" : "text-ash hover:text-ink",
                 )}
               >
                 <div
                   className={clsx(
                     "w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-colors",
-                    isActive
-                      ? "bg-brand-green border-brand-green"
-                      : "border-brand-green-muted bg-white",
+                    isActive ? "bg-ink border-wire" : "border-wire bg-white",
                   )}
                 >
                   {isActive && (
@@ -257,19 +253,19 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
         </FilterSection>
       </div>
 
-      <div className="flex items-center justify-end gap-3 mt-5 pt-4 border-t border-brand-green-muted">
+      <div className="flex items-center justify-end gap-3 mt-5 pt-4 border-t border-wire">
         <Button
           variant="ghost"
           size="sm"
           onClick={handleClear}
-          className="text-brand-green-light hover:text-brand-green hover:bg-brand-green-subtle text-xs"
+          className="text-ash hover:text-ink hover:bg-cloud text-xs"
         >
           {"Clear all"}
         </Button>
         <Button
           size="sm"
           onClick={handleApply}
-          className="bg-brand-green text-white hover:bg-brand-green/90 text-xs px-5 rounded-lg"
+          className="bg-ink text-white hover:bg-ink/90 text-xs px-5 rounded-lg"
         >
           {"Show"} {totalResults} {"results"}
         </Button>

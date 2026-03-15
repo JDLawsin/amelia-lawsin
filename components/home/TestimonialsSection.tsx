@@ -1,14 +1,14 @@
 import { TESTIMONIALS } from "@/constants";
 
 const TestimonialsSection = () => (
-  <section className="py-14 px-4 bg-white border-b border-brand-green-muted">
+  <section className="py-14 px-4 bg-white border-b border-wire">
     <div className="max-w-5xl mx-auto">
       <div className="flex flex-col items-center text-center mb-10">
-        <h2 className="text-2xl font-serif font-semibold text-brand-green">
+        <h2 className="text-2xl font-serif font-semibold text-ink">
           {"What Clients Say"}
         </h2>
-        <div className="w-8 h-0.5 bg-brand-gold mt-2 mb-3" />
-        <p className="text-sm text-brand-green-light">
+        <div className="w-8 h-0.5 bg-ink mt-2 mb-3" />
+        <p className="text-sm text-ash">
           {"Real experiences from real clients"}
         </p>
       </div>
@@ -17,13 +17,13 @@ const TestimonialsSection = () => (
         {TESTIMONIALS.map((testimonial) => (
           <div
             key={testimonial.name}
-            className="flex flex-col gap-4 bg-brand-green-subtle border border-brand-green-muted rounded-xl p-5"
+            className="flex flex-col gap-4 bg-cloud border border-wire rounded-xl p-5"
           >
-            <span className="text-3xl leading-none font-serif text-brand-gold select-none">
+            <span className="text-3xl leading-none font-serif text-ink select-none">
               &ldquo;
             </span>
 
-            <p className="text-sm text-brand-green-light leading-relaxed -mt-2 flex-1">
+            <p className="text-sm text-ash leading-relaxed -mt-2 flex-1">
               {testimonial.message}
             </p>
 
@@ -42,19 +42,17 @@ const TestimonialsSection = () => (
               ))}
             </div>
 
-            <div className="flex items-center gap-3 pt-3 border-t border-brand-green-muted">
-              <div className="w-9 h-9 rounded-full bg-brand-green flex items-center justify-center shrink-0">
-                <span className="text-xs font-semibold text-brand-gold">
+            <div className="flex items-center gap-3 pt-3 border-t border-wire">
+              <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center shrink-0">
+                <span className="text-xs font-semibold text-ink">
                   {testimonial.initials}
                 </span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-brand-green">
+                <p className="text-sm font-semibold text-ink">
                   {testimonial.name}
                 </p>
-                <p className="text-xs text-brand-green-light">
-                  {testimonial.location}
-                </p>
+                <p className="text-xs text-ash">{testimonial.location}</p>
               </div>
             </div>
           </div>

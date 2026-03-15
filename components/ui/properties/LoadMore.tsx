@@ -29,12 +29,12 @@ const LoadMore = ({ showing, total, pageSize }: LoadMoreProps) => {
       <Button
         variant="outline"
         onClick={handleLoadMore}
-        className="gap-2 px-8 h-10 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition-colors rounded-lg text-sm font-medium"
+        className="gap-2 px-8 h-10 border-wire text-ink hover:bg-ink hover:text-white transition-colors rounded-lg text-sm font-medium"
       >
         Load more properties
         <ChevronDown className="w-4 h-4" />
       </Button>
-      <p className="text-xs text-brand-green-light">
+      <p className="text-xs text-ash">
         Showing {showing} of {total} properties
         {remaining > 0 && ` · ${remaining} more to load`}
       </p>

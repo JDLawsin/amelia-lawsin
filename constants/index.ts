@@ -36,9 +36,9 @@ export const STATUS_LABELS: Record<PropertyStatus, string> = {
 };
 
 export const STATUS_STYLES: Record<PropertyStatus, string> = {
-  FOR_SALE: "bg-brand-green text-white",
-  FOR_RENT: "bg-brand-gold text-white",
-  PRE_SELLING: "bg-white text-brand-green border border-brand-green-muted",
+  FOR_SALE: "bg-ink text-white",
+  FOR_RENT: "bg-ink text-white",
+  PRE_SELLING: "bg-white text-ink border border-wire",
   SOLD: "bg-gray-400 text-white",
   RENTED: "bg-gray-400 text-white",
 };

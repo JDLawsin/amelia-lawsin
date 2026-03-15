@@ -50,7 +50,7 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 flex flex-col gap-4">
           <Logo variant="dark" />
-          <p className="text-xs text-brand-green-light leading-relaxed">
+          <p className="text-xs text-ash leading-relaxed">
             {
               "Licensed Real Estate Broker in Cebu, Philippines. Helping buyers, OFWs, and investors find their dream property."
             }
@@ -61,7 +61,7 @@ const Footer = () => (
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="w-8 h-8 rounded-md bg-brand-green flex items-center justify-center text-brand-green-muted hover:text-brand-gold hover:bg-brand-green/80 transition-colors"
+              className="w-8 h-8 rounded-md bg-ink flex items-center justify-center text-fog hover:text-ink hover:bg-ink/80 transition-colors"
             >
               <FacebookIcon />
             </a>
@@ -70,14 +70,14 @@ const Footer = () => (
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-8 h-8 rounded-md bg-brand-green flex items-center justify-center text-brand-green-muted hover:text-brand-gold hover:bg-brand-green/80 transition-colors"
+              className="w-8 h-8 rounded-md bg-ink flex items-center justify-center text-fog hover:text-ink hover:bg-ink/80 transition-colors"
             >
               <InstagramIcon />
             </a>
             <a
               href={SITE_CONFIG.viberUrl}
               aria-label="Viber"
-              className="w-8 h-8 rounded-md bg-brand-green flex items-center justify-center text-brand-green-muted hover:text-brand-gold hover:bg-brand-green/80 transition-colors"
+              className="w-8 h-8 rounded-md bg-ink flex items-center justify-center text-fog hover:text-ink hover:bg-ink/80 transition-colors"
             >
               <ViberIcon />
             </a>
@@ -91,7 +91,7 @@ const Footer = () => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs text-brand-green-light hover:text-brand-gold transition-colors"
+                className="text-xs text-ash hover:text-ink transition-colors"
               >
                 {link.label}
               </Link>
@@ -106,7 +106,7 @@ const Footer = () => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs text-brand-green-light hover:text-brand-gold transition-colors"
+                className="text-xs text-ash hover:text-ink transition-colors"
               >
                 {link.label}
               </Link>
@@ -119,24 +119,22 @@ const Footer = () => (
           <div className="flex flex-col gap-2">
             <a
               href={`tel:${SITE_CONFIG.phone}`}
-              className="text-xs text-brand-green-light hover:text-brand-gold transition-colors"
+              className="text-xs text-ash hover:text-ink transition-colors"
             >
               {SITE_CONFIG.phone}
             </a>
             <a
               href={`mailto:${SITE_CONFIG.email}`}
-              className="text-xs text-brand-green-light hover:text-brand-gold transition-colors"
+              className="text-xs text-ash hover:text-ink transition-colors"
             >
               {SITE_CONFIG.email}
             </a>
-            <span className="text-xs text-brand-green-light">
-              {SITE_CONFIG.location}
-            </span>
+            <span className="text-xs text-ash">{SITE_CONFIG.location}</span>
             <a
               href={SITE_CONFIG.messengerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-brand-gold hover:text-brand-gold/80 transition-colors mt-1"
+              className="text-xs text-ink hover:text-ink/80 transition-colors mt-1"
             >
               {"Message on Messenger →"}
             </a>
@@ -145,18 +143,16 @@ const Footer = () => (
       </div>
     </div>
 
-    <div className="border-t border-brand-green/40">
+    <div className="border-t border-wire/40">
       <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span className="text-xs text-brand-green-light">
+        <span className="text-xs text-ash">
           {"©"}
           {new Date().getFullYear()} {SITE_CONFIG.name}
           {" · Licensed Real Estate "}
           {"Broker · PRC Lic. No."}
           {SITE_CONFIG.prcLicenseNo}
         </span>
-        <span className="text-xs text-brand-green/50">
-          {"Built with ♥ in Cebu"}
-        </span>
+        <span className="text-xs text-ink/50">{"Built with ♥ in Cebu"}</span>
       </div>
     </div>
   </footer>

@@ -67,7 +67,7 @@ export const Navbar = () => {
     <header
       className={cn(
         "sticky top-0 z-50 w-full",
-        "border-b border-brand-green-muted",
+        "border-b border-wire",
         "bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60",
         "px-4 md:px-6",
       )}
@@ -88,10 +88,8 @@ export const Navbar = () => {
                     className={cn(
                       "inline-flex h-9 items-center px-4 py-2 rounded-md",
                       "text-sm font-medium transition-colors",
-                      "hover:bg-brand-green-subtle hover:text-brand-green",
-                      isActive
-                        ? "text-brand-green font-semibold"
-                        : "text-brand-green-light",
+                      "hover:bg-cloud hover:text-ink",
+                      isActive ? "text-ink font-semibold" : "text-ash",
                     )}
                   >
                     {link.label}
@@ -105,7 +103,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-3">
           <Button
             asChild
-            className="hidden md:inline-flex h-10 px-5 bg-brand-green text-white hover:bg-brand-green/90"
+            className="hidden md:inline-flex h-10 px-5 bg-ink text-white hover:bg-ink/90"
           >
             <Link href="/contact">{"Get in touch"}</Link>
           </Button>
@@ -133,10 +131,10 @@ export const Navbar = () => {
                       href={link.href}
                       className={cn(
                         "rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                        "hover:bg-brand-green-subtle hover:text-brand-green",
+                        "hover:bg-cloud hover:text-ink",
                         isActive
-                          ? "bg-brand-green-subtle text-brand-green font-semibold"
-                          : "text-brand-green-light",
+                          ? "bg-cloud text-ink font-semibold"
+                          : "text-ash",
                       )}
                     >
                       {link.label}
@@ -144,10 +142,10 @@ export const Navbar = () => {
                   );
                 })}
               </nav>
-              <div className="mt-6 pt-6 border-t border-brand-green-muted">
+              <div className="mt-6 pt-6 border-t border-wire">
                 <Button
                   asChild
-                  className="w-full bg-brand-green text-white hover:bg-brand-green/90"
+                  className="w-full bg-ink text-white hover:bg-ink/90"
                 >
                   <Link href="/contact">{"Get in touch"}</Link>
                 </Button>
