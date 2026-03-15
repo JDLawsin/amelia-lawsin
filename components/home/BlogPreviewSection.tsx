@@ -2,15 +2,7 @@ import Link from "next/link";
 import type { Blog, BlogTag, TagsOnBlogs } from "@/app/generated/prisma/client";
 import { Button } from "../ui/shadcn/button";
 import BlogCard from "../ui/BlogCard";
-
-export type BlogPreviewItem = Pick<
-  Blog,
-  "id" | "title" | "slug" | "excerpt" | "coverImage" | "publishedAt"
-> & {
-  tags: (TagsOnBlogs & {
-    tag: Pick<BlogTag, "name" | "slug">;
-  })[];
-};
+import { BlogPreviewItem } from "@/services/blog.service";
 
 type Props = {
   blogs: BlogPreviewItem[];
