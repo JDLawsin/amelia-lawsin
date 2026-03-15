@@ -13,8 +13,13 @@ import {
   getPropertyBySlug,
   getRelatedProperties,
 } from "@/services/property.service";
-import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
+import { PAYMENT_TYPE_LABELS, STATUS_LABELS, STATUS_STYLES } from "@/constants";
 import { formatPriceWithNote } from "@/lib/utils";
+import PropertyGallery from "./_components/PropertyGallery";
+import UnitSelector from "./_components/UnitSelector";
+import PropertyMap from "./_components/PropertyMap";
+import RelatedProperties from "./_components/RelatedProperties";
+import ContactSidebar from "./_components/ContactSidebar";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -103,7 +108,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
 
   return (
     <main className="bg-white min-h-screen">
-      <nav className="px-6 py-3 border-b border-wire flex items-center gap-2">
+      <nav className="px-6 py-3 border-b border-wire flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"
           className="text-xs text-ash hover:text-ink transition-colors"
@@ -123,7 +128,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
         </span>
       </nav>
 
-      <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4">
+      <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 max-w-7xl mx-auto">
         <div>
           <h1 className="text-xl font-serif font-medium text-ink leading-snug tracking-tight mb-1.5">
             {property.title}
@@ -137,14 +142,10 @@ const PropertyDetailPage = async ({ params }: Props) => {
         </div>
       </div>
 
-      {/* ── Photo gallery ───────────────────────────────────────────── */}
-      {/* <PropertyGallery images={property.images} title={property.title} /> */}
+      <PropertyGallery images={property.images} title={property.title} />
 
-      {/* ── Body — two column layout ────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 px-6 max-w-screen-xl mx-auto">
-        {/* ── Left — main content ───────────────────────────────────── */}
-        <div className="py-6 lg:pr-8 lg:border-r lg:border-wire">
-          {/* Badges */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 px-6 max-w-7xl mx-auto">
+        <div className="py-6 lg:pr-8">
           <div className="flex flex-wrap gap-2 mb-4">
             <span
               className={clsx(
@@ -164,7 +165,6 @@ const PropertyDetailPage = async ({ params }: Props) => {
             )}
           </div>
 
-          {/* Price */}
           <div className="flex items-baseline gap-2 py-4 border-t border-b border-wire mb-5">
             <span className="text-3xl font-serif font-medium text-ink tracking-tight">
               {price}
@@ -177,7 +177,6 @@ const PropertyDetailPage = async ({ params }: Props) => {
             )}
           </div>
 
-          {/* Specs grid */}
           {(property.bedrooms != null ||
             property.bathrooms != null ||
             property.floorArea != null ||
@@ -272,7 +271,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
             </>
           )}
 
-          {/* {hasUnits && (
+          {hasUnits && (
             <>
               <Divider />
               <SectionTitle>Unit types</SectionTitle>
@@ -285,7 +284,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
                 propertyTitle={property.title}
               />
             </>
-          )} */}
+          )}
 
           {/* Developer info — only for pre-selling */}
           {hasDeveloperInfo && (
@@ -323,44 +322,44 @@ const PropertyDetailPage = async ({ params }: Props) => {
             </>
           )}
 
-          {/* Amenities
           {property.amenities.length > 0 && (
             <>
               <Divider />
               <SectionTitle>Amenities</SectionTitle>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {property.amenities.map((amenity: PropertyAmenity) => (
-                  <div
-                    key={amenity.id}
-                    className="flex items-center gap-2.5 text-sm text-ash"
-                  >
-                    <div className="w-7 h-7 bg-cloud rounded-lg flex items-center justify-center shrink-0 border border-wire">
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#1d1d1f"
-                        strokeWidth="1.5"
-                      >
-                        <path d="M20 6 9 17l-5-5" />
-                      </svg>
+                {property.amenities.map(
+                  (amenity: Omit<PropertyAmenity, "propertyId">) => (
+                    <div
+                      key={amenity.id}
+                      className="flex items-center gap-2.5 text-sm text-ash"
+                    >
+                      <div className="w-7 h-7 bg-cloud rounded-lg flex items-center justify-center shrink-0 border border-wire">
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#1d1d1f"
+                          strokeWidth="1.5"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                      </div>
+                      {amenity.name}
                     </div>
-                    {amenity.name}
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             </>
-          )} */}
+          )}
 
-          {/* Payment schemes */}
-          {/* {property.paymentSchemes.length > 0 && (
+          {property.paymentSchemes.length > 0 && (
             <>
               <Divider />
               <SectionTitle>Payment schemes</SectionTitle>
               <div className="flex flex-col gap-2">
                 {property.paymentSchemes.map(
-                  (scheme: PropertyPaymentScheme) => (
+                  (scheme: Omit<PropertyPaymentScheme, "propertyId">) => (
                     <div
                       key={scheme.id}
                       className="border border-wire rounded-xl px-4 py-3 flex items-center justify-between"
@@ -402,40 +401,48 @@ const PropertyDetailPage = async ({ params }: Props) => {
                   ),
                 )}
               </div>
-            </>
-          )} */}
 
-          {/* {property.landmarks.length > 0 && (
+              <p className="text-xs text-fog mt-3 leading-relaxed">
+                * Monthly computations are estimates only and may vary depending
+                on your lender, credit standing, and applicable fees. Contact
+                Amelia for an accurate breakdown tailored to your situation.
+              </p>
+            </>
+          )}
+
+          {property.landmarks.length > 0 && (
             <>
               <Divider />
               <SectionTitle>Nearby landmarks</SectionTitle>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {property.landmarks.map((landmark: PropertyLandmark) => (
-                  <div
-                    key={landmark.id}
-                    className="bg-cloud rounded-xl px-4 py-3 flex items-center justify-between"
-                  >
-                    <div>
-                      <p className="text-sm font-medium text-ink">
-                        {landmark.name}
-                      </p>
-                      {landmark.category && (
-                        <p className="text-[10px] text-fog mt-0.5">
-                          {landmark.category}
+                {property.landmarks.map(
+                  (landmark: Omit<PropertyLandmark, "propertyId">) => (
+                    <div
+                      key={landmark.id}
+                      className="bg-cloud rounded-xl px-4 py-3 flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-ink">
+                          {landmark.name}
+                        </p>
+                        {landmark.category && (
+                          <p className="text-[10px] text-fog mt-0.5">
+                            {landmark.category}
+                          </p>
+                        )}
+                      </div>
+                      {landmark.distance && (
+                        <p className="text-sm font-medium text-ink shrink-0 ml-4">
+                          {landmark.distance}
                         </p>
                       )}
                     </div>
-                    {landmark.distance && (
-                      <p className="text-sm font-medium text-ink shrink-0 ml-4">
-                        {landmark.distance}
-                      </p>
-                    )}
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             </>
-          )} */}
-          {/* 
+          )}
+
           {hasMap && (
             <>
               <Divider />
@@ -446,20 +453,12 @@ const PropertyDetailPage = async ({ params }: Props) => {
                 title={property.title}
               />
             </>
-          )} */}
+          )}
 
-          {/* {relatedProperties.length > 0 && (
-            <>
-              <Divider />
-              <SectionTitle>Similar properties</SectionTitle>
-              <RelatedProperties properties={relatedProperties} />
-            </>
-          )} */}
-        </div>
-
-        <div className="hidden lg:block py-6 pl-8">
-          <div className="sticky top-17">
-            {/* <ContactSidebar
+          <div className="lg:hidden">
+            <Divider />
+            <SectionTitle>Interested in this property?</SectionTitle>
+            <ContactSidebar
               property={{
                 title: property.title,
                 price: property.price,
@@ -473,30 +472,37 @@ const PropertyDetailPage = async ({ params }: Props) => {
                 isInHouseFinancing: property.isInHouseFinancing,
                 isRentToOwn: property.isRentToOwn,
               }}
-            /> */}
+            />
+          </div>
+
+          {relatedProperties.length > 0 && (
+            <>
+              <Divider />
+              <SectionTitle>Similar properties</SectionTitle>
+              <RelatedProperties properties={relatedProperties} />
+            </>
+          )}
+        </div>
+
+        <div className="hidden lg:block py-6 pl-8">
+          <div className="sticky top-17">
+            <ContactSidebar
+              property={{
+                title: property.title,
+                price: property.price,
+                priceLabel: property.priceLabel,
+                status: property.status,
+                city: property.city,
+                barangay: property.barangay,
+                floorLevel: property.floorLevel,
+                isPagibigAccredited: property.isPagibigAccredited,
+                isBankFinancingReady: property.isBankFinancingReady,
+                isInHouseFinancing: property.isInHouseFinancing,
+                isRentToOwn: property.isRentToOwn,
+              }}
+            />
           </div>
         </div>
-      </div>
-
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-wire px-4 py-3 flex gap-2 z-40">
-        <a
-          href={`${process.env.NEXT_PUBLIC_MESSENGER_URL ?? "https://m.me/amelialawsin"}?text=${encodeURIComponent(
-            `Hi Amelia! I'm interested in: ${property.title}`,
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 bg-ink text-white text-sm font-medium py-2.5 rounded-xl text-center"
-        >
-          Message Amelia
-        </a>
-        <a
-          href={`sms:${process.env.NEXT_PUBLIC_PHONE ?? ""}?body=${encodeURIComponent(
-            `Hi Amelia! I'm interested in: ${property.title}`,
-          )}`}
-          className="flex-1 bg-cloud text-ink text-sm font-medium py-2.5 rounded-xl text-center border border-wire"
-        >
-          Send SMS
-        </a>
       </div>
     </main>
   );

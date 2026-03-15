@@ -14,43 +14,45 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
-      <div className="flex flex-col justify-center gap-5 px-8 py-16 md:px-16 xl:px-24 border-r border-wire">
-        <div
-          className={clsx(
-            "flex items-center w-fit",
-            "text-ink text-sm font-medium",
-            "px-4 h-9 rounded-full",
-            "border border-wire bg-ink/10",
-          )}
-        >
-          Licensed Real Estate Agent · Cebu
-        </div>
-
-        <h1 className="text-4xl xl:text-5xl font-serif font-semibold text-ink leading-tight">
-          Find Your Dream <br className="hidden md:block" />
-          Property in Cebu
-        </h1>
-
-        <p className="text-sm text-ash leading-relaxed">
-          Trusted by local buyers, OFWs, and international investors{" "}
-          <br className="hidden md:block" />
-          across the Philippines
-        </p>
-
-        <div className="flex flex-wrap gap-3">
-          <Button
-            asChild
-            className="h-11 px-6 bg-ink text-white hover:bg-ink/90"
+      <div className="flex flex-col items-center justify-center  border-r border-wire">
+        <div className="flex flex-col gap-5 px-8 py-16 md:px-16 xl:px-24">
+          <div
+            className={clsx(
+              "flex items-center w-fit",
+              "text-ink text-sm font-medium",
+              "px-4 h-9 rounded-full",
+              "border border-wire bg-ink/10",
+            )}
           >
-            <Link href="/properties">Browse properties</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="h-11 px-6 border-wire text-ink bg-transparent hover:bg-ink/10 hover:text-ink"
-          >
-            <Link href="/contact">Contact Amelia</Link>
-          </Button>
+            Licensed Real Estate Agent · Cebu
+          </div>
+
+          <h1 className="text-4xl xl:text-5xl font-serif font-semibold text-ink leading-tight">
+            Find Your Dream <br className="hidden md:block" />
+            Property in Cebu
+          </h1>
+
+          <p className="text-sm text-ash leading-relaxed">
+            Trusted by local buyers, OFWs, and international investors{" "}
+            <br className="hidden md:block" />
+            across the Philippines
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            <Button
+              asChild
+              className="h-11 px-6 bg-ink text-white hover:bg-ink/90"
+            >
+              <Link href="/properties">Browse properties</Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="h-11 px-6 border-wire text-ink bg-transparent hover:bg-ink/10 hover:text-ink"
+            >
+              <Link href="/contact">Contact Amelia</Link>
+            </Button>
+          </div>
         </div>
       </div>
 

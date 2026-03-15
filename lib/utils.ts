@@ -1,3 +1,4 @@
+import { Unit } from "@/app/(public)/properties/[slug]/_components/UnitSelector";
 import { PropertyListItem } from "@/services/property.service";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -25,6 +26,12 @@ export const formatPriceWithNote = (property: {
     return { price: `₱${property.price.toLocaleString()}`, note: "/ month" };
   }
   return { price: `₱${property.price.toLocaleString()}` };
+};
+
+export const formatUnitPrice = (unit: Unit): string => {
+  if (unit.priceLabel) return unit.priceLabel;
+  if (!unit.price) return "Price on request";
+  return `₱${unit.price.toLocaleString()}`;
 };
 
 export const getPrimaryImage = (
