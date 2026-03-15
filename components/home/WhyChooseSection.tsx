@@ -11,10 +11,10 @@ const icons = {
     >
       <polygon
         points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-        stroke="#C9A84C"
+        stroke="white"
         strokeWidth="1.5"
         strokeLinejoin="round"
-        fill="#C9A84C"
+        fill="white"
         fillOpacity="0.15"
       />
     </svg>
@@ -27,21 +27,14 @@ const icons = {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="12" cy="12" r="9" stroke="#C9A84C" strokeWidth="1.5" />
-      <ellipse
-        cx="12"
-        cy="12"
-        rx="4"
-        ry="9"
-        stroke="#C9A84C"
-        strokeWidth="1.5"
-      />
+      <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5" />
+      <ellipse cx="12" cy="12" rx="4" ry="9" stroke="white" strokeWidth="1.5" />
       <line
         x1="3"
         y1="9"
         x2="21"
         y2="9"
-        stroke="#C9A84C"
+        stroke="white"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
@@ -50,7 +43,7 @@ const icons = {
         y1="15"
         x2="21"
         y2="15"
-        stroke="#C9A84C"
+        stroke="white"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
@@ -64,15 +57,15 @@ const icons = {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="12" cy="7" r="3" stroke="#C9A84C" strokeWidth="1.5" />
-      <circle cx="5" cy="17" r="2.5" stroke="#C9A84C" strokeWidth="1.5" />
-      <circle cx="19" cy="17" r="2.5" stroke="#C9A84C" strokeWidth="1.5" />
+      <circle cx="12" cy="7" r="3" stroke="white" strokeWidth="1.5" />
+      <circle cx="5" cy="17" r="2.5" stroke="white" strokeWidth="1.5" />
+      <circle cx="19" cy="17" r="2.5" stroke="white" strokeWidth="1.5" />
       <line
         x1="12"
         y1="10"
         x2="5"
         y2="14.5"
-        stroke="#C9A84C"
+        stroke="white"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
@@ -81,7 +74,7 @@ const icons = {
         y1="10"
         x2="19"
         y2="14.5"
-        stroke="#C9A84C"
+        stroke="white"
         strokeWidth="1.5"
         strokeLinecap="round"
       />

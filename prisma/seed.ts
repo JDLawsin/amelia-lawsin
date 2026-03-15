@@ -18,6 +18,9 @@ async function main() {
   await prisma.propertyImage.deleteMany();
   await prisma.propertyUnit.deleteMany();
   await prisma.property.deleteMany();
+  await prisma.tagsOnBlogs.deleteMany();
+  await prisma.blogTag.deleteMany();
+  await prisma.blog.deleteMany();
   console.log("🧹 Cleaned existing data");
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -1086,7 +1089,995 @@ async function main() {
   });
   console.log("✅ 10/10 Mivesa Garden Studio");
 
-  console.log("\n🎉 Seeding complete! 10 properties created:");
+  // ─────────────────────────────────────────────────────────────────────────
+  // BLOGS — Create tags first, then posts
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const tagOfw = await prisma.blogTag.create({
+    data: { name: "OFW Guide", slug: "ofw-guide" },
+  });
+  const tagFinancing = await prisma.blogTag.create({
+    data: { name: "Financing", slug: "financing" },
+  });
+  const tagInvesting = await prisma.blogTag.create({
+    data: { name: "Investment", slug: "investment" },
+  });
+  const tagCebu = await prisma.blogTag.create({
+    data: { name: "Cebu Real Estate", slug: "cebu-real-estate" },
+  });
+  const tagFirstHome = await prisma.blogTag.create({
+    data: { name: "First-time Buyer", slug: "first-time-buyer" },
+  });
+  const tagTips = await prisma.blogTag.create({
+    data: { name: "Buying Tips", slug: "buying-tips" },
+  });
+
+  console.log("✅ Blog tags created");
+
+  // ── Blog 1 ────────────────────────────────────────────────────────────────
+
+  await prisma.blog.create({
+    data: {
+      title: "Best Condos to Buy in Cebu 2025: A Complete Guide for OFWs",
+      slug: "best-condos-to-buy-in-cebu-2025",
+      excerpt:
+        "Planning to invest in a condo in Cebu but not sure where to start? This guide breaks down the top condo developments across Cebu City, Mandaue, and Lapu-Lapu — with price ranges, location advantages, and financing options perfect for OFWs.",
+      coverImage:
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800",
+      coverPublicId: "seed/blog_condos_cebu",
+      isPublished: true,
+      isAiGenerated: false,
+      publishedAt: new Date("2025-03-10"),
+      metaTitle: "Best Condos to Buy in Cebu 2025 — OFW Buying Guide",
+      metaDescription:
+        "Discover the top condo developments in Cebu City, Mandaue, and Lapu-Lapu. Price ranges, locations, and financing options for OFW buyers.",
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [
+              {
+                type: "text",
+                text: "Why Cebu is the Top Choice for OFW Real Estate Investment",
+              },
+            ],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Cebu has consistently ranked as one of the Philippines' fastest-growing cities outside Metro Manila. For OFWs looking to invest their hard-earned money, the Cebu property market offers a compelling mix of affordability, strong rental demand, and steady appreciation.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Top Condo Locations in Cebu" }],
+          },
+          {
+            type: "heading",
+            attrs: { level: 3 },
+            content: [{ type: "text", text: "1. IT Park, Lahug" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "IT Park is the heart of Cebu's BPO industry. Condos here command premium prices but offer the highest rental yields — typically ₱25,000 to ₱45,000 per month for a 1-2 bedroom unit. Developments like Avida Towers and 38 Park Avenue are perennial favorites.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 3 },
+            content: [{ type: "text", text: "2. Cebu Business Park (Ayala)" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Adjacent to Ayala Center Cebu, this area is ideal for professionals and expats. Units at Solinea, The Alcoves, and Park Centrale regularly appreciate 5-8% annually. Prices range from ₱4M to ₱15M depending on floor and unit size.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 3 },
+            content: [{ type: "text", text: "3. Mandaue City" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "More affordable than Cebu City proper, Mandaue is emerging as a strong investment location. Pre-selling condos start at ₱3.5M and benefit from proximity to both Cebu City and Mactan Airport.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Financing Options for OFWs" }],
+          },
+          {
+            type: "bulletList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Pag-IBIG Fund: Up to ₱6.5M loanable at 6.375% interest. Best for OFWs who are active Pag-IBIG members.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Bank Financing: BDO, BPI, and Metrobank offer up to 80% financing with 20-year terms.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "In-house Financing: Offered directly by developers with flexible terms and lower documentary requirements.",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Ready to Invest?" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Reach out to Amelia Lawsin, a licensed real estate broker in Cebu, to get personalized recommendations based on your budget and goals. She specializes in assisting OFWs through the entire buying process — from shortlisting properties to processing your financing.",
+              },
+            ],
+          },
+        ],
+      },
+      tags: {
+        create: [
+          { tag: { connect: { id: tagOfw.id } } },
+          { tag: { connect: { id: tagCebu.id } } },
+          { tag: { connect: { id: tagInvesting.id } } },
+        ],
+      },
+    },
+  });
+  console.log("✅ Blog 1/5 — Best Condos in Cebu 2025");
+
+  // ── Blog 2 ────────────────────────────────────────────────────────────────
+
+  await prisma.blog.create({
+    data: {
+      title:
+        "Pag-IBIG vs Bank Loan: Which is Better for Buying a Home in Cebu?",
+      slug: "pag-ibig-vs-bank-loan-cebu",
+      excerpt:
+        "One of the most common questions from first-time homebuyers is: should I use Pag-IBIG or a bank loan? We break down interest rates, eligibility, loanable amounts, and which option makes more sense depending on your situation.",
+      coverImage:
+        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+      coverPublicId: "seed/blog_financing",
+      isPublished: true,
+      isAiGenerated: false,
+      publishedAt: new Date("2025-03-05"),
+      metaTitle:
+        "Pag-IBIG vs Bank Loan for Home Buying in Cebu — Full Comparison",
+      metaDescription:
+        "Compare Pag-IBIG and bank financing for buying a home in Cebu. Interest rates, terms, eligibility requirements and which is better for you.",
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [
+              {
+                type: "text",
+                text: "The Two Main Financing Options in the Philippines",
+              },
+            ],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "When buying a home in Cebu, most buyers choose between two main financing routes: the Pag-IBIG Housing Loan or a traditional bank loan. Both have their pros and cons, and the right choice depends entirely on your situation.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Pag-IBIG Housing Loan" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "The Pag-IBIG Fund (HDMF) offers the most affordable interest rates in the Philippines. As of 2025, the rate starts at 6.375% per annum for a 30-year term — significantly lower than most bank rates.",
+              },
+            ],
+          },
+          {
+            type: "bulletList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Maximum loanable amount: ₱6,500,000",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Interest rate: 6.375% to 10% depending on term",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [{ type: "text", text: "Maximum term: 30 years" }],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Eligibility: Active Pag-IBIG member with 24 monthly contributions",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Bank Housing Loan" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Bank loans offer higher loanable amounts and can cover properties not accredited with Pag-IBIG. BDO, BPI, and Metrobank are the most popular choices among Cebu property buyers.",
+              },
+            ],
+          },
+          {
+            type: "bulletList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Maximum loanable amount: Up to 80% of appraised value (no ceiling)",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Interest rate: 7.5% to 9% per annum (re-priced every 1-5 years)",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      { type: "text", text: "Maximum term: 20-25 years" },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Eligibility: Regular employment or business with at least 2 years operation",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Our Recommendation" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "For most Filipino buyers and OFWs purchasing a home priced below ₱6.5M, Pag-IBIG is almost always the better choice due to its lower interest rate and longer repayment terms. For high-value properties above ₱6.5M, bank financing becomes the necessary route.",
+              },
+            ],
+          },
+        ],
+      },
+      tags: {
+        create: [
+          { tag: { connect: { id: tagFinancing.id } } },
+          { tag: { connect: { id: tagFirstHome.id } } },
+          { tag: { connect: { id: tagOfw.id } } },
+        ],
+      },
+    },
+  });
+  console.log("✅ Blog 2/5 — Pag-IBIG vs Bank Loan");
+
+  // ── Blog 3 ────────────────────────────────────────────────────────────────
+
+  await prisma.blog.create({
+    data: {
+      title: "Pre-selling vs Ready for Occupancy (RFO): What You Need to Know",
+      slug: "pre-selling-vs-rfo-cebu",
+      excerpt:
+        "Should you buy a pre-selling condo or an RFO unit? Both have their pros and cons depending on your timeline, budget, and investment goals. This article helps you decide which is right for you.",
+      coverImage:
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+      coverPublicId: "seed/blog_preselling_rfo",
+      isPublished: true,
+      isAiGenerated: false,
+      publishedAt: new Date("2025-02-28"),
+      metaTitle:
+        "Pre-selling vs RFO Properties in Cebu — Which Should You Buy?",
+      metaDescription:
+        "Understand the difference between pre-selling and ready-for-occupancy condos in Cebu. Compare pricing, risks, and benefits before buying.",
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "What is Pre-selling?" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Pre-selling refers to properties that are sold before construction is completed — sometimes even before ground is broken. Buyers commit at today's price with the expectation that the property will be worth more by turnover date.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [
+              { type: "text", text: "What is RFO (Ready for Occupancy)?" },
+            ],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "RFO properties are fully constructed and ready to move into immediately. You can inspect the actual unit before buying, and there is no waiting period. RFO units are typically 15-30% more expensive than the same unit at pre-selling stage.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Pre-selling: Pros and Cons" }],
+          },
+          {
+            type: "bulletList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Pros: ",
+                      },
+                      {
+                        type: "text",
+                        text: "Lower entry price, flexible payment during construction, potential for capital appreciation by turnover",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Cons: ",
+                      },
+                      {
+                        type: "text",
+                        text: "2-4 year wait, construction delays are common, finished product may differ from showroom",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "RFO: Pros and Cons" }],
+          },
+          {
+            type: "bulletList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Pros: ",
+                      },
+                      {
+                        type: "text",
+                        text: "Move in immediately, see exactly what you get, can rent out right away for income",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Cons: ",
+                      },
+                      {
+                        type: "text",
+                        text: "Higher price, full bank financing required upfront, less flexibility in payment",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Which is Right for You?" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "If you are an OFW or investor with a 3-5 year horizon and want to maximize appreciation, pre-selling is a smart choice. If you need to move in soon or want to generate rental income immediately, RFO is the way to go. The best approach is to consult a trusted broker who knows both the developer reputation and the local market.",
+              },
+            ],
+          },
+        ],
+      },
+      tags: {
+        create: [
+          { tag: { connect: { id: tagInvesting.id } } },
+          { tag: { connect: { id: tagCebu.id } } },
+          { tag: { connect: { id: tagTips.id } } },
+        ],
+      },
+    },
+  });
+  console.log("✅ Blog 3/5 — Pre-selling vs RFO");
+
+  // ── Blog 4 ────────────────────────────────────────────────────────────────
+
+  await prisma.blog.create({
+    data: {
+      title: "10 Things First-Time Homebuyers in Cebu Need to Know",
+      slug: "first-time-homebuyer-guide-cebu",
+      excerpt:
+        "Buying your first home is one of the biggest financial decisions you will ever make. Before you sign anything, here are 10 essential things every first-time homebuyer in Cebu should know.",
+      coverImage:
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800",
+      coverPublicId: "seed/blog_firsttime",
+      isPublished: true,
+      isAiGenerated: false,
+      publishedAt: new Date("2025-02-15"),
+      metaTitle:
+        "10 Things First-Time Homebuyers in Cebu Must Know — 2025 Guide",
+      metaDescription:
+        "Essential guide for first-time homebuyers in Cebu. Learn about down payments, financing, legal documents, and common mistakes to avoid.",
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Buying your first home is exciting but can feel overwhelming. Here are 10 things you absolutely need to know before making the biggest purchase of your life.",
+              },
+            ],
+          },
+          {
+            type: "orderedList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Get your finances in order first. ",
+                      },
+                      {
+                        type: "text",
+                        text: "Check your credit history, compute your monthly income, and determine how much you can afford. A general rule: your monthly amortization should not exceed 30% of your gross monthly income.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Understand all the costs involved. ",
+                      },
+                      {
+                        type: "text",
+                        text: "The purchase price is just the beginning. Budget for transfer taxes (1.5%), documentary stamps (1.5%), registration fees, notarial fees, and move-in costs.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Always verify the title. ",
+                      },
+                      {
+                        type: "text",
+                        text: "Request a certified true copy of the Transfer Certificate of Title (TCT) from the Registry of Deeds. Make sure it is clean — no liens, encumbrances, or adverse claims.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Work with a licensed broker. ",
+                      },
+                      {
+                        type: "text",
+                        text: "A PRC-licensed real estate broker represents your interests, not the developer's. Their commission is typically paid by the seller — so their help costs you nothing.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Check the developer's track record. ",
+                      },
+                      {
+                        type: "text",
+                        text: "For pre-selling properties, research the developer's history of delivering on time. Ask for completed projects you can visit.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Read the contract carefully. ",
+                      },
+                      {
+                        type: "text",
+                        text: "Specifically look at penalty clauses, cancellation terms, and what happens if the developer delays turnover. Never sign anything you don't fully understand.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Location is everything. ",
+                      },
+                      {
+                        type: "text",
+                        text: "Consider proximity to your workplace, schools, hospitals, and public transport. Visit the area at different times of day before committing.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Pre-qualify for a loan before you shop. ",
+                      },
+                      {
+                        type: "text",
+                        text: "Get a pre-approval from Pag-IBIG or your preferred bank. This tells you exactly how much you can borrow and speeds up the process when you find the right property.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Don't skip the inspection. ",
+                      },
+                      {
+                        type: "text",
+                        text: "For RFO units, always inspect before signing the acceptance form. Document any defects with photos and request repairs in writing before moving in.",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        marks: [{ type: "bold" }],
+                        text: "Take your time. ",
+                      },
+                      {
+                        type: "text",
+                        text: "Real estate is not a decision to rush. A good property will still be there tomorrow. Never let anyone pressure you into signing on the spot.",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      tags: {
+        create: [
+          { tag: { connect: { id: tagFirstHome.id } } },
+          { tag: { connect: { id: tagTips.id } } },
+          { tag: { connect: { id: tagCebu.id } } },
+        ],
+      },
+    },
+  });
+  console.log("✅ Blog 4/5 — First-time Homebuyer Guide");
+
+  // ── Blog 5 ────────────────────────────────────────────────────────────────
+
+  await prisma.blog.create({
+    data: {
+      title:
+        "Why Mactan Island is the Best Place to Invest in Beach Property in Cebu",
+      slug: "mactan-island-beach-property-investment-cebu",
+      excerpt:
+        "Mactan Island is home to world-class resorts, the Cebu international airport, and a thriving tourism industry. Here is why savvy investors are snapping up beachfront properties before prices climb further.",
+      coverImage:
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
+      coverPublicId: "seed/blog_mactan",
+      isPublished: true,
+      isAiGenerated: false,
+      publishedAt: new Date("2025-02-01"),
+      metaTitle:
+        "Mactan Island Beach Property Investment Guide — Cebu Real Estate",
+      metaDescription:
+        "Why Mactan Island is the top beach property investment in Cebu. Tourism growth, Airbnb potential, and what to look for when buying beachfront.",
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Why Mactan Stands Out" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Mactan Island occupies a unique position in Philippine real estate — it is simultaneously a luxury resort destination, an international airport hub, and a growing residential community. This combination makes it one of the most compelling investment locations outside Metro Manila.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "Tourism is Driving Demand" }],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Mactan is home to Shangri-La, Crimson Resort, and Plantation Bay — some of the Philippines' most recognized resort brands. International arrivals at Mactan Cebu International Airport have grown consistently, and the tourism infrastructure continues to improve with new hotels and resort developments.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [
+              { type: "text", text: "Airbnb and Short-Term Rental Potential" },
+            ],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Beachfront properties in Mactan are perfectly positioned for short-term rentals. A well-positioned beachfront villa or vacation home can command ₱15,000 to ₱50,000 per night on peak seasons. Tourism-zoned lots allow for resort development and commercial use.",
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [{ type: "text", text: "What to Look For When Buying" }],
+          },
+          {
+            type: "bulletList",
+            content: [
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Verify the property is tourism-zoned if you intend to operate a commercial accommodation",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Confirm beach frontage measurement and any reclamation restrictions",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Check for DENR clearances especially for waterfront properties",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Assess flood risk and storm surge exposure",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: "listItem",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Work with a broker who knows the local area well",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "heading",
+            attrs: { level: 2 },
+            content: [
+              { type: "text", text: "Interested in Mactan Beach Properties?" },
+            ],
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Amelia Lawsin has listings in Mactan and deep knowledge of the Cebu coastal property market. Get in touch to explore available beachfront lots and vacation properties.",
+              },
+            ],
+          },
+        ],
+      },
+      tags: {
+        create: [
+          { tag: { connect: { id: tagInvesting.id } } },
+          { tag: { connect: { id: tagCebu.id } } },
+          { tag: { connect: { id: tagTips.id } } },
+        ],
+      },
+    },
+  });
+  console.log("✅ Blog 5/5 — Mactan Beach Investment");
+
+  console.log("\n🎉 Seeding complete!");
+  console.log("\n📦 Properties (10):");
   console.log("   1.  Avida Towers 2BR      — Condo · For Sale · Resale ⭐");
   console.log(
     "   2.  Consolacion House     — House & Lot · For Sale · Pag-IBIG ⭐",
@@ -1105,6 +2096,15 @@ async function main() {
     "   9.  Havila Residences     — House & Lot · Pre-selling · 3 models",
   );
   console.log("   10. Mivesa Garden Studio  — Condo · For Sale · Brand New ⭐");
+  console.log("\n📝 Blogs (5):");
+  console.log("   1.  Best Condos in Cebu 2025 — OFW Guide");
+  console.log("   2.  Pag-IBIG vs Bank Loan — Financing");
+  console.log("   3.  Pre-selling vs RFO — Investment");
+  console.log("   4.  10 Things First-Time Buyers Need to Know — Buying Tips");
+  console.log("   5.  Mactan Beach Investment — Cebu Real Estate");
+  console.log(
+    "\n🏷️  Blog Tags (6): OFW Guide, Financing, Investment, Cebu Real Estate, First-time Buyer, Buying Tips",
+  );
 }
 
 main()
