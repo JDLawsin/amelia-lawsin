@@ -131,3 +131,11 @@ export const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High to Low" },
   { value: "featured", label: "Featured first" },
 ];
+
+export const PAYMENT_TYPE_LABELS: Record<string, string> = {
+  SPOT_CASH: "Spot Cash",
+  IN_HOUSE_FINANCING: "In-house Financing",
+  BANK_FINANCING: "Bank Financing",
+  PAG_IBIG_FINANCING: "Pag-IBIG Financing",
+  RENT_TO_OWN: "Rent-to-Own",
+};

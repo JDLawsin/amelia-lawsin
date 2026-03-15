@@ -14,6 +14,19 @@ export const formatPrice = (property: PropertyListItem): string => {
   return `₱${property.price.toLocaleString()}`;
 };
 
+export const formatPriceWithNote = (property: {
+  price: number | null;
+  priceLabel: string | null;
+  status: string;
+}): { price: string; note?: string } => {
+  if (property.priceLabel) return { price: property.priceLabel };
+  if (!property.price) return { price: "Price on request" };
+  if (property.status === "FOR_RENT") {
+    return { price: `₱${property.price.toLocaleString()}`, note: "/ month" };
+  }
+  return { price: `₱${property.price.toLocaleString()}` };
+};
+
 export const getPrimaryImage = (
   images: PropertyListItem["images"],
 ): string | null => {

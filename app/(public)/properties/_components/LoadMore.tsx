@@ -1,9 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/shadcn/button";
 import useUpdateQueryString from "@/hooks/useQueryString";
 import { ChevronDown } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { Button } from "../shadcn/button";
 
 type LoadMoreProps = {
   showing: number;

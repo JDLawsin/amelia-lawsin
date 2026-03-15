@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import ChipsRow from "./ChipsRow";
 import { PropertyListItem } from "@/services/property.service";
 import SearchBar from "./SearchBar";
+import ChipsRow from "./ChipsRow";
 import FilterPanel from "./FilterPanel";
 import ResultsMeta from "./ResultsMeta";
 import PropertyGrid from "./PropertyGrid";

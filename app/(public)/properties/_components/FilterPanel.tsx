@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import useUpdateQueryString from "@/hooks/useQueryString";
 import { BEDROOM_OPTIONS, CEBU_CITIES } from "@/constants";
-import { Button } from "../shadcn/button";
+import { Button } from "@/components/ui/shadcn/button";
 
 const PRICE_PRESETS = [
   { label: "Under ₱3M", min: undefined, max: "3000000" },

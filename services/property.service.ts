@@ -60,6 +60,7 @@ const propertyDetailSelect = {
   hasDock: true,
   isTourismZoned: true,
   isAirbnbReady: true,
+  isFeatured: true,
   isPagibigAccredited: true,
   isBankFinancingReady: true,
   isInHouseFinancing: true,

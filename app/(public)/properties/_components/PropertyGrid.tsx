@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import PropertyCard from "./PropertyCard";
 import { PropertyListItem } from "@/services/property.service";
 import PropertyListRow from "./PropertyListRow";
+import PropertyCard from "./PropertyCard";
 
 type PropertyGridProps = {
   properties: PropertyListItem[];

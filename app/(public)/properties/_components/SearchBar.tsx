@@ -5,9 +5,9 @@ import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
 import { useRef } from "react";
 import useUpdateQueryString from "@/hooks/useQueryString";
-import { Button } from "../shadcn/button";
-import { Badge } from "../shadcn/badge";
-import { Input } from "../shadcn/input";
+import { Input } from "@/components/ui/shadcn/input";
+import { Button } from "@/components/ui/shadcn/button";
+import { Badge } from "@/components/ui/shadcn/badge";
 
 type SearchBarProps = {
   isFilterOpen: boolean;

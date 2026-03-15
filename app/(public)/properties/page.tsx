@@ -1,11 +1,11 @@
-import PropertiesClient from "@/components/ui/properties/PropertiesClient";
-import PropertiesLoadingFallback from "@/components/ui/properties/PropertiesLoadingFallback";
 import {
   getAllProperties,
   getPropertiesCount,
   PropertyFilters,
 } from "@/services/property.service";
 import { Suspense } from "react";
+import PropertiesLoadingFallback from "./_components/PropertiesLoadingFallback";
+import PropertiesClient from "./_components/PropertiesClient";
 
 const PAGE_SIZE = 9;
 
