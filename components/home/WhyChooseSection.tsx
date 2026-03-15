@@ -122,7 +122,7 @@ const WhyChooseSection = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {WHY_CHOOSE.map((item) => (
-          <Card key={item.title} className="bg-cloud border border-wire">
+          <Card key={item.title} className="bg-white border-0 shadow-apple">
             <CardContent className="flex flex-col items-center text-center gap-3 pt-6">
               <div className="w-12 h-12 rounded-full bg-ink flex items-center justify-center">
                 {item.icon}

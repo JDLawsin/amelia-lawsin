@@ -68,7 +68,7 @@ const SearchBar = ({
         {activeFilterCount > 0 && (
           <Badge
             className={clsx(
-              "h-4 w-4 p-0 flex items-center justify-center text-[10px] rounded-full",
+              "h-4 w-4 p-0 flex items-center justify-center text-[10px] rounded-full shadow-apple-sm",
               isFilterOpen ? "bg-ink text-white" : "bg-ink text-white",
             )}
           >

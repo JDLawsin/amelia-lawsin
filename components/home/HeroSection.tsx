@@ -50,7 +50,7 @@ const HeroSection = () => (
         </span>
       </div>
 
-      <div className="relative z-10 m-6 bg-white rounded-lg border border-wire shadow-sm p-4 min-w-45">
+      <div className="relative z-10 m-6 bg-white rounded-2xl border-0 shadow-apple-lg p-4 min-w-45">
         <p className="text-xs text-ash mb-1">{"Latest listing"}</p>
         <p className="text-sm font-semibold text-ink">
           {"2BR Condo · IT Park"}

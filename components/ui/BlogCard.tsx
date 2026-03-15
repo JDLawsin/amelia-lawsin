@@ -6,7 +6,7 @@ import { estimateReadTime, formatDate } from "@/lib/utils";
 const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
   <Link
     href={`/blog/${blog.slug}`}
-    className="group flex flex-col bg-white rounded-xl border border-wire overflow-hidden hover:shadow-md hover:border-wire transition-all duration-200"
+    className="group flex flex-col bg-white rounded-xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
   >
     <div className="relative h-44 bg-cloud overflow-hidden">
       {blog.coverImage ? (

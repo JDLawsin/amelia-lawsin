@@ -3,8 +3,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
 import { PropertyListItem } from "@/services/property.service";
+import clsx from "clsx";
 
-const PropertyCard = ({ property }: { property: PropertyListItem }) => {
+type Props = { property: PropertyListItem; className?: string };
+
+const PropertyCard = ({ property, className }: Props) => {
   const imageUrl = getPrimaryImage(property.images);
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
@@ -14,7 +17,10 @@ const PropertyCard = ({ property }: { property: PropertyListItem }) => {
   return (
     <Link
       href={`/properties/${property.slug}`}
-      className="group block bg-white rounded-xl border border-wire overflow-hidden hover:shadow-md hover:border-wire transition-all duration-200"
+      className={clsx(
+        "group block bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200",
+        className,
+      )}
     >
       <div className="relative h-52 bg-cloud overflow-hidden">
         {imageUrl ? (

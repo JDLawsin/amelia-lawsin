@@ -70,6 +70,7 @@ export const Navbar = () => {
         "border-b border-wire",
         "bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60",
         "px-4 md:px-6",
+        "shadow-apple-sm",
       )}
     >
       <div className="container mx-auto flex h-20 max-w-7xl items-center justify-between gap-4">

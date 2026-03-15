@@ -116,7 +116,7 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="mx-6 mt-3 bg-cloud border border-wire rounded-2xl p-5">
+    <div className="mx-6 mt-3 bg-cloud border border-wire rounded-2xl p-5 shadow-apple-lg">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
         <FilterSection label="Price range">
           <div className="flex flex-wrap gap-2">

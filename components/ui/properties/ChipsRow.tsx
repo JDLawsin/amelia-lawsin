@@ -30,7 +30,7 @@ const Chip = ({
   <button
     onClick={onClick}
     className={clsx(
-      "h-8 px-3 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-colors border",
+      "h-8 px-3 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-colors border shadow-apple-sm ",
       active
         ? "bg-ink text-white border-wire"
         : gold
