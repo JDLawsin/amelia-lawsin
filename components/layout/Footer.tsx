@@ -45,15 +45,14 @@ const ViberIcon = () => (
 );
 
 const Footer = () => (
-  <footer className="bg-[#111F17] text-white">
+  <footer className="bg-ink text-white">
     <div className="max-w-5xl mx-auto px-4 py-12">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 flex flex-col gap-4">
           <Logo variant="dark" />
-          <p className="text-xs text-ash leading-relaxed">
-            {
-              "Licensed Real Estate Broker in Cebu, Philippines. Helping buyers, OFWs, and investors find their dream property."
-            }
+          <p className="text-xs text-white/50 leading-relaxed">
+            Licensed Real Estate Broker in Cebu, Philippines. Helping buyers,
+            OFWs, and investors find their dream property.
           </p>
           <div className="flex gap-2 mt-1">
             <a
@@ -61,7 +60,7 @@ const Footer = () => (
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="w-8 h-8 rounded-md bg-ink flex items-center justify-center text-fog hover:text-ink hover:bg-ink/80 transition-colors"
+              className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors"
             >
               <FacebookIcon />
             </a>
@@ -70,14 +69,14 @@ const Footer = () => (
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-8 h-8 rounded-md bg-ink flex items-center justify-center text-fog hover:text-ink hover:bg-ink/80 transition-colors"
+              className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors"
             >
               <InstagramIcon />
             </a>
             <a
               href={SITE_CONFIG.viberUrl}
               aria-label="Viber"
-              className="w-8 h-8 rounded-md bg-ink flex items-center justify-center text-fog hover:text-ink hover:bg-ink/80 transition-colors"
+              className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors"
             >
               <ViberIcon />
             </a>
@@ -85,13 +84,13 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">{"Properties"}</h4>
+          <h4 className="text-sm font-semibold text-white">Properties</h4>
           <nav className="flex flex-col gap-2">
             {PROPERTY_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs text-ash hover:text-ink transition-colors"
+                className="text-xs text-white/50 hover:text-white transition-colors"
               >
                 {link.label}
               </Link>
@@ -100,13 +99,13 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">{"Company"}</h4>
+          <h4 className="text-sm font-semibold text-white">Company</h4>
           <nav className="flex flex-col gap-2">
             {COMPANY_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs text-ash hover:text-ink transition-colors"
+                className="text-xs text-white/50 hover:text-white transition-colors"
               >
                 {link.label}
               </Link>
@@ -115,44 +114,43 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">{"Contact"}</h4>
+          <h4 className="text-sm font-semibold text-white">Contact</h4>
           <div className="flex flex-col gap-2">
             <a
               href={`tel:${SITE_CONFIG.phone}`}
-              className="text-xs text-ash hover:text-ink transition-colors"
+              className="text-xs text-white/50 hover:text-white transition-colors"
             >
               {SITE_CONFIG.phone}
             </a>
             <a
               href={`mailto:${SITE_CONFIG.email}`}
-              className="text-xs text-ash hover:text-ink transition-colors"
+              className="text-xs text-white/50 hover:text-white transition-colors"
             >
               {SITE_CONFIG.email}
             </a>
-            <span className="text-xs text-ash">{SITE_CONFIG.location}</span>
+            <span className="text-xs text-white/50">
+              {SITE_CONFIG.location}
+            </span>
             <a
               href={SITE_CONFIG.messengerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-ink hover:text-ink/80 transition-colors mt-1"
+              className="text-xs text-white hover:text-white/70 transition-colors mt-1"
             >
-              {"Message on Messenger →"}
+              Message on Messenger →
             </a>
           </div>
         </div>
       </div>
     </div>
 
-    <div className="border-t border-wire/40">
+    <div className="border-t border-white/10">
       <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span className="text-xs text-ash">
-          {"©"}
-          {new Date().getFullYear()} {SITE_CONFIG.name}
-          {" · Licensed Real Estate "}
-          {"Broker · PRC Lic. No."}
-          {SITE_CONFIG.prcLicenseNo}
+        <span className="text-xs text-white/30">
+          © {new Date().getFullYear()} {SITE_CONFIG.name} · Licensed Real Estate
+          Broker · PRC Lic. No. {SITE_CONFIG.prcLicenseNo}
         </span>
-        <span className="text-xs text-ink/50">{"Built with ♥ in Cebu"}</span>
+        <span className="text-xs text-white/30">Built with ♥ in Cebu</span>
       </div>
     </div>
   </footer>
