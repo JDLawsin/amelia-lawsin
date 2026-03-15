@@ -18,7 +18,7 @@ const PropertyCard = ({ property, className }: Props) => {
     <Link
       href={`/properties/${property.slug}`}
       className={clsx(
-        "group block bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200",
+        "group block bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200 h-full",
         className,
       )}
     >

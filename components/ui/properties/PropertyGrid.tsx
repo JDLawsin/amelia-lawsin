@@ -55,13 +55,12 @@ const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
   return (
     <div
       className={clsx(
-        "px-6 grid gap-px rounded-xl overflow-hidden",
-        "border border-wire bg-cloud",
+        "px-6 grid gap-3 overflow-hidden",
         "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
       )}
     >
       {properties.map((property) => (
-        <div key={property.id} className="bg-white">
+        <div key={property.id} className="bg-white h-full">
           <PropertyCard property={property} />
         </div>
       ))}
