@@ -139,3 +139,30 @@ export const PAYMENT_TYPE_LABELS: Record<string, string> = {
   PAG_IBIG_FINANCING: "Pag-IBIG Financing",
   RENT_TO_OWN: "Rent-to-Own",
 };
+
+export const CREDENTIALS = [
+  {
+    abbr: "PRC",
+    title: "Licensed Agent",
+    detail: `Lic. No. ${SITE_CONFIG.prcLicenseNo}`,
+    note: "Professional Regulation Commission",
+  },
+  {
+    abbr: "REBAP",
+    title: "Active Member",
+    detail: "Cebu Chapter",
+    note: "Real Estate Brokers Assoc. of the PH",
+  },
+  {
+    abbr: "HDMF",
+    title: "Pag-IBIG Accredited",
+    detail: "Housing Fund",
+    note: "Authorized to process Pag-IBIG housing loans",
+  },
+  {
+    abbr: "2013",
+    title: "Cebu-based",
+    detail: "Since 2013",
+    note: "Deep local knowledge of the Cebu property market",
+  },
+];

@@ -170,7 +170,7 @@ const BlogDetailPage = async ({ params }: Props) => {
                   {SITE_CONFIG.name}
                 </p>
                 <p className="text-xs text-ash mb-2">
-                  Licensed Real Estate Broker · PRC Cebu
+                  Licensed Real Estate Agent · PRC Cebu
                 </p>
                 <p className="text-xs text-ash leading-relaxed">
                   10+ years helping buyers, OFWs, and investors find their dream
