@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const PropertyNotFound = () => {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <main className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">
       <div className="w-16 h-16 bg-cloud rounded-full flex items-center justify-center mb-5 border border-wire">
         <svg
           width="24"

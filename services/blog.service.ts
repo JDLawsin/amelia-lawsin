@@ -129,3 +129,37 @@ export const getAllBlogTags = (): Promise<BlogTag[]> => {
     },
   });
 };
+
+export const getBlogBySlug = async (
+  slug: string,
+): Promise<BlogDetail | null> => {
+  return prisma.blog.findFirst({
+    where: {
+      slug,
+      isPublished: true,
+      deletedAt: null,
+    },
+    select: blogDetailSelect,
+  });
+};
+
+export const getRelatedBlogs = async (
+  blog: Pick<BlogDetail, "id" | "tags">,
+  limit = 3,
+): Promise<BlogPreviewItem[]> => {
+  const tagIds = blog.tags.map((t) => t.tag.id);
+
+  return prisma.blog.findMany({
+    where: {
+      isPublished: true,
+      deletedAt: null,
+      NOT: { id: blog.id },
+      tags: {
+        some: { tagId: { in: tagIds } },
+      },
+    },
+    select: blogPreviewSelect,
+    orderBy: { publishedAt: "desc" },
+    take: limit,
+  });
+};
