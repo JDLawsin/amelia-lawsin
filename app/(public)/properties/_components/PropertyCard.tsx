@@ -65,7 +65,7 @@ const PropertyCard = ({ property, className }: Props) => {
         <p className="text-base font-semibold text-ink mt-1">{price}</p>
 
         {(property.bedrooms || property.bathrooms || property.floorArea) && (
-          <div className="flex items-center gap-3 pt-1 border-t border-wire mt-1">
+          <div className="flex items-center gap-3 pt-1 mt-1">
             {property.bedrooms != null && (
               <span className="text-xs text-ash">
                 {property.bedrooms} {"bed"}

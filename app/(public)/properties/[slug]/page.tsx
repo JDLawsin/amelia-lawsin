@@ -84,7 +84,7 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="text-sm font-serif font-medium text-ink mb-3">{children}</h2>
 );
 
-const Divider = () => <div className="h-px bg-wire my-5" />;
+const Divider = () => <div className="my-5" />;
 
 const PropertyDetailPage = async ({ params }: Props) => {
   const { slug } = await params;
@@ -108,7 +108,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
 
   return (
     <main className="bg-white min-h-screen">
-      <nav className="py-3 border-b border-wire flex items-center gap-2 max-w-7xl mx-auto">
+      <nav className="py-3 flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"
           className="text-xs text-ash hover:text-ink transition-colors"
@@ -165,7 +165,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
             )}
           </div>
 
-          <div className="flex items-baseline gap-2 py-4 border-t border-b border-wire mb-5">
+          <div className="flex items-baseline gap-2 py-4  mb-5">
             <span className="text-3xl font-serif font-medium text-ink tracking-tight">
               {price}
             </span>
@@ -236,7 +236,6 @@ const PropertyDetailPage = async ({ params }: Props) => {
             property.hasDock ||
             property.isTourismZoned) && (
             <>
-              <Divider />
               <SectionTitle>Beach & vacation details</SectionTitle>
               <div className="grid grid-cols-3 gap-0 border border-wire rounded-xl overflow-hidden">
                 {property.beachFrontage && (
@@ -286,7 +285,6 @@ const PropertyDetailPage = async ({ params }: Props) => {
             </>
           )}
 
-          {/* Developer info — only for pre-selling */}
           {hasDeveloperInfo && (
             <>
               <Divider />
