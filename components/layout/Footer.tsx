@@ -99,7 +99,7 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">Company</h4>
+          <h4 className="text-sm font-semibold text-white">Agent</h4>
           <nav className="flex flex-col gap-2">
             {COMPANY_LINKS.map((link) => (
               <Link

@@ -17,6 +17,12 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Amelia Lawsin",
   description: "A real estate agent website",
+  applicationName: "Amelia",
+  appleWebApp: {
+    capable: true,
+    title: "Amelia",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({

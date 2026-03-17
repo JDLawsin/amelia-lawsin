@@ -10,12 +10,12 @@ export const SITE_CONFIG = {
   // Basic info
   name: "Amelia Lawsin",
   tagline: "Licensed Real Estate Agent · Cebu, Philippines",
-  prcLicenseNo: "XXXXX",
+  prcLicenseNo: "8370",
 
   // Contact
-  phone: "+639XXXXXXXXX",
-  email: "amelia@amelialawsin.com",
-  location: "Cebu City, Philippines",
+  phone: "+63 956 500 5442",
+  email: "amelialawsin08@gmail.com",
+  location: "Cebu, Philippines",
 
   // Deep links
   messengerUrl: "https://m.me/amelialawsin",
@@ -101,7 +101,7 @@ export const COMPANY_LINKS = [
   { href: "/about", label: "About Amelia" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
-  { href: "/privacy-policy", label: "Privacy Policy" },
+  // { href: "/privacy-policy", label: "Privacy Policy" }, //TODO: Add privacy policy page
 ];
 
 export const BEDROOM_OPTIONS = [
