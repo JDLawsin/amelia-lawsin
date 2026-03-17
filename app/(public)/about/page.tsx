@@ -267,7 +267,7 @@ const AboutPage = async () => {
       <section className="bg-cloud border-b border-wire">
         <div className="max-w-7xl mx-auto px-6 py-14">
           <SectionLabel>Credentials & accreditations</SectionLabel>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-wire rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px  rounded-2xl overflow-hidden">
             {CREDENTIALS.map((cred) => (
               <div key={cred.abbr} className="bg-white px-6 py-6">
                 <p className="text-2xl font-serif font-medium text-ink tracking-tight mb-2">
@@ -313,7 +313,7 @@ const AboutPage = async () => {
       <section className="border-b border-wire">
         <div className="max-w-7xl mx-auto px-6 py-14">
           <SectionLabel>What clients say</SectionLabel>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-wire rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px rounded-2xl overflow-hidden">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="bg-white px-6 py-7 flex flex-col">
                 <p className="text-3xl text-wire font-serif leading-none mb-4">
@@ -322,7 +322,7 @@ const AboutPage = async () => {
                 <p className="text-sm text-ash leading-relaxed flex-1 mb-5">
                   {t.message}
                 </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-wire">
+                <div className="flex items-center gap-3 pt-4">
                   <div className="w-8 h-8 rounded-full bg-ink flex items-center justify-center shrink-0">
                     <span className="text-[10px] font-semibold text-white">
                       {t.initials}
