@@ -47,7 +47,7 @@ const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
         {blog.excerpt}
       </p>
 
-      <div className="flex items-center gap-2 pt-2 border-t border-wire mt-1">
+      <div className="flex items-center gap-2 pt-2 mt-1">
         <span className="text-xs text-ash">{formatDate(blog.publishedAt)}</span>
         {blog.publishedAt && (
           <>

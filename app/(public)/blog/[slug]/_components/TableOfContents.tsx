@@ -92,7 +92,7 @@ const TableOfContents = ({ content }: TableOfContentsProps) => {
             key={heading.id}
             onClick={() => scrollToHeading(heading.id)}
             className={clsx(
-              "text-left py-2 border-b border-wire last:border-0 transition-colors",
+              "text-left py-2 transition-colors",
               "flex items-center gap-2 text-xs",
               heading.level === 3 && "pl-3",
               heading.level >= 4 && "pl-5",

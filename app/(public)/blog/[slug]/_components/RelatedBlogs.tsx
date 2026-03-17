@@ -47,7 +47,7 @@ const RelatedBlogs = ({ blogs }: RelatedBlogsProps) => {
               <h3 className="text-xs font-medium text-ink leading-snug line-clamp-2 group-hover:text-ink/70 transition-colors">
                 {blog.title}
               </h3>
-              <div className="flex items-center gap-1.5 mt-auto pt-2 border-t border-wire">
+              <div className="flex items-center gap-1.5 mt-auto pt-2">
                 <span className="text-[10px] text-fog">
                   {formatDate(blog.publishedAt)}
                 </span>

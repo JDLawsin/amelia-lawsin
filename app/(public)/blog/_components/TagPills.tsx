@@ -25,7 +25,7 @@ const TagPills = ({ tags, activeTag }: TagPillsProps) => {
   if (!visibleTags.length) return null;
 
   return (
-    <div className="flex items-center gap-2 py-3 border-b border-wire overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-2 py-3 overflow-x-auto scrollbar-none">
       <span className="text-xs text-fog shrink-0">Filter:</span>
 
       <button

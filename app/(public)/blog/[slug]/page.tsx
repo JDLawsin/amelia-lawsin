@@ -57,7 +57,7 @@ const BlogDetailPage = async ({ params }: Props) => {
 
   return (
     <main className="bg-white min-h-screen">
-      <nav className="py-3 border-b border-wire flex items-center gap-2 max-w-7xl mx-auto">
+      <nav className="py-3 flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"
           className="text-xs text-ash hover:text-ink transition-colors"
@@ -101,7 +101,7 @@ const BlogDetailPage = async ({ params }: Props) => {
             {blog.excerpt}
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 pt-5 border-t border-wire">
+          <div className="flex flex-wrap items-center gap-3 pt-5">
             {publishedDate && (
               <span className="text-sm text-ash">{publishedDate}</span>
             )}
@@ -141,11 +141,11 @@ const BlogDetailPage = async ({ params }: Props) => {
 
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-0">
-          <div className="py-2 lg:pr-12 lg:border-r lg:border-wire pb-12">
+          <div className="py-2 lg:pr-12 pb-12">
             <BlogContent content={blog.content} />
 
             {blog.tags.length > 0 && (
-              <div className="mt-10 pt-6 border-t border-wire">
+              <div className="mt-10 pt-6">
                 <p className="text-xs font-medium text-ink mb-3">Tags</p>
                 <div className="flex flex-wrap gap-2">
                   {blog.tags.map(({ tag }) => (
@@ -223,7 +223,6 @@ const BlogDetailPage = async ({ params }: Props) => {
 
       {relatedBlogs.length > 0 && (
         <div className="max-w-7xl mx-auto px-6 pb-12">
-          <div className="h-px bg-wire mb-10" />
           <RelatedBlogs blogs={relatedBlogs} />
         </div>
       )}

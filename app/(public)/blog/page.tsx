@@ -102,7 +102,7 @@ const BlogPage = async ({ searchParams }: Props) => {
           >
             <FeaturedGrid blogs={featuredBlogs} />
           </Suspense>
-          <div className="h-px bg-wire mt-8" />
+          <div className="mt-8" />
         </div>
       )}
 

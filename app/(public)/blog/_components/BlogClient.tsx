@@ -26,7 +26,6 @@ const BlogClient = ({
       <TagPills tags={tags} activeTag={activeTag} />
     </Suspense>
 
-    {/* All articles grid */}
     <div className="pt-8">
       <p className="text-xs font-medium text-fog uppercase tracking-widest mb-5">
         All articles
