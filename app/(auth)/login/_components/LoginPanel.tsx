@@ -1,12 +1,10 @@
 "use client";
 
 import { GoogleButton } from "@/components/ui/GoogleButton";
-import { ErrorState, Nullable } from "@/types";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useActionState, useState } from "react";
+import { useActionState, useState } from "react";
 import { FormInput } from "@/components/ui/FormInput";
-import { Login, LoginSchema } from "../_schema/login.schema";
 import { login } from "../_actions/login.actions";
 
 const LoginPanel = () => {
@@ -61,15 +59,17 @@ const LoginPanel = () => {
           autoComplete="current-password"
           required
           errors={state?.errors?.password}
-          rightSlot={
-            <Link
-              href="/forgot-password"
-              className="text-xs text-ink hover:text-ash"
-            >
-              Forgot password?
-            </Link>
-          }
         />
+
+        <div className="self-end">
+          <Link
+            href="/forgot-password"
+            className="text-xs text-ink hover:text-ash"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
         <button
           type="submit"
           disabled={isPending}

@@ -8,7 +8,6 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   errors?: string[];
   hint?: string;
-  rightSlot?: ReactNode;
   containerClassName?: string;
 }
 
@@ -18,7 +17,6 @@ export const FormInput = ({
   label,
   errors,
   hint,
-  rightSlot,
   required,
   className,
   containerClassName,
@@ -64,8 +62,6 @@ export const FormInput = ({
       ) : hint ? (
         <p className="text-xs text-fog">{hint}</p>
       ) : null}
-
-      {rightSlot && <div className="self-end">{rightSlot}</div>}
     </div>
   );
 };
