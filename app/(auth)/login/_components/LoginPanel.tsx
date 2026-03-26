@@ -6,12 +6,31 @@ import { useSearchParams } from "next/navigation";
 import { useActionState, useState } from "react";
 import { FormInput } from "@/components/ui/FormInput";
 import { login } from "../_actions/login.actions";
+import { getSupabaseBrowserClient } from "@/lib/supabase-auth-browser-client";
+import { Nullable } from "@/types";
+import { User } from "@supabase/supabase-js";
 
-const LoginPanel = () => {
+type Props = {
+  user: Nullable<User>;
+};
+
+const LoginPanel = ({ user }: Props) => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const searchParams = useSearchParams();
   const justReset = searchParams.get("reset") === "success";
   const [state, formAction, isPending] = useActionState(login, null);
+  const supabase = getSupabaseBrowserClient();
+
+  const handleGoogleLogin = async () => {
+    console.log("hello");
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/admin`,
+        skipBrowserRedirect: false,
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col justify-center px-8 py-12 lg:px-12">
@@ -30,9 +49,11 @@ const LoginPanel = () => {
         </div>
       )}
 
-      <GoogleButton onClick={() => {}} loading={googleLoading} />
+      {!user && (
+        <GoogleButton onClick={handleGoogleLogin} loading={googleLoading} />
+      )}
 
-      <div className="flex items-center gap-3 my-5">
+      {/* <div className="flex items-center gap-3 my-5">
         <div className="flex-1 h-px bg-wire" />
         <span className="text-xs text-fog">or</span>
         <div className="flex-1 h-px bg-wire" />
@@ -87,7 +108,7 @@ const LoginPanel = () => {
         >
           Create one
         </Link>
-      </p>
+      </p> */}
     </div>
   );
 };

@@ -46,7 +46,7 @@ export const GoogleButton = ({
       disabled={loading}
       className={cn(
         "w-full h-11 px-4 flex items-center justify-center gap-3",
-        "rounded-xl border border-input bg-white text-foreground",
+        "rounded-xl border border-input bg-white text-foreground cursor-pointer",
         "hover:bg-muted transition-all duration-200",
         "shadow-apple-sm hover:shadow-apple-hover",
         "active:scale-[0.98]",
