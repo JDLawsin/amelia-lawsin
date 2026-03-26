@@ -10,6 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
 }
 
 enum PropertyType {
@@ -40,6 +41,24 @@ enum PaymentSchemeType {
   BANK_FINANCING
   PAG_IBIG_FINANCING
   RENT_TO_OWN
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+model Profile {
+  id          String   @id 
+  email       String   @unique
+  fullName    String?
+  avatarUrl   String?
+  role        Role     @default(CLIENT)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("profiles")
 }
 
 model Property {
