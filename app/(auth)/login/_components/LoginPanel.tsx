@@ -22,7 +22,6 @@ const LoginPanel = ({ user }: Props) => {
   const supabase = getSupabaseBrowserClient();
 
   const handleGoogleLogin = async () => {
-    console.log("hello");
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
