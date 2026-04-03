@@ -1,14 +1,11 @@
 "use client";
 
 import { GoogleButton } from "@/components/ui/GoogleButton";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useActionState, useState } from "react";
-import { FormInput } from "@/components/ui/FormInput";
-import { login } from "../_actions/login.actions";
-import { getSupabaseBrowserClient } from "@/lib/supabase-auth-browser-client";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Nullable } from "@/types";
 import { User } from "@supabase/supabase-js";
+import { useState } from "react";
 
 type Props = {
   user: Nullable<User>;
@@ -18,17 +15,26 @@ const LoginPanel = ({ user }: Props) => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const searchParams = useSearchParams();
   const justReset = searchParams.get("reset") === "success";
-  const [state, formAction, isPending] = useActionState(login, null);
   const supabase = getSupabaseBrowserClient();
+  const next = searchParams.get("next");
 
   const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/admin`,
-        skipBrowserRedirect: false,
-      },
-    });
+    setGoogleLoading(true);
+
+    try {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback${
+            next ? `?next=${encodeURIComponent(next)}` : ""
+          }`,
+        },
+      });
+    } catch (error) {
+      console.error("Error loging in with Google:", error);
+    } finally {
+      setGoogleLoading(false);
+    }
   };
 
   return (

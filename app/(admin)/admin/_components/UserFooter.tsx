@@ -7,20 +7,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/shadcn/sidebar";
-import { getSupabaseBrowserClient } from "@/lib/supabase-auth-browser-client";
-import { Nullable } from "@/types";
-import { User } from "@supabase/supabase-js";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { useAuth } from "@/providers/AuthProvider";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-type Props = {
-  user: Nullable<User>;
-};
-
-const UserFooter = ({ user }: Props) => {
+const UserFooter = () => {
   const { state } = useSidebar();
-  const supabase = getSupabaseBrowserClient();
+  const { user } = useAuth();
   const router = useRouter();
+  const supabase = getSupabaseBrowserClient();
   const isExpanded = state === "expanded";
 
   const handleLogout = async () => {

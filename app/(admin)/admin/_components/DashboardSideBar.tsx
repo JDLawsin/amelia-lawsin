@@ -56,11 +56,7 @@ const SIDE_BAR = [
   },
 ];
 
-type Props = {
-  user: Nullable<User>;
-};
-
-const DashboardSidebar = ({ user }: Props) => {
+const DashboardSidebar = () => {
   const pathname = usePathname();
 
   return (
@@ -117,7 +113,7 @@ const DashboardSidebar = ({ user }: Props) => {
       </SidebarContent>
 
       <SidebarFooter className="bg-ink border-t border-white/8">
-        <UserFooter user={user} />
+        <UserFooter />
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BrandPanel } from "./_components/BrandPanel";
 import LoginPanel from "./_components/LoginPanel";
-import { createSupabaseServerClient } from "@/lib/supabase-auth-server-client";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Sign in — Amelia Lawsin Real Estate Agent",
