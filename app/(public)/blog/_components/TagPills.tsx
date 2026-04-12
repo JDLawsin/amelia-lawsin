@@ -16,7 +16,7 @@ const TagPills = ({ tags, activeTag }: TagPillsProps) => {
     if (slug === null) {
       updateQueryString({}, ["tag", "page"]);
     } else {
-      updateQueryString({ tag: slug, page: undefined });
+      updateQueryString({ tag: slug, page: "1" });
     }
   };
 

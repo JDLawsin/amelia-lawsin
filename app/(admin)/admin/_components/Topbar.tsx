@@ -26,7 +26,7 @@ const TopBar = () => {
   const title = getPageTitle(pathname);
 
   return (
-    <header className="h-14 bg-white border-b border-wire flex items-center px-4 gap-3 sticky top-0 z-10">
+    <header className="lg:hidden h-14 bg-white border-b border-wire flex items-center px-4 gap-3 sticky top-0 z-10">
       <SidebarTrigger className="lg:hidden text-ash hover:text-ink hover:bg-cloud rounded-lg transition-colors h-8 w-8 flex items-center justify-center shrink-0" />
 
       <h1 className="text-sm font-medium text-ink">{title}</h1>

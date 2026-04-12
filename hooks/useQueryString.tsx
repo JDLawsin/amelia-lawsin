@@ -17,11 +17,17 @@ const useUpdateQueryString = (): UpdateQueryStringFn => {
         currentParams[key] = value;
       }
 
-      const updatedParams = { ...currentParams, ...params };
+      const merged = { ...currentParams, ...params };
 
       deleteKeys.forEach((key) => {
-        delete updatedParams[key];
+        delete merged[key];
       });
+
+      const updatedParams = Object.fromEntries(
+        Object.entries(merged).filter(
+          ([, value]) => value !== "" && value !== undefined,
+        ),
+      );
 
       const updatedQueryString = createQueryString(updatedParams);
 

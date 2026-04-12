@@ -36,8 +36,6 @@ export default async function updateSession(request: NextRequest) {
   const isAdmin = userRole === Role.ADMIN;
   const isAuthRoute = pathname.startsWith("/login");
 
-  console.log(user);
-
   if (isAdminRoute) {
     if (!user) return NextResponse.redirect(new URL("/login", request.url));
     if (!isAdmin) return NextResponse.redirect(new URL("/", request.url));

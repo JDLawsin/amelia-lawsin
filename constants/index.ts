@@ -166,3 +166,25 @@ export const CREDENTIALS = [
     note: "Deep local knowledge of the Cebu property market",
   },
 ];
+
+export const ITEMS_PER_PAGE = 10;
+
+export const TYPE_LABELS: Record<string, string> = {
+  CONDO: "Condo",
+  HOUSE_AND_LOT: "House & Lot",
+  LOT_ONLY: "Lot Only",
+  TOWNHOUSE: "Townhouse",
+  COMMERCIAL: "Commercial",
+  BEACH_VACATION: "Beach / Vacation",
+};
+
+export const STATUS_VARIANT: Record<
+  string,
+  "default" | "secondary" | "outline"
+> = {
+  FOR_SALE: "default",
+  FOR_RENT: "secondary",
+  PRE_SELLING: "outline",
+  SOLD: "outline",
+  RENTED: "outline",
+};
