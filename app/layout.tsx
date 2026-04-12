@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} font-sans bg-cloud`}
       >
+        <Toaster position="top-right" reverseOrder={false} />
         {children}
       </body>
     </html>

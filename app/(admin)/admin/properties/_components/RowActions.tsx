@@ -22,16 +22,40 @@ import {
   TooltipTrigger,
 } from "@/components/ui/shadcn/tooltip";
 import { PropertyAdminListItem } from "@/services/property.admin.service";
+import {
+  deletePropertyAction,
+  toggleFeaturedAction,
+} from "@/actions/property.action";
+import { toast } from "react-hot-toast";
 
 const RowActions = ({ property }: { property: PropertyAdminListItem }) => {
   const [pending, startTransition] = useTransition();
-  const isDeleted = !!property.deletedAt;
 
-  const handleToggleFeatured = () => startTransition(() => {});
+  const handleToggleFeatured = () => {
+    startTransition(async () => {
+      const result = await toggleFeaturedAction(
+        property.id,
+        property.isFeatured,
+      );
 
-  const handleRestore = () => startTransition(() => {});
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    });
+  };
 
-  const handleDelete = () => startTransition(() => {});
+  const handleDelete = () =>
+    startTransition(async () => {
+      const result = await deletePropertyAction(property.id);
+
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    });
 
   return (
     <div className="flex items-center justify-end gap-1">
@@ -58,76 +82,58 @@ const RowActions = ({ property }: { property: PropertyAdminListItem }) => {
           {property.isFeatured ? "Remove from featured" : "Mark as featured"}
         </TooltipContent>
       </Tooltip>
-
-      {!isDeleted ? (
-        <>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon-sm" asChild>
-                <Link href={`/admin/properties/${property.id}`}>
-                  <Pencil className="w-3.5 h-3.5" />
-                </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Edit</TooltipContent>
-          </Tooltip>
-
-          <AlertDialog>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    disabled={pending}
-                    className="text-fog hover:text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </AlertDialogTrigger>
-              </TooltipTrigger>
-              <TooltipContent>Delete</TooltipContent>
-            </Tooltip>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete this property?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  &ldquo;{property.title}&rdquo; will be hidden from the public
-                  site. You can restore it at any time.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel asChild>
-                  <Button variant="ghost" size="sm">
-                    Cancel
-                  </Button>
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  className="bg-destructive text-white hover:bg-destructive/90"
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </>
-      ) : (
+      <>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={handleRestore}
-              disabled={pending}
-              className="text-fog hover:text-green-600 hover:bg-green-50"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
+            <Button variant="ghost" size="icon-sm" asChild>
+              <Link href={`/admin/properties/${property.id}`}>
+                <Pencil className="w-3.5 h-3.5" />
+              </Link>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Restore</TooltipContent>
+          <TooltipContent>Edit</TooltipContent>
         </Tooltip>
-      )}
+
+        <AlertDialog>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  disabled={pending}
+                  className="text-fog hover:text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              </AlertDialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Delete</TooltipContent>
+          </Tooltip>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this property?</AlertDialogTitle>
+              <AlertDialogDescription>
+                &ldquo;{property.title}&rdquo; will be deleted and can't be
+                restored.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel asChild>
+                <Button variant="ghost" size="sm">
+                  Cancel
+                </Button>
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-white hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
     </div>
   );
 };
