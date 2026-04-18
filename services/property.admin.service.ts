@@ -155,6 +155,7 @@ export const getAdminProperties = async (
     where: buildWhere(filters),
     select: propertyAdminListSelect,
     orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    skip: (page - 1) * pageSize,
     take: page * pageSize,
   });
 };
