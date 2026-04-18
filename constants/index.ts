@@ -188,3 +188,7 @@ export const STATUS_VARIANT: Record<
   SOLD: "outline",
   RENTED: "outline",
 };
+
+export const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+export const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+export const MAX_FILES = 10;

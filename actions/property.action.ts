@@ -3,11 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { withAdminAuth } from "@/lib/auth";
-import { ActionResult, Nullable } from "@/types";
+import { ActionResult } from "@/types";
 import { FullPropertySchema } from "@/app/(admin)/admin/properties/_schema/property.schema";
 import { FieldErrors } from "react-hook-form";
-import cloudinary, { uploadImages } from "@/lib/cloudinary";
-import { Readable } from "stream";
+import { deleteImages, uploadImages } from "@/lib/cloudinary";
 import {
   mapAmenity,
   mapLandmark,
@@ -15,6 +14,7 @@ import {
   mapPropertyData,
   mapUnit,
 } from "@/lib/mapper";
+import { randomUUID } from "crypto";
 
 export const toggleFeaturedAction = withAdminAuth(
   async (id: string, isFeatured: boolean): Promise<ActionResult> => {
@@ -75,9 +75,13 @@ export type FormState =
 
 export const createPropertyAction = withAdminAuth(
   async (_, formData: FormData): Promise<FormState> => {
+    let uploadedImages: { url: string; publicId: string }[] = [];
+
     try {
       // 1. Extract files
-      const imageFiles = formData.getAll("images") as File[];
+      const imageFiles = (formData.getAll("images") as File[]).filter(
+        (file) => file && file.size > 0,
+      );
 
       // 2. Parse JSON fields safely
       const parseJSON = (value: FormDataEntryValue | null) => {
@@ -121,21 +125,29 @@ export const createPropertyAction = withAdminAuth(
       const data = result.data;
 
       // 4. Upload images to Cloudinary
-      const uploadedImages = await uploadImages(imageFiles);
+      const propertyId = randomUUID();
+      if (imageFiles && imageFiles.length > 0) {
+        uploadedImages = await uploadImages(imageFiles, propertyId);
+      }
 
-      // 5. Create property (clean mapping)
+      // 5. Create property
       const property = await prisma.property.create({
         data: {
+          id: propertyId,
+
           ...mapPropertyData(data),
 
-          images: {
-            create: uploadedImages.map((img, index) => ({
-              url: img.url,
-              publicId: img.publicId,
-              order: index,
-              isPrimary: index === 0,
-            })),
-          },
+          images:
+            uploadedImages.length > 0
+              ? {
+                  create: uploadedImages.map((img, index) => ({
+                    url: img.url,
+                    publicId: img.publicId,
+                    order: index,
+                    isPrimary: index === 0,
+                  })),
+                }
+              : undefined,
 
           units: {
             create: data.units.map(mapUnit),
@@ -168,6 +180,10 @@ export const createPropertyAction = withAdminAuth(
       };
     } catch (error) {
       console.error("Create property error:", error);
+
+      if (uploadedImages.length) {
+        await deleteImages(uploadedImages.map((img) => img.publicId));
+      }
 
       return {
         success: false,

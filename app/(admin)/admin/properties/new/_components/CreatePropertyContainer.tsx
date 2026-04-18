@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useEffect, useState } from "react";
-import { FieldErrors, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Wizardry from "@/components/ui/Wizardry";
 import {
@@ -11,7 +11,6 @@ import {
   PROPERTY_TABS,
 } from "../../_schema/property.schema";
 import { createPropertyAction, FormState } from "@/actions/property.action";
-import { ActionResult, Nullable } from "@/types";
 import BasicStep from "@/components/step/BasicStep";
 import LocationStep from "@/components/step/LocationStep";
 import SpecStep from "@/components/step/SpecStep";
@@ -78,17 +77,17 @@ const CreatePropertyContainer = () => {
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
 
-    selectedFiles.forEach((file) => {
-      formData.append("images", file);
-    });
+    if (data.images && data.images.length > 0) {
+      data.images.forEach((file: File) => {
+        formData.append("images", file);
+      });
+    }
 
     const { images, ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
-
       const isArrayOrObject = typeof value === "object";
-
       if (isArrayOrObject) {
         formData.append(key, JSON.stringify(value));
       } else {
@@ -132,7 +131,7 @@ const CreatePropertyContainer = () => {
           <AmenityStep control={control} />
           <PaymentSchemeStep control={control} />
           <LandmarkStep control={control} />
-          <MediaStep control={control} onFilesSelected={setSelectedFiles} />
+          <MediaStep control={control} />
         </Wizardry>
       </div>
     </form>

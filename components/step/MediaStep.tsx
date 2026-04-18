@@ -5,10 +5,9 @@ import { FullPropertyFormValues } from "@/app/(admin)/admin/properties/_schema/p
 
 interface MediaStepProps {
   control: Control<FullPropertyFormValues>;
-  onFilesSelected?: (files: File[]) => void;
 }
 
-const MediaStep = ({ control, onFilesSelected }: MediaStepProps) => (
+const MediaStep = ({ control }: MediaStepProps) => (
   <div className="flex flex-col gap-5">
     <SectionLabel>Property Images</SectionLabel>
 
@@ -19,10 +18,8 @@ const MediaStep = ({ control, onFilesSelected }: MediaStepProps) => (
         <MultiImageUpload
           value={field.value || []}
           onValueChange={field.onChange}
-          onFilesSelected={onFilesSelected}
+          errors={fieldState.error}
           maxFiles={10}
-          hint="Upload high-quality photos. First image will be used as cover."
-          errors={fieldState.error ? [fieldState.error.message!] : undefined}
         />
       )}
     />

@@ -1,4 +1,5 @@
 import { PropertyType } from "@/app/generated/prisma/enums";
+import { ALLOWED_TYPES, MAX_SIZE } from "@/constants";
 import { z } from "zod";
 
 const optionalNumber = z.preprocess(
@@ -132,8 +133,14 @@ export const PropertyLandmarkSchema = z.object({
 });
 
 const imageSchema = z
-  .array(z.string().url())
-  .max(10, "Maximum 10 images allowed");
+  .array(
+    z
+      .instanceof(File)
+      .refine((file) => file.size <= MAX_SIZE, "Max 5MB")
+      .refine((file) => ALLOWED_TYPES.includes(file.type), "Invalid file type"),
+  )
+  .max(10, "Maximum 10 images allowed")
+  .optional();
 
 export const FullPropertySchema = BasicsSchema.merge(LocationSchema)
   .merge(SpecsSchema)
