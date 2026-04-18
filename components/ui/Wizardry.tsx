@@ -132,28 +132,33 @@ const Wizardry = <TFormValues extends FieldValues>({
           Previous
         </Button>
 
-        <Button
-          type={isLastStep ? "submit" : "button"}
-          onClick={isLastStep ? undefined : handleNext}
-          disabled={isPending}
-          className="bg-ink hover:bg-ink/90"
-        >
-          {isLastStep ? (
-            isPending ? (
+        {isLastStep ? (
+          <Button
+            key="wizard-submit"
+            type="submit"
+            disabled={isPending}
+            className="bg-ink hover:bg-ink/90"
+          >
+            {isPending ? (
               <>
                 <Spinner className="h-4 w-4 animate-spin" />
                 Creating...
               </>
             ) : (
               submitLabel
-            )
-          ) : (
-            <>
-              Next
-              <ChevronRight className="w-4 h-4 ml-1.5" />
-            </>
-          )}
-        </Button>
+            )}
+          </Button>
+        ) : (
+          <Button
+            key="wizard-next"
+            type="button"
+            onClick={handleNext}
+            className="bg-ink hover:bg-ink/90"
+          >
+            Next
+            <ChevronRight className="w-4 h-4 ml-1.5" />
+          </Button>
+        )}
       </div>
     </Tabs>
   );
