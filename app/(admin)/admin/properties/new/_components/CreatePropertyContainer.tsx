@@ -26,7 +26,6 @@ import LandmarkStep from "@/components/step/LandmarkStep";
 
 const CreatePropertyContainer = () => {
   const [currentStep, setCurrentStep] = useState(PROPERTY_TABS[0]);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const router = useRouter();
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(

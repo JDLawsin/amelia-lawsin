@@ -1,4 +1,3 @@
-// components/steps/UnitsStep.tsx
 import { Controller, Control, useFieldArray } from "react-hook-form";
 import FormInput from "@/components/ui/FormInput";
 import SectionLabel from "@/components/ui/SectionLabel";
