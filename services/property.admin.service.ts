@@ -181,7 +181,7 @@ export const getAdminProperties = async (
     select: propertyAdminListSelect,
     orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     skip: (page - 1) * pageSize,
-    take: page * pageSize,
+    take: pageSize,
   });
 };
 
