@@ -49,23 +49,3 @@ export const mapUnit = (unit: any) => ({
   floorPlanImage: unit.floorPlanImage ?? null,
   floorPlanPublicId: unit.floorPlanPublicId ?? null,
 });
-
-export const mapAmenity = (a: any) => ({
-  name: a.name,
-  icon: a.icon ?? null,
-});
-
-export const mapPaymentScheme = (s: any) => ({
-  type: s.type,
-  description: s.description ?? null,
-  downPayment: s.downPayment ?? null,
-  monthlyAmount: s.monthlyAmount ?? null,
-  terms: s.terms ?? null,
-  interestRate: s.interestRate ?? null,
-});
-
-export const mapLandmark = (l: any) => ({
-  name: l.name,
-  category: l.category ?? null,
-  distance: l.distance ?? null,
-});

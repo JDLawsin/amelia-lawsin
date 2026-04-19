@@ -325,28 +325,26 @@ const PropertyDetailPage = async ({ params }: Props) => {
               <Divider />
               <SectionTitle>Amenities</SectionTitle>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {property.amenities.map(
-                  (amenity: Omit<PropertyAmenity, "propertyId">) => (
-                    <div
-                      key={amenity.id}
-                      className="flex items-center gap-2.5 text-sm text-ash"
-                    >
-                      <div className="w-7 h-7 bg-cloud rounded-lg flex items-center justify-center shrink-0 border border-wire">
-                        <svg
-                          width="13"
-                          height="13"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#1d1d1f"
-                          strokeWidth="1.5"
-                        >
-                          <path d="M20 6 9 17l-5-5" />
-                        </svg>
-                      </div>
-                      {amenity.name}
+                {property.amenities.map((propertyAmenity) => (
+                  <div
+                    key={propertyAmenity.id}
+                    className="flex items-center gap-2.5 text-sm text-ash"
+                  >
+                    <div className="w-7 h-7 bg-cloud rounded-lg flex items-center justify-center shrink-0 border border-wire">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#1d1d1f"
+                        strokeWidth="1.5"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
                     </div>
-                  ),
-                )}
+                    {propertyAmenity.amenity.name}
+                  </div>
+                ))}
               </div>
             </>
           )}
@@ -356,38 +354,44 @@ const PropertyDetailPage = async ({ params }: Props) => {
               <Divider />
               <SectionTitle>Payment schemes</SectionTitle>
               <div className="flex flex-col gap-2">
-                {property.paymentSchemes.map(
-                  (scheme: Omit<PropertyPaymentScheme, "propertyId">) => (
+                {property.paymentSchemes.map((scheme) => {
+                  const paymentScheme = scheme.paymentScheme;
+                  if (!paymentScheme) return null;
+
+                  return (
                     <div
                       key={scheme.id}
                       className="border border-wire rounded-xl px-4 py-3 flex items-center justify-between"
                     >
                       <div>
                         <p className="text-sm font-medium text-ink">
-                          {PAYMENT_TYPE_LABELS[scheme.type] ?? scheme.type}
+                          {PAYMENT_TYPE_LABELS[paymentScheme.type] ??
+                            paymentScheme.type}
                         </p>
-                        {scheme.description && (
+                        {paymentScheme.description && (
                           <p className="text-xs text-ash mt-0.5">
-                            {scheme.description}
+                            {paymentScheme.description}
                           </p>
                         )}
                       </div>
                       <div className="text-right shrink-0 ml-4">
-                        {scheme.monthlyAmount ? (
+                        {paymentScheme.monthlyAmount ? (
                           <>
                             <p className="text-sm font-medium text-ink">
-                              ₱{scheme.monthlyAmount.toLocaleString()}/mo
+                              ₱{paymentScheme.monthlyAmount.toLocaleString()}/mo
                             </p>
-                            {scheme.interestRate && scheme.terms && (
-                              <p className="text-[10px] text-fog mt-0.5">
-                                {scheme.interestRate}% · {scheme.terms} months
-                              </p>
-                            )}
+                            {paymentScheme.interestRate &&
+                              paymentScheme.terms && (
+                                <p className="text-[10px] text-fog mt-0.5">
+                                  {paymentScheme.interestRate}% ·{" "}
+                                  {paymentScheme.terms} months
+                                </p>
+                              )}
                           </>
-                        ) : scheme.downPayment ? (
+                        ) : paymentScheme.downPayment ? (
                           <>
                             <p className="text-sm font-medium text-ink">
-                              ₱{scheme.downPayment.toLocaleString()}
+                              ₱{paymentScheme.downPayment.toLocaleString()}
                             </p>
                             <p className="text-[10px] text-fog mt-0.5">
                               Down payment
@@ -396,8 +400,8 @@ const PropertyDetailPage = async ({ params }: Props) => {
                         ) : null}
                       </div>
                     </div>
-                  ),
-                )}
+                  );
+                })}
               </div>
 
               <p className="text-xs text-fog mt-3 leading-relaxed">
@@ -413,30 +417,28 @@ const PropertyDetailPage = async ({ params }: Props) => {
               <Divider />
               <SectionTitle>Nearby landmarks</SectionTitle>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {property.landmarks.map(
-                  (landmark: Omit<PropertyLandmark, "propertyId">) => (
-                    <div
-                      key={landmark.id}
-                      className="bg-cloud rounded-xl px-4 py-3 flex items-center justify-between"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-ink">
-                          {landmark.name}
-                        </p>
-                        {landmark.category && (
-                          <p className="text-[10px] text-fog mt-0.5">
-                            {landmark.category}
-                          </p>
-                        )}
-                      </div>
-                      {landmark.distance && (
-                        <p className="text-sm font-medium text-ink shrink-0 ml-4">
-                          {landmark.distance}
+                {property.landmarks.map((propertyLandmark) => (
+                  <div
+                    key={propertyLandmark.id}
+                    className="bg-cloud rounded-xl px-4 py-3 flex items-center justify-between"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-ink">
+                        {propertyLandmark.landmark.name}
+                      </p>
+                      {propertyLandmark.landmark.category && (
+                        <p className="text-[10px] text-fog mt-0.5">
+                          {propertyLandmark.landmark.category}
                         </p>
                       )}
                     </div>
-                  ),
-                )}
+                    {propertyLandmark.distance && (
+                      <p className="text-sm font-medium text-ink shrink-0 ml-4">
+                        {propertyLandmark.distance}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
             </>
           )}

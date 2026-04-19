@@ -1,5 +1,3 @@
-// lib/services/property.admin.service.ts
-
 import { Prisma } from "@/app/generated/prisma/browser";
 import { ITEMS_PER_PAGE } from "@/constants";
 import { prisma } from "@/lib/prisma";
@@ -77,7 +75,18 @@ const propertyAdminDetailSelect = {
     },
     orderBy: { order: "asc" as const },
   },
-  amenities: { select: { id: true, name: true, icon: true } },
+  amenities: {
+    select: {
+      id: true,
+      amenity: {
+        select: {
+          id: true,
+          name: true,
+          icon: true,
+        },
+      },
+    },
+  },
   units: {
     select: {
       id: true,
@@ -96,16 +105,32 @@ const propertyAdminDetailSelect = {
   paymentSchemes: {
     select: {
       id: true,
-      type: true,
-      description: true,
-      downPayment: true,
-      monthlyAmount: true,
-      terms: true,
-      interestRate: true,
+      paymentScheme: {
+        select: {
+          id: true,
+          type: true,
+          name: true,
+          description: true,
+          downPayment: true,
+          monthlyAmount: true,
+          terms: true,
+          interestRate: true,
+        },
+      },
     },
   },
   landmarks: {
-    select: { id: true, name: true, category: true, distance: true },
+    select: {
+      id: true,
+      distance: true,
+      landmark: {
+        select: {
+          id: true,
+          name: true,
+          category: true,
+        },
+      },
+    },
   },
 } satisfies Prisma.PropertySelect;
 

@@ -7,14 +7,13 @@ import { ActionResult } from "@/types";
 import { FullPropertySchema } from "@/app/(admin)/admin/properties/_schema/property.schema";
 import { FieldErrors } from "react-hook-form";
 import { deleteImages, uploadImages } from "@/lib/cloudinary";
-import {
-  mapAmenity,
-  mapLandmark,
-  mapPaymentScheme,
-  mapPropertyData,
-  mapUnit,
-} from "@/lib/mapper";
+import { mapPropertyData, mapUnit } from "@/lib/mapper";
 import { randomUUID } from "crypto";
+import {
+  processAmenities,
+  processLandmarks,
+  processPaymentSchemes,
+} from "@/lib/property-helpers";
 
 export const toggleFeaturedAction = withAdminAuth(
   async (id: string, isFeatured: boolean): Promise<ActionResult> => {
@@ -83,7 +82,7 @@ export const createPropertyAction = withAdminAuth(
         (file) => file && file.size > 0,
       );
 
-      // 2. Parse JSON fields safely
+      // 2. Parse JSON fields
       const parseJSON = (value: FormDataEntryValue | null) => {
         if (!value || typeof value !== "string") return undefined;
         try {
@@ -102,7 +101,7 @@ export const createPropertyAction = withAdminAuth(
         images: [],
       };
 
-      //3. Validate with Zod
+      // 3. Validate with Zod
       const result = FullPropertySchema.safeParse(rawData);
 
       if (!result.success) {
@@ -124,17 +123,24 @@ export const createPropertyAction = withAdminAuth(
 
       const data = result.data;
 
-      // 4. Upload images to Cloudinary
+      // 4. Upload images
       const propertyId = randomUUID();
       if (imageFiles && imageFiles.length > 0) {
         uploadedImages = await uploadImages(imageFiles, propertyId);
       }
 
-      // 5. Create property
+      // 5. Process lookup data (find or create)
+      const [amenityConnections, landmarkConnections, schemeConnections] =
+        await Promise.all([
+          processAmenities(data.amenities),
+          processLandmarks(data.landmarks),
+          processPaymentSchemes(data.paymentSchemes),
+        ]);
+
+      // 6. Create property with all relations
       const property = await prisma.property.create({
         data: {
           id: propertyId,
-
           ...mapPropertyData(data),
 
           images:
@@ -154,15 +160,28 @@ export const createPropertyAction = withAdminAuth(
           },
 
           amenities: {
-            create: data.amenities.map(mapAmenity),
-          },
-
-          paymentSchemes: {
-            create: data.paymentSchemes.map(mapPaymentScheme),
+            create: amenityConnections.map((conn) => ({
+              ...("amenityId" in conn
+                ? { amenity: { connect: { id: conn.amenityId } } }
+                : { amenity: conn.amenity }),
+            })),
           },
 
           landmarks: {
-            create: data.landmarks.map(mapLandmark),
+            create: landmarkConnections.map((conn) => ({
+              distance: conn.distance,
+              ...("landmarkId" in conn
+                ? { landmark: { connect: { id: conn.landmarkId } } }
+                : { landmark: conn.landmark }),
+            })),
+          },
+
+          paymentSchemes: {
+            create: schemeConnections.map((conn) => ({
+              ...("paymentSchemeId" in conn
+                ? { paymentScheme: { connect: { id: conn.paymentSchemeId } } }
+                : { paymentScheme: conn.paymentScheme }),
+            })),
           },
         },
         select: {

@@ -80,21 +80,46 @@ const propertyDetailSelect = {
     orderBy: { order: "asc" as const },
   },
   amenities: {
-    select: { id: true, name: true, icon: true },
+    select: {
+      id: true,
+      amenity: {
+        select: {
+          id: true,
+          name: true,
+          icon: true,
+        },
+      },
+    },
   },
   paymentSchemes: {
     select: {
       id: true,
-      type: true,
-      description: true,
-      downPayment: true,
-      monthlyAmount: true,
-      terms: true,
-      interestRate: true,
+      paymentScheme: {
+        select: {
+          id: true,
+          type: true,
+          name: true,
+          description: true,
+          downPayment: true,
+          monthlyAmount: true,
+          terms: true,
+          interestRate: true,
+        },
+      },
     },
   },
   landmarks: {
-    select: { id: true, name: true, category: true, distance: true },
+    select: {
+      id: true,
+      distance: true,
+      landmark: {
+        select: {
+          id: true,
+          name: true,
+          category: true,
+        },
+      },
+    },
   },
   units: {
     select: {
