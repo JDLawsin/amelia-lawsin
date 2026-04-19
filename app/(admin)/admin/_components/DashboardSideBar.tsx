@@ -25,8 +25,6 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import UserFooter from "./UserFooter";
-import { User } from "@supabase/supabase-js";
-import { Nullable } from "@/types";
 
 const SIDE_BAR = [
   {

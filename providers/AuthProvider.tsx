@@ -11,14 +11,17 @@ import {
 import { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Nullable } from "@/types";
+import { Role } from "@/app/generated/prisma/enums";
 
 type AuthContextType = {
   user: Nullable<User>;
+  role: Nullable<Role>;
   isLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  role: null,
   isLoading: true,
 });
 
@@ -27,28 +30,32 @@ export const useAuth = () => useContext(AuthContext);
 type Props = {
   children: ReactNode;
   initialUser: Nullable<User>;
+  userRole: Nullable<Role>;
 };
 
-const AuthProvider = ({ children, initialUser }: Props) => {
+const AuthProvider = ({ children, initialUser, userRole }: Props) => {
   const [user, setUser] = useState<Nullable<User>>(initialUser);
+  const [role, setRole] = useState<Nullable<Role>>(userRole || null);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = useMemo(() => getSupabaseBrowserClient(), []);
 
   useEffect(() => {
     setUser(initialUser);
+    setRole(userRole || null);
     setIsLoading(false);
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user || null);
+      setRole(session?.user ? role : null);
     });
 
     return () => subscription.unsubscribe();
   }, [initialUser]);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
+    <AuthContext.Provider value={{ user, isLoading, role }}>
       {children}
     </AuthContext.Provider>
   );

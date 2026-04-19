@@ -16,6 +16,14 @@ import {
 } from "@/components/ui/shadcn/sheet";
 import { cn } from "@/lib/utils";
 import Logo from "../ui/Logo";
+import { useAuth } from "@/providers/AuthProvider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/shadcn/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/shadcn/avatar";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -61,6 +69,9 @@ const HamburgerIcon = ({
 
 export const Navbar = () => {
   const pathname = usePathname();
+  const { user, role, isLoading } = useAuth();
+  const avatarUrl =
+    user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
   return (
     <header
@@ -107,6 +118,49 @@ export const Navbar = () => {
           >
             <Link href="/contact">{"Get in touch"}</Link>
           </Button>
+
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full focus:outline-none">
+                  <Avatar className="h-9 w-9">
+                    {isLoading ? (
+                      <div className="h-full w-full animate-pulse rounded-full bg-gray-200" />
+                    ) : (
+                      <>
+                        <AvatarImage
+                          src={avatarUrl}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                        <AvatarFallback>
+                          {user.user_metadata?.full_name?.[0] ||
+                            user.email?.[0] ||
+                            "U"}
+                        </AvatarFallback>
+                      </>
+                    )}
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-48">
+                {!isLoading && role === "ADMIN" && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin">Dashboard</Link>
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuItem asChild disabled>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem disabled>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <Sheet>
             <SheetTrigger asChild>

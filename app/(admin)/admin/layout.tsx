@@ -3,9 +3,9 @@ import DashboardSidebar from "./_components/DashboardSideBar";
 import { SidebarProvider } from "@/components/ui/shadcn/sidebar";
 import { TooltipProvider } from "@/components/ui/shadcn/tooltip";
 import TopBar from "./_components/Topbar";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUser } from "@/services/auth.service";
 import AuthProvider from "@/providers/AuthProvider";
+import { getRole } from "@/services/profile.service";
 
 type Props = {
   children: ReactNode;
@@ -13,9 +13,10 @@ type Props = {
 
 const AdminLayout = async ({ children }: Props) => {
   const user = await getUser();
+  const profile = user ? await getRole(user.id) : null;
 
   return (
-    <AuthProvider initialUser={user}>
+    <AuthProvider initialUser={user} userRole={profile?.role || null}>
       <TooltipProvider delayDuration={0}>
         <SidebarProvider>
           <div className="flex min-h-screen w-full">
