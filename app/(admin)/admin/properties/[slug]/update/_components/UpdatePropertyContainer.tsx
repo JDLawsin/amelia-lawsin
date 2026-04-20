@@ -1,51 +1,46 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Wizardry from "@/components/ui/Wizardry";
+import { startTransition, useActionState, useState } from "react";
 import {
   FullPropertyFormValues,
   FullPropertySchema,
-  STEP_FIELD_NAMES,
   PROPERTY_TABS,
-} from "../../_schema/property.schema";
-import { createPropertyAction, FormState } from "@/actions/property.action";
+  STEP_FIELD_NAMES,
+} from "../../../_schema/property.schema";
+import { FormState, updatePropertyAction } from "@/actions/property.action";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormActionEffect } from "@/hooks/useFormActionEffect";
+import Wizardry from "@/components/ui/Wizardry";
 import BasicStep from "@/components/step/BasicStep";
 import LocationStep from "@/components/step/LocationStep";
 import SpecStep from "@/components/step/SpecStep";
 import FeatureStep from "@/components/step/FeatureStep";
 import DeveloperStep from "@/components/step/DeveloperStep";
-import MediaStep from "@/components/step/MediaStep";
 import UnitStep from "@/components/step/UnitStep";
 import AmenityStep from "@/components/step/AmenityStep";
 import PaymentSchemeStep from "@/components/step/PaymentSchemeStep";
 import LandmarkStep from "@/components/step/LandmarkStep";
-import { useFormActionEffect } from "@/hooks/useFormActionEffect";
+import MediaStep from "@/components/step/MediaStep";
 import { useAutoSlug } from "@/hooks/useAutoSlug";
+import { mapPropertyToForm } from "@/lib/mapper";
+import { PropertyAdminDetail } from "@/services/property.admin.service";
 
-const CreatePropertyContainer = () => {
+type Props = {
+  property: PropertyAdminDetail;
+};
+
+const UpdatePropertyContainer = ({ property }: Props) => {
   const [currentStep, setCurrentStep] = useState(PROPERTY_TABS[0]);
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
-    createPropertyAction,
+    updatePropertyAction,
     null,
   );
 
   const form = useForm<FullPropertyFormValues>({
     resolver: zodResolver(FullPropertySchema) as any,
-    defaultValues: {
-      listingType: "BRAND_NEW",
-      isFeatured: false,
-      status: "FOR_SALE",
-      title: "",
-      slug: "",
-      description: "",
-      type: "",
-      address: "",
-      city: "",
-      images: [],
-    },
+    defaultValues: mapPropertyToForm(property),
     mode: "onTouched",
   });
 
@@ -80,6 +75,7 @@ const CreatePropertyContainer = () => {
         formData.append(key, String(value));
       }
     });
+    formData.append("id", property.id);
 
     startTransition(() => {
       formAction(formData);
@@ -105,7 +101,7 @@ const CreatePropertyContainer = () => {
           errors={rhfErrors}
           trigger={trigger}
           isPending={isPending}
-          submitLabel="Create Property"
+          submitLabel="Update Property"
         >
           <BasicStep control={control} />
           <LocationStep control={control} />
@@ -116,11 +112,11 @@ const CreatePropertyContainer = () => {
           <AmenityStep control={control} />
           <PaymentSchemeStep control={control} />
           <LandmarkStep control={control} />
-          <MediaStep control={control} />
+          <MediaStep control={control} existingImages={property.images} />
         </Wizardry>
       </div>
     </form>
   );
 };
 
-export default CreatePropertyContainer;
+export default UpdatePropertyContainer;

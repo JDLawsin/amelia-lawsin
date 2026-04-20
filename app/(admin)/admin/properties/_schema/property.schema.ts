@@ -7,6 +7,11 @@ const optionalNumber = z.preprocess(
   z.number().positive().optional(),
 );
 
+const optionalNonNegativeNumber = z.preprocess(
+  (v) => (v === "" || v == null ? undefined : Number(v)),
+  z.number().nonnegative().optional(), // ≥ 0
+);
+
 const optionalString = z
   .string()
   .trim()
@@ -65,7 +70,7 @@ export const SpecsSchema = z.object({
   lotArea: optionalNumber,
   bedrooms: optionalNumber,
   bathrooms: optionalNumber,
-  parking: optionalNumber,
+  parking: optionalNonNegativeNumber,
   monthlyRent: optionalNumber,
   associationDue: optionalNumber,
   floorLevel: optionalString,
@@ -100,7 +105,7 @@ export const PropertyUnitSchema = z.object({
   lotArea: optionalNumber,
   bedrooms: optionalNumber,
   bathrooms: optionalNumber,
-  parking: optionalNumber,
+  parking: optionalNonNegativeNumber,
   towerOrPhase: optionalString,
   floorPlanImage: optionalString,
   floorPlanPublicId: optionalString,

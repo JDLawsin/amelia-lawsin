@@ -86,7 +86,7 @@ const RowActions = ({ property }: { property: PropertyAdminListItem }) => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon-sm" asChild>
-              <Link href={`/admin/properties/${property.id}`}>
+              <Link href={`/admin/properties/${property.id}/update`}>
                 <Pencil className="w-3.5 h-3.5" />
               </Link>
             </Button>

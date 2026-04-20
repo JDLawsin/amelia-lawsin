@@ -17,6 +17,7 @@ import {
   FieldErrors,
 } from "react-hook-form";
 import { Spinner } from "./shadcn/spinner";
+import { ScrollArea, ScrollBar } from "./shadcn/scroll-area";
 
 type Props<TFormValues extends FieldValues> = {
   tabs: string[];
@@ -90,29 +91,44 @@ const Wizardry = <TFormValues extends FieldValues>({
 
   return (
     <Tabs value={value} onValueChange={onValueChange}>
-      <TabsList className="w-full h-auto p-0 bg-cloud border border-wire rounded-xl overflow-hidden mb-4">
-        {tabs.map((tab, index) => (
-          <TabsTrigger
-            key={tab}
-            value={tab}
-            type="button"
-            className={clsx(
-              "flex-1 relative capitalize rounded-none border-r border-wire last:border-r-0 text-xs",
-              "data-[state=active]:bg-white data-[state=active]:text-ink",
-              "text-ash hover:text-ink",
-            )}
-          >
-            {tab}
+      <ScrollArea className="w-full mb-6 overflow-y-hidden">
+        <TabsList
+          className={clsx(
+            "flex h-12 min-w-full items-center bg-cloud border border-wire rounded-2xl shadow-apple-sm",
+            "p-0 overflow-x-auto overflow-y-hidden scrollbar-hide",
+          )}
+        >
+          {tabs.map((tab, index) => (
+            <TabsTrigger
+              key={tab}
+              value={tab}
+              type="button"
+              className={clsx(
+                "relative shrink-0 h-11 px-7 mx-px first:ml-1.5 last:mr-1.5",
+                "text-xs font-medium capitalize whitespace-nowrap transition-all duration-200",
+                "text-ash hover:text-ink",
+                "data-[state=active]:bg-white data-[state=active]:text-ink",
+                "data-[state=active]:shadow-apple-sm",
+                "rounded-xl border border-transparent data-[state=active]:border-wire/30",
+              )}
+            >
+              {tab}
 
-            {index < currentIndex && tabsWithErrors[tab] && (
-              <span
-                title="This step has errors"
-                className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-destructive rounded-full"
-              />
-            )}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+              {index < currentIndex && tabsWithErrors[tab] && (
+                <span
+                  title="This step has errors"
+                  className="absolute top-2 right-3 w-2 h-2 bg-destructive rounded-full ring-2 ring-white shadow-sm"
+                />
+              )}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <ScrollBar
+          orientation="horizontal"
+          className="h-1 mt-2 bg-wire/30 rounded-full"
+        />
+      </ScrollArea>
 
       {tabs.map((tab, index) => (
         <TabsContent key={tab} value={tab} className="mt-0">
@@ -120,13 +136,13 @@ const Wizardry = <TFormValues extends FieldValues>({
         </TabsContent>
       ))}
 
-      <div className="flex items-center justify-between pt-5 mt-2 border-t border-wire">
+      <div className="flex items-center justify-between pt-6 mt-2 border-t border-wire">
         <Button
           type="button"
           variant="ghost"
           onClick={handlePrevious}
           disabled={isFirstStep}
-          className="text-ash"
+          className="text-ash hover:bg-cloud transition-colors"
         >
           <ChevronLeft className="w-4 h-4 mr-1.5" />
           Previous
@@ -137,7 +153,7 @@ const Wizardry = <TFormValues extends FieldValues>({
             key="wizard-submit"
             type="submit"
             disabled={isPending}
-            className="bg-ink hover:bg-ink/90"
+            className="bg-ink hover:bg-ink/90 shadow-apple transition-all active:scale-[0.97]"
           >
             {isPending ? (
               <>
@@ -153,7 +169,7 @@ const Wizardry = <TFormValues extends FieldValues>({
             key="wizard-next"
             type="button"
             onClick={handleNext}
-            className="bg-ink hover:bg-ink/90"
+            className="bg-ink hover:bg-ink/90 shadow-apple transition-all active:scale-[0.97]"
           >
             Next
             <ChevronRight className="w-4 h-4 ml-1.5" />
