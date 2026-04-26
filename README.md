@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Amelia Lawsin — Real Estate Platform
+
+A modern real estate listing platform built for Amelia Lawsin, a licensed real estate agent. The platform allows clients to browse property listings, view property details, and get in touch directly with the agent.
+
+## Tech Stack
+
+- **Framework** — Next.js 16 (App Router)
+- **Language** — TypeScript
+- **Styling** — Tailwind CSS v4
+- **Database** — Supabase (PostgreSQL)
+- **ORM** — Prisma
+- **Auth** — Supabase Auth
+- **Image Storage** — Cloudinary
+- **UI Components** — shadcn/ui + Radix UI
+
+## Features
+
+- Property listing browse and search
+- Property detail pages with image galleries
+- Agent contact and inquiry flow
+- Secure authentication via Supabase
+- Cloud image uploads via Cloudinary
+- Responsive design for mobile and desktop
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Installation
+
+```bash
+git clone https://github.com/JDLawsin/amelia-lawsin.git
+cd amelia-lawsin
+npm install
+```
+
+### Environment Variables
+
+Create a `.env.local` file at the root with the following:
+
+```env
+DATABASE_URL=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+### Running Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command              | Description                 |
+| -------------------- | --------------------------- |
+| `npm run dev`        | Start development server    |
+| `npm run build`      | Build for production        |
+| `npm run start`      | Start production server     |
+| `npm run lint`       | Run ESLint                  |
+| `npm run type-check` | Run TypeScript type checker |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+├── app/          # Next.js App Router pages and layouts
+├── components/   # Reusable UI components
+├── lib/          # Utility functions and configs
+├── hooks/        # Custom React hooks
+├── services/     # API and data fetching logic
+├── types/        # TypeScript type definitions
+├── constants/    # App-wide constants
+├── prisma/       # Prisma schema, migrations and seeder
+└── public/       # Static assets
+```
