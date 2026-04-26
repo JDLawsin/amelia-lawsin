@@ -127,17 +127,12 @@ const MultiImageUpload = ({
   );
 };
 
-const PreviewImage = ({ file }: { file: File }) => {
-  const [url, setUrl] = useState("");
+const PreviewImage = ({ file }: { file: File | string }) => {
+  const url = typeof file === "string" ? file : URL.createObjectURL(file);
 
   useEffect(() => {
-    if (typeof file === "string") {
-      setUrl(file);
-      return;
-    }
-
+    if (typeof file === "string") return;
     const objectUrl = URL.createObjectURL(file);
-    setUrl(objectUrl);
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
 

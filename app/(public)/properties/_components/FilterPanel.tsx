@@ -53,30 +53,33 @@ const OptionPill = ({
 
 type FilterPanelProps = {
   isOpen: boolean;
-  totalResults: number;
 };
 
-const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
+const FilterPanel = ({ isOpen }: FilterPanelProps) => {
   const searchParams = useSearchParams();
   const updateQueryString = useUpdateQueryString();
 
-  const [localBedrooms, setLocalBedrooms] = useState(
-    searchParams.get("bedrooms") ?? "",
-  );
-  const [localCity, setLocalCity] = useState(searchParams.get("city") ?? "");
-  const [localMinPrice, setLocalMinPrice] = useState(
-    searchParams.get("minPrice") ?? "",
-  );
-  const [localMaxPrice, setLocalMaxPrice] = useState(
-    searchParams.get("maxPrice") ?? "",
-  );
+  const committedBedrooms = searchParams.get("bedrooms") ?? "";
+  const committedCity = searchParams.get("city") ?? "";
+  const committedMinPrice = searchParams.get("minPrice") ?? "";
+  const committedMaxPrice = searchParams.get("maxPrice") ?? "";
 
-  useEffect(() => {
-    setLocalBedrooms(searchParams.get("bedrooms") ?? "");
-    setLocalCity(searchParams.get("city") ?? "");
-    setLocalMinPrice(searchParams.get("minPrice") ?? "");
-    setLocalMaxPrice(searchParams.get("maxPrice") ?? "");
-  }, [searchParams]);
+  const [localBedrooms, setLocalBedrooms] = useState(committedBedrooms);
+  const [localCity, setLocalCity] = useState(committedCity);
+  const [localMinPrice, setLocalMinPrice] = useState(committedMinPrice);
+  const [localMaxPrice, setLocalMaxPrice] = useState(committedMaxPrice);
+
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      setLocalBedrooms(committedBedrooms);
+      setLocalCity(committedCity);
+      setLocalMinPrice(committedMinPrice);
+      setLocalMaxPrice(committedMaxPrice);
+    }
+  }
 
   const handlePricePreset = (min?: string, max?: string) => {
     setLocalMinPrice(min ?? "");
@@ -267,7 +270,7 @@ const FilterPanel = ({ isOpen, totalResults }: FilterPanelProps) => {
           onClick={handleApply}
           className="bg-ink text-white hover:bg-ink/90 text-xs px-5 rounded-lg"
         >
-          {"Show"} {totalResults} {"results"}
+          {"Search"}
         </Button>
       </div>
     </div>

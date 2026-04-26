@@ -43,7 +43,7 @@ const PropertiesClient = ({ properties, total, pageSize }: Props) => {
         activeFilterCount={activeFilterCount}
       />
       <ChipsRow />
-      <FilterPanel isOpen={isFilterOpen} totalResults={total} />
+      <FilterPanel isOpen={isFilterOpen} />
       <ResultsMeta total={total} showing={properties.length} />
       <PropertyGrid properties={properties} view={view} />
       <LoadMore showing={properties.length} total={total} pageSize={pageSize} />

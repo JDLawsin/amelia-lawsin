@@ -114,8 +114,7 @@ const RowActions = ({ property }: { property: PropertyAdminListItem }) => {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete this property?</AlertDialogTitle>
               <AlertDialogDescription>
-                &ldquo;{property.title}&rdquo; will be deleted and can't be
-                restored.
+                {`${property.title} will be deleted and can't be restored.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
