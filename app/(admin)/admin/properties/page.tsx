@@ -8,6 +8,7 @@ import Properties from "./_components/Properties";
 import { Suspense } from "react";
 import TableSkeleton from "./_components/TableSkeleton";
 import FiltersBar from "./_components/FiltersBar";
+import { PropertyStatus, PropertyType } from "@/app/generated/prisma/browser";
 
 type SearchParams = {
   q?: string;
@@ -26,8 +27,8 @@ const PropertiesPage = async ({ searchParams }: Props) => {
 
   const filters = {
     q: params.q,
-    status: params.status,
-    type: params.type,
+    status: params.status as PropertyStatus | undefined,
+    type: params.type as PropertyType | undefined,
     page,
   };
 

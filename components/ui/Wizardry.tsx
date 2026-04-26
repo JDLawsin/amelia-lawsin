@@ -15,6 +15,7 @@ import {
   UseFormTrigger,
   FieldValues,
   FieldErrors,
+  Path,
 } from "react-hook-form";
 import { Spinner } from "./shadcn/spinner";
 import { ScrollArea, ScrollBar } from "./shadcn/scroll-area";
@@ -32,7 +33,7 @@ type Props<TFormValues extends FieldValues> = {
   children: ReactNode;
 };
 
-const hasError = (error: any): boolean => {
+const hasError = (error: unknown): boolean => {
   if (!error) return false;
 
   if (Array.isArray(error)) return error.some(hasError);
@@ -65,7 +66,7 @@ const Wizardry = <TFormValues extends FieldValues>({
     const fields = stepFieldNames[value];
     if (!fields?.length) return true;
 
-    return await trigger(fields as any);
+    return await trigger(fields as Path<TFormValues>[]);
   };
 
   const handleNext = async () => {

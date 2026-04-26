@@ -33,7 +33,7 @@ const useUpdateQueryString = (): UpdateQueryStringFn => {
 
       router.push(`${pathname}?${updatedQueryString}`);
     },
-    [searchParams],
+    [searchParams, pathname, router],
   );
 
   return updateFn;

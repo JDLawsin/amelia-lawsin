@@ -1,14 +1,17 @@
 "use client";
 
-// app/(public)/blog/[slug]/_components/TableOfContents.tsx
-
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { slugifyHeading } from "./BlogContent";
 
+type TipTapNodeAttrs = {
+  level?: number;
+  [key: string]: unknown;
+};
+
 type TipTapNode = {
   type: string;
-  attrs?: Record<string, any>;
+  attrs?: TipTapNodeAttrs;
   content?: TipTapNode[];
   text?: string;
 };
