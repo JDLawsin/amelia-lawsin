@@ -2,7 +2,7 @@
 
 import { LoginSchema } from "../_schema/login.schema";
 
-export const login = async (_: any, formData: FormData) => {
+export const login = async (formData: FormData) => {
   const entries = Object.fromEntries(formData.entries());
 
   const result = LoginSchema.safeParse(entries);

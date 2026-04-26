@@ -6,6 +6,7 @@ import { X, GripVertical, Star } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import MultiImageUpload from "@/components/ui/MultiImageUpload";
 import clsx from "clsx";
+import { FieldError } from "react-hook-form";
 
 type ExistingImage = {
   id: string;
@@ -21,7 +22,7 @@ type Props = {
   onNewFilesChange: (files: File[]) => void;
   onDeleteExisting?: (imageId: string) => void;
   onSetPrimary?: (imageId: string) => void;
-  errors?: any;
+  errors?: FieldError;
 };
 
 const PropertyImageManager = ({

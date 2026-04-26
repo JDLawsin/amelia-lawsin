@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import type { Path, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import type {
+  Path,
+  PathValue,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
 type SlugifyOptions = {
   transform?: (value: string) => string;
@@ -16,7 +21,7 @@ export const defaultSlugify = (value: string): string => {
     .replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
 };
 
-export const useAutoSlug = <TFormData extends Record<string, any>>(
+export const useAutoSlug = <TFormData extends Record<string, unknown>>(
   watch: UseFormWatch<TFormData>,
   setValue: UseFormSetValue<TFormData>,
   sourceField: Path<TFormData>,
@@ -40,7 +45,9 @@ export const useAutoSlug = <TFormData extends Record<string, any>>(
 
     const slug = transform(String(sourceValue));
 
-    setValue(targetField, slug as any, { shouldValidate });
+    setValue(targetField, slug as PathValue<TFormData, Path<TFormData>>, {
+      shouldValidate,
+    });
   }, [
     sourceValue,
     targetValue,

@@ -6,9 +6,17 @@ type TipTapMark = {
   attrs?: { href?: string; target?: string };
 };
 
+type TipTapNodeAttrs = {
+  level?: number;
+  src?: string;
+  alt?: string;
+  title?: string;
+  [key: string]: unknown;
+};
+
 type TipTapNode = {
   type: string;
-  attrs?: Record<string, any>;
+  attrs?: TipTapNodeAttrs;
   content?: TipTapNode[];
   marks?: TipTapMark[];
   text?: string;

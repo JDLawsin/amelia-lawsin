@@ -8,7 +8,7 @@ import {
   STEP_FIELD_NAMES,
 } from "../../../_schema/property.schema";
 import { FormState, updatePropertyAction } from "@/actions/property.action";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
 import Wizardry from "@/components/ui/Wizardry";
@@ -39,7 +39,9 @@ const UpdatePropertyContainer = ({ property }: Props) => {
   );
 
   const form = useForm<FullPropertyFormValues>({
-    resolver: zodResolver(FullPropertySchema) as any,
+    resolver: zodResolver(
+      FullPropertySchema,
+    ) as Resolver<FullPropertyFormValues>,
     defaultValues: mapPropertyToForm(property),
     mode: "onTouched",
   });
@@ -97,7 +99,7 @@ const UpdatePropertyContainer = ({ property }: Props) => {
             setCurrentStep(val as keyof typeof STEP_FIELD_NAMES)
           }
           stepFieldNames={STEP_FIELD_NAMES}
-          control={control as any}
+          control={control}
           errors={rhfErrors}
           trigger={trigger}
           isPending={isPending}

@@ -1,8 +1,12 @@
-export const mapPropertyData = (data: any) => ({
+import { FullPropertyFormValues } from "@/app/(admin)/admin/properties/_schema/property.schema";
+import { PropertyType } from "@/app/generated/prisma/enums";
+import { PropertyAdminDetail } from "@/services/property.admin.service";
+
+export const mapPropertyData = (data: FullPropertyFormValues) => ({
   title: data.title,
   slug: data.slug,
   description: data.description,
-  type: data.type,
+  type: data.type as PropertyType,
   status: data.status,
   listingType: data.listingType,
   isFeatured: data.isFeatured,
@@ -35,7 +39,7 @@ export const mapPropertyData = (data: any) => ({
   expectedTurnover: data.expectedTurnover ?? null,
 });
 
-export const mapUnit = (unit: any) => ({
+export const mapUnit = (unit: FullPropertyFormValues["units"][number]) => ({
   label: unit.label,
   status: unit.status ?? null,
   price: unit.price ?? null,
@@ -50,12 +54,12 @@ export const mapUnit = (unit: any) => ({
   floorPlanPublicId: unit.floorPlanPublicId ?? null,
 });
 
-export const mapPropertyToForm = (property: any) => ({
+export const mapPropertyToForm = (property: PropertyAdminDetail) => ({
   // Basics
   title: property.title,
   slug: property.slug,
   description: property.description,
-  type: property.type,
+  type: property.type as PropertyType,
   status: property.status,
   listingType: property.listingType,
   isFeatured: property.isFeatured,
@@ -103,7 +107,7 @@ export const mapPropertyToForm = (property: any) => ({
   landmarks: property.landmarks?.map(mapLandmarkToForm) ?? [],
 });
 
-export const mapUnitToForm = (unit: any) => ({
+export const mapUnitToForm = (unit: PropertyAdminDetail["units"][number]) => ({
   label: unit.label,
   status: unit.status ?? undefined,
   price: unit.price ?? undefined,
@@ -114,16 +118,18 @@ export const mapUnitToForm = (unit: any) => ({
   bathrooms: unit.bathrooms ?? undefined,
   parking: unit.parking ?? undefined,
   towerOrPhase: unit.towerOrPhase ?? undefined,
-  floorPlanImage: unit.floorPlanImage ?? undefined,
-  floorPlanPublicId: unit.floorPlanPublicId ?? undefined,
 });
 
-export const mapAmenityToForm = (item: any) => ({
+export const mapAmenityToForm = (
+  item: PropertyAdminDetail["amenities"][number],
+) => ({
   name: item.amenity.name,
   icon: item.amenity.icon ?? undefined,
 });
 
-export const mapPaymentSchemeToForm = (item: any) => ({
+export const mapPaymentSchemeToForm = (
+  item: PropertyAdminDetail["paymentSchemes"][number],
+) => ({
   type: item.paymentScheme.type,
   description: item.paymentScheme.description ?? undefined,
   downPayment: item.paymentScheme.downPayment ?? undefined,
@@ -132,7 +138,9 @@ export const mapPaymentSchemeToForm = (item: any) => ({
   interestRate: item.paymentScheme.interestRate ?? undefined,
 });
 
-export const mapLandmarkToForm = (item: any) => ({
+export const mapLandmarkToForm = (
+  item: PropertyAdminDetail["landmarks"][number],
+) => ({
   name: item.landmark.name,
   category: item.landmark.category ?? undefined,
   distance: item.distance ?? undefined,
