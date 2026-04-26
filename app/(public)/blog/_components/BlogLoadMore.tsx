@@ -11,7 +11,7 @@ type BlogLoadMoreProps = {
   pageSize: number;
 };
 
-const BlogLoadMore = ({ showing, total, pageSize }: BlogLoadMoreProps) => {
+const BlogLoadMore = ({ showing, total }: BlogLoadMoreProps) => {
   const searchParams = useSearchParams();
   const updateQueryString = useUpdateQueryString();
 

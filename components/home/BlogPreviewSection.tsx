@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { Blog, BlogTag, TagsOnBlogs } from "@/app/generated/prisma/client";
 import { Button } from "../ui/shadcn/button";
 import BlogCard from "../ui/BlogCard";
 import { BlogPreviewItem } from "@/services/blog.service";

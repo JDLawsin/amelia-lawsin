@@ -61,5 +61,7 @@ export const useFormActionEffect = (
 
       onError?.(state);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, router, getRedirectPath, onSuccess, onError, disableToast]);
 };

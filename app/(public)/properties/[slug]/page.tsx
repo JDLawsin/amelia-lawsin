@@ -3,12 +3,6 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import clsx from "clsx";
 import type { Metadata } from "next";
-
-import {
-  PropertyAmenity,
-  PropertyLandmark,
-  PropertyPaymentScheme,
-} from "@/app/generated/prisma/browser";
 import {
   getPropertyBySlug,
   getRelatedProperties,

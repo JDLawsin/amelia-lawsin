@@ -11,7 +11,7 @@ type LoadMoreProps = {
   pageSize: number;
 };
 
-const LoadMore = ({ showing, total, pageSize }: LoadMoreProps) => {
+const LoadMore = ({ showing, total }: LoadMoreProps) => {
   const searchParams = useSearchParams();
   const updateQueryString = useUpdateQueryString();
 

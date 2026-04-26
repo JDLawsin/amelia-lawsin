@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import clsx from "clsx";
 import { ALLOWED_TYPES, MAX_FILES } from "@/constants";
 import { FieldError } from "react-hook-form";
+import Image from "next/image";
 
 type Props = {
   value: File[];
@@ -142,7 +143,7 @@ const PreviewImage = ({ file }: { file: File | string }) => {
     );
 
   return (
-    <img
+    <Image
       src={url}
       alt="preview"
       className="w-full aspect-square object-cover rounded-xl border"
