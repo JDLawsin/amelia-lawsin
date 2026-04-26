@@ -66,7 +66,7 @@ const UpdatePropertyContainer = ({ property }: Props) => {
       });
     }
 
-    const { images, ...rest } = data;
+    const { ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;

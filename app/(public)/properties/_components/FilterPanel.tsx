@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useUpdateQueryString from "@/hooks/useQueryString";
 import { BEDROOM_OPTIONS, CEBU_CITIES } from "@/constants";
 import { Button } from "@/components/ui/shadcn/button";

@@ -13,35 +13,35 @@ const PROPERTY_TYPES = [
   "Not sure yet",
 ];
 
-const SuccessState = () => (
-  <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-    <div className="w-14 h-14 bg-cloud border border-wire rounded-full flex items-center justify-center">
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1d1d1f"
-        strokeWidth="1.5"
-      >
-        <path
-          d="M20 6 9 17l-5-5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
-    <div>
-      <p className="text-base font-serif font-medium text-ink mb-1">
-        Inquiry sent!
-      </p>
-      <p className="text-sm text-ash leading-relaxed max-w-xs">
-        Amelia will get back to you shortly — usually within a few hours via
-        Messenger or email.
-      </p>
-    </div>
-  </div>
-);
+// const SuccessState = () => (
+//   <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
+//     <div className="w-14 h-14 bg-cloud border border-wire rounded-full flex items-center justify-center">
+//       <svg
+//         width="22"
+//         height="22"
+//         viewBox="0 0 24 24"
+//         fill="none"
+//         stroke="#1d1d1f"
+//         strokeWidth="1.5"
+//       >
+//         <path
+//           d="M20 6 9 17l-5-5"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         />
+//       </svg>
+//     </div>
+//     <div>
+//       <p className="text-base font-serif font-medium text-ink mb-1">
+//         Inquiry sent!
+//       </p>
+//       <p className="text-sm text-ash leading-relaxed max-w-xs">
+//         Amelia will get back to you shortly — usually within a few hours via
+//         Messenger or email.
+//       </p>
+//     </div>
+//   </div>
+// );
 
 const InquiryForm = () => {
   const [state, action, isPending] = useActionState(() => {}, undefined);

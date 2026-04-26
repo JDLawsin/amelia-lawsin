@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { formatPrice, formatUnitPrice } from "@/lib/utils";
+import { formatUnitPrice } from "@/lib/utils";
 import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG } from "@/constants";
 

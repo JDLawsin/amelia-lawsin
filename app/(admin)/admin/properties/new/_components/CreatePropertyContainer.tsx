@@ -1,7 +1,7 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useState } from "react";
-import { useForm, UseFormWatch, type Resolver } from "react-hook-form";
+import { startTransition, useActionState, useState } from "react";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Wizardry from "@/components/ui/Wizardry";
 import {
@@ -71,7 +71,7 @@ const CreatePropertyContainer = () => {
       });
     }
 
-    const { images, ...rest } = data;
+    const { ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;

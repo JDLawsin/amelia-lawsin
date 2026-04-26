@@ -1,5 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-import clsx from "clsx";
 
 type TipTapMark = {
   type: "bold" | "italic" | "underline" | "link" | "code";
@@ -170,7 +170,7 @@ const RenderNode = ({ node }: { node: TipTapNode }) => {
     case "image":
       return node.attrs?.src ? (
         <figure className="my-6">
-          <img
+          <Image
             src={node.attrs.src}
             alt={node.attrs.alt ?? ""}
             className="w-full rounded-xl border border-wire"
