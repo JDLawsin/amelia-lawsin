@@ -69,7 +69,7 @@ const HamburgerIcon = ({
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const { user, role, isLoading } = useAuth();
+  const { user, role } = useAuth();
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
@@ -124,30 +124,24 @@ export const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full focus:outline-none">
                   <Avatar className="h-9 w-9">
-                    {isLoading ? (
-                      <div className="h-full w-full animate-pulse rounded-full bg-gray-200" />
-                    ) : (
-                      <>
-                        <AvatarImage
-                          src={avatarUrl}
-                          referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                          }}
-                        />
-                        <AvatarFallback>
-                          {user.user_metadata?.full_name?.[0] ||
-                            user.email?.[0] ||
-                            "U"}
-                        </AvatarFallback>
-                      </>
-                    )}
+                    <AvatarImage
+                      src={avatarUrl}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                    <AvatarFallback>
+                      {user.user_metadata?.full_name?.[0] ||
+                        user.email?.[0] ||
+                        "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-48">
-                {!isLoading && role === "ADMIN" && (
+                {role === "ADMIN" && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin">Dashboard</Link>
                   </DropdownMenuItem>

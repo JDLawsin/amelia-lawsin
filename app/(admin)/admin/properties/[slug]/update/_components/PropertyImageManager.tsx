@@ -1,12 +1,11 @@
-// components/ui/PropertyImageManager.tsx
 "use client";
 
 import { useState } from "react";
-import { X, GripVertical, Star } from "lucide-react";
+import { X, Star } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import MultiImageUpload from "@/components/ui/MultiImageUpload";
-import clsx from "clsx";
 import { FieldError } from "react-hook-form";
+import Image from "next/image";
 
 type ExistingImage = {
   id: string;
@@ -57,7 +56,7 @@ const PropertyImageManager = ({
                 key={image.id}
                 className="relative group rounded-xl overflow-hidden border border-wire"
               >
-                <img
+                <Image
                   src={image.url}
                   alt=""
                   className="w-full aspect-square object-cover"
