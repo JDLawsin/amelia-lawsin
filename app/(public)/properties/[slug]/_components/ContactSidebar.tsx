@@ -108,7 +108,7 @@ const ContactSidebar = ({ property }: Props) => {
         </p>
       </div>
 
-      <ShareButtons slug={property.title} title={property.title} />
+      <ShareButtons title={property.title} />
 
       {inquiryOpen && (
         <InquiryModal
@@ -120,7 +120,7 @@ const ContactSidebar = ({ property }: Props) => {
   );
 };
 
-const ShareButtons = ({ slug, title }: { slug: string; title: string }) => {
+const ShareButtons = ({ title }: { title: string }) => {
   const [copied, setCopied] = useState(false);
 
   const copyLink = () => {

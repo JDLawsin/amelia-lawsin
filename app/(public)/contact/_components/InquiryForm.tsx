@@ -44,7 +44,7 @@ const PROPERTY_TYPES = [
 // );
 
 const InquiryForm = () => {
-  const [state, action, isPending] = useActionState(() => {}, undefined);
+  const [, action, isPending] = useActionState(() => {}, undefined);
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
