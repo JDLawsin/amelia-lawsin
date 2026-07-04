@@ -45,8 +45,10 @@ export const BasicsSchema = z.object({
     .describe("Property type is required"),
   status: z
     .enum(["FOR_SALE", "FOR_RENT", "PRE_SELLING", "SOLD", "RENTED"])
-    .catch(() => null as any)
-    .refine((val) => val !== null, "Please select a valid status"),
+    .refine(
+      (val) => val !== null && val !== undefined,
+      "Please select a valid status",
+    ),
   listingType: z
     .enum(["BRAND_NEW", "RESALE"], {
       error: "Please select a valid listing type",

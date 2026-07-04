@@ -1,5 +1,5 @@
 import { ALLOWED_TYPES, MAX_FILES, MAX_SIZE } from "@/constants";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,7 +28,7 @@ export const uploadImages = async (files: File[], propertyId: string) => {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     try {
-      const result = await new Promise<any>((resolve, reject) => {
+      const result = await new Promise<UploadApiResponse>((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
             {
@@ -41,7 +41,8 @@ export const uploadImages = async (files: File[], propertyId: string) => {
             },
             (error, result) => {
               if (error) reject(error);
-              else resolve(result);
+              else if (result) resolve(result);
+              else reject(new Error("Upload failed: no result"));
             },
           )
           .end(buffer);

@@ -1,7 +1,7 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { startTransition, useActionState, useState } from "react";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Wizardry from "@/components/ui/Wizardry";
 import {
@@ -33,7 +33,9 @@ const CreatePropertyContainer = () => {
   );
 
   const form = useForm<FullPropertyFormValues>({
-    resolver: zodResolver(FullPropertySchema) as any,
+    resolver: zodResolver(
+      FullPropertySchema,
+    ) as Resolver<FullPropertyFormValues>,
     defaultValues: {
       listingType: "BRAND_NEW",
       isFeatured: false,
@@ -69,7 +71,7 @@ const CreatePropertyContainer = () => {
       });
     }
 
-    const { images, ...rest } = data;
+    const { ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
@@ -101,7 +103,7 @@ const CreatePropertyContainer = () => {
             setCurrentStep(val as keyof typeof STEP_FIELD_NAMES)
           }
           stepFieldNames={STEP_FIELD_NAMES}
-          control={control as any}
+          control={control}
           errors={rhfErrors}
           trigger={trigger}
           isPending={isPending}

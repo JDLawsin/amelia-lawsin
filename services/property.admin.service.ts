@@ -1,4 +1,8 @@
-import { Prisma } from "@/app/generated/prisma/browser";
+import {
+  Prisma,
+  PropertyStatus,
+  PropertyType,
+} from "@/app/generated/prisma/browser";
 import { ITEMS_PER_PAGE } from "@/constants";
 import { prisma } from "@/lib/prisma";
 
@@ -144,8 +148,8 @@ export type PropertyAdminDetail = Prisma.PropertyGetPayload<{
 
 export type PropertyAdminFilters = {
   q?: string;
-  status?: string;
-  type?: string;
+  status?: PropertyStatus;
+  type?: PropertyType;
   showDeleted?: boolean;
   page?: number;
   pageSize?: number;
@@ -165,8 +169,8 @@ const buildWhere = (f: PropertyAdminFilters): Prisma.PropertyWhereInput => {
     ];
   }
 
-  if (f.status) where.status = f.status as any;
-  if (f.type) where.type = f.type as any;
+  if (f.status) where.status = f.status;
+  if (f.type) where.type = f.type;
 
   return where;
 };

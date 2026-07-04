@@ -28,7 +28,6 @@ interface Props {
 
 const FormSelect = ({
   id,
-  name,
   label,
   options,
   placeholder = "Select...",

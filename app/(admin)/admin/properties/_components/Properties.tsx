@@ -18,7 +18,7 @@ type Props = {
   filters: { q?: string; status?: string; type?: string };
 };
 
-const Properties = ({ properties, total, page, pageSize, filters }: Props) => (
+const Properties = ({ properties, total, page, pageSize }: Props) => (
   <>
     <DataTable
       columns={COLUMNS}

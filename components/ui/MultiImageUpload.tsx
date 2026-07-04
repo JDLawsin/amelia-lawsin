@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import clsx from "clsx";
 import { ALLOWED_TYPES, MAX_FILES } from "@/constants";
 import { FieldError } from "react-hook-form";
+import Image from "next/image";
 
 type Props = {
   value: File[];
@@ -127,17 +128,12 @@ const MultiImageUpload = ({
   );
 };
 
-const PreviewImage = ({ file }: { file: File }) => {
-  const [url, setUrl] = useState("");
+const PreviewImage = ({ file }: { file: File | string }) => {
+  const url = typeof file === "string" ? file : URL.createObjectURL(file);
 
   useEffect(() => {
-    if (typeof file === "string") {
-      setUrl(file);
-      return;
-    }
-
+    if (typeof file === "string") return;
     const objectUrl = URL.createObjectURL(file);
-    setUrl(objectUrl);
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
 
@@ -147,7 +143,7 @@ const PreviewImage = ({ file }: { file: File }) => {
     );
 
   return (
-    <img
+    <Image
       src={url}
       alt="preview"
       className="w-full aspect-square object-cover rounded-xl border"

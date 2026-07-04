@@ -1,14 +1,22 @@
+import Image from "next/image";
 import Link from "next/link";
-import clsx from "clsx";
 
 type TipTapMark = {
   type: "bold" | "italic" | "underline" | "link" | "code";
   attrs?: { href?: string; target?: string };
 };
 
+type TipTapNodeAttrs = {
+  level?: number;
+  src?: string;
+  alt?: string;
+  title?: string;
+  [key: string]: unknown;
+};
+
 type TipTapNode = {
   type: string;
-  attrs?: Record<string, any>;
+  attrs?: TipTapNodeAttrs;
   content?: TipTapNode[];
   marks?: TipTapMark[];
   text?: string;
@@ -162,7 +170,7 @@ const RenderNode = ({ node }: { node: TipTapNode }) => {
     case "image":
       return node.attrs?.src ? (
         <figure className="my-6">
-          <img
+          <Image
             src={node.attrs.src}
             alt={node.attrs.alt ?? ""}
             className="w-full rounded-xl border border-wire"

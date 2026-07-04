@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 
 const UserFooter = () => {
   const { state } = useSidebar();
-  const { user, role, isLoading } = useAuth();
+  const { user, role } = useAuth();
 
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();
@@ -40,43 +40,26 @@ const UserFooter = () => {
           tooltip="Account"
         >
           <Avatar className="h-6 w-6 shrink-0">
-            {isLoading ? (
-              <div className="h-full w-full animate-pulse rounded-full bg-white/20" />
-            ) : (
-              <>
-                <AvatarImage
-                  src={avatarUrl}
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-                <AvatarFallback className="bg-white/15 text-white text-[10px]">
-                  {user?.user_metadata?.full_name?.[0] ||
-                    user?.email?.[0] ||
-                    "U"}
-                </AvatarFallback>
-              </>
-            )}
+            <AvatarImage
+              src={avatarUrl}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+            <AvatarFallback className="bg-white/15 text-white text-[10px]">
+              {user?.user_metadata?.full_name?.[0] || user?.email?.[0] || "U"}
+            </AvatarFallback>
           </Avatar>
 
           {isExpanded && (
             <div className="flex flex-col leading-tight min-w-0">
-              {isLoading ? (
-                <>
-                  <div className="h-3 w-24 bg-white/20 animate-pulse rounded mb-1" />
-                  <div className="h-2 w-12 bg-white/10 animate-pulse rounded" />
-                </>
-              ) : (
-                <>
-                  <span className="text-xs font-medium text-white truncate">
-                    {user?.user_metadata?.full_name || user?.email}
-                  </span>
-                  <span className="text-[10px] text-white/40">
-                    {role === "ADMIN" ? "Admin" : "Client"}
-                  </span>
-                </>
-              )}
+              <span className="text-xs font-medium text-white truncate">
+                {user?.user_metadata?.full_name || user?.email}
+              </span>
+              <span className="text-[10px] text-white/40">
+                {role === "ADMIN" ? "Admin" : "Client"}
+              </span>
             </div>
           )}
         </SidebarMenuButton>

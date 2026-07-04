@@ -50,7 +50,7 @@ const HamburgerIcon = ({
     viewBox="0 0 24 24"
     width={16}
     xmlns="http://www.w3.org/2000/svg"
-    {...(props as any)}
+    {...props}
   >
     <path
       className="origin-center -translate-y-1.75 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315"
@@ -69,7 +69,7 @@ const HamburgerIcon = ({
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const { user, role, isLoading } = useAuth();
+  const { user, role } = useAuth();
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
@@ -124,30 +124,24 @@ export const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full focus:outline-none">
                   <Avatar className="h-9 w-9">
-                    {isLoading ? (
-                      <div className="h-full w-full animate-pulse rounded-full bg-gray-200" />
-                    ) : (
-                      <>
-                        <AvatarImage
-                          src={avatarUrl}
-                          referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                          }}
-                        />
-                        <AvatarFallback>
-                          {user.user_metadata?.full_name?.[0] ||
-                            user.email?.[0] ||
-                            "U"}
-                        </AvatarFallback>
-                      </>
-                    )}
+                    <AvatarImage
+                      src={avatarUrl}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                    <AvatarFallback>
+                      {user.user_metadata?.full_name?.[0] ||
+                        user.email?.[0] ||
+                        "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-48">
-                {!isLoading && role === "ADMIN" && (
+                {role === "ADMIN" && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin">Dashboard</Link>
                   </DropdownMenuItem>

@@ -35,9 +35,16 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
 
+  /* Public-surface token language — prefer these over the shadcn semantic
+     tokens (background/foreground/muted/border) on all marketing/public pages.
+     ink  — primary text & dark surfaces
+     ash  — body copy (AA on white ~5.1:1)
+     fog  — eyebrows / captions (was #86868b ~3.6:1, failed AA; darkened to ~4.6:1 on white / ~4.0:1 on cloud)
+     wire — borders & dividers
+     cloud/snow/mist — section & card backgrounds */
   --color-ink: #1d1d1f;
   --color-ash: #6e6e73;
-  --color-fog: #86868b;
+  --color-fog: #74747a;
   --color-wire: #d2d2d7;
   --color-snow: #ffffff;
   --color-cloud: #f5f5f7;

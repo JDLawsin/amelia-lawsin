@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { Pencil, Trash2, RotateCcw, Star } from "lucide-react";
+import { Pencil, Trash2, Star } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/components/ui/shadcn/button";
 import {
@@ -114,8 +114,7 @@ const RowActions = ({ property }: { property: PropertyAdminListItem }) => {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete this property?</AlertDialogTitle>
               <AlertDialogDescription>
-                &ldquo;{property.title}&rdquo; will be deleted and can't be
-                restored.
+                {`${property.title} will be deleted and can't be restored.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
