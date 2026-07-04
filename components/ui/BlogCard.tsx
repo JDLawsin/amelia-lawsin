@@ -6,7 +6,7 @@ import { BlogPreviewItem } from "@/services/blog.service";
 const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
   <Link
     href={`/blog/${blog.slug}`}
-    className="group flex flex-col bg-white rounded-xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
+    className="group flex flex-col bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
   >
     <div className="relative h-44 bg-cloud overflow-hidden">
       {blog.coverImage ? (
@@ -39,7 +39,7 @@ const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
         </div>
       )}
 
-      <h3 className="text-sm font-semibold text-ink line-clamp-2 group-hover:text-ink/80 transition-colors leading-snug">
+      <h3 className="text-sm font-medium text-ink line-clamp-2 group-hover:text-ink/80 transition-colors leading-snug">
         {blog.title}
       </h3>
 

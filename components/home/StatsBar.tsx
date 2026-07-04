@@ -1,5 +1,4 @@
 import { STATIC_STATS } from "@/constants";
-import clsx from "clsx";
 
 type Props = {
   activeListings: number;
@@ -16,32 +15,18 @@ const StatsBar = ({ activeListings }: Props) => {
   const stats = getStats(activeListings);
 
   return (
-    <div className="border-y bg-white">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center">
-        {stats.map((stat, index) => (
-          <div
-            key={stat.label}
-            className={clsx(
-              "relative flex flex-col items-center justify-center px-10 py-5",
-              index !== stats.length - 1 && [
-                "after:absolute after:content-['']",
-                "after:bottom-0 after:left-1/2 after:-translate-x-1/2",
-                "after:h-px after:w-12 after:bg-cloud",
-                "md:after:bottom-auto md:after:left-auto",
-                "md:after:right-0 md:after:top-1/2",
-                "md:after:h-12 md:after:w-px",
-                "md:after:-translate-y-1/2 md:after:translate-x-0",
-              ],
-            )}
-          >
-            <span className="text-2xl font-serif font-semibold text-ink">
+    <section className="border-b border-wire">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-wire">
+        {stats.map((stat) => (
+          <div key={stat.label} className="px-8 py-7">
+            <p className="text-4xl font-serif font-medium text-ink tracking-tight leading-none mb-1.5">
               {stat.value}
-            </span>
-            <span className="text-sm text-ash">{stat.label}</span>
+            </p>
+            <p className="text-xs text-fog">{stat.label}</p>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

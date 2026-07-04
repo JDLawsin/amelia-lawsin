@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Button } from "../ui/shadcn/button";
 import BlogCard from "../ui/BlogCard";
 import { BlogPreviewItem } from "@/services/blog.service";
+import SectionLabel from "@/components/ui/SectionLabel";
+import { ctaSecondary } from "@/components/ui/cta";
 
 type Props = {
   blogs: BlogPreviewItem[];
@@ -11,17 +12,12 @@ const BlogPreviewSection = ({ blogs }: Props) => {
   if (!blogs.length) return null;
 
   return (
-    <section className="py-14 px-4 bg-cloud border-b border-wire">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col items-center text-center mb-10">
-          <h2 className="text-2xl font-serif font-semibold text-ink">
-            {"Latest from the Blog"}
-          </h2>
-          <div className="w-8 h-0.5 bg-ink mt-2 mb-3" />
-          <p className="text-sm text-ash">
-            {"Real estate tips, guides & market insights"}
-          </p>
-        </div>
+    <section className="py-14 px-6 bg-cloud border-b border-wire">
+      <div className="max-w-7xl mx-auto">
+        <SectionLabel>Latest from the blog</SectionLabel>
+        <h2 className="text-2xl md:text-3xl font-serif font-medium text-ink tracking-tight leading-snug text-center mb-10">
+          Real estate tips, guides &amp; market insights
+        </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
           {blogs.map((blog) => (
@@ -30,13 +26,9 @@ const BlogPreviewSection = ({ blogs }: Props) => {
         </div>
 
         <div className="flex justify-center">
-          <Button
-            asChild
-            variant="outline"
-            className="border-wire text-ink hover:bg-ink hover:text-white transition-colors"
-          >
-            <Link href="/blog">{"Read all articles"}</Link>
-          </Button>
+          <Link href="/blog" className={ctaSecondary}>
+            Read all articles
+          </Link>
         </div>
       </div>
     </section>

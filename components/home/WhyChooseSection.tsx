@@ -1,10 +1,10 @@
-import { Card, CardContent } from "../ui/shadcn/card";
+import SectionLabel from "@/components/ui/SectionLabel";
 
 const icons = {
   experience: (
     <svg
-      width="24"
-      height="24"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -21,8 +21,8 @@ const icons = {
   ),
   ofw: (
     <svg
-      width="24"
-      height="24"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -51,8 +51,8 @@ const icons = {
   ),
   network: (
     <svg
-      width="24"
-      height="24"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -101,31 +101,27 @@ const WHY_CHOOSE = [
 ];
 
 const WhyChooseSection = () => (
-  <section className="border-y bg-white py-12 px-4">
-    <div className="max-w-5xl mx-auto">
-      <div className="flex flex-col items-center mb-8">
-        <h2 className="text-2xl font-serif font-semibold text-ink">
-          {"Why Choose Amelia?"}
-        </h2>
-        <div className="w-8 h-0.5 bg-ink mt-2 mb-2" />
-        <span className="text-sm text-ash">
-          {"Your trusted partner every step of the way"}
-        </span>
-      </div>
+  <section className="border-b border-wire bg-white py-14 px-6">
+    <div className="max-w-7xl mx-auto">
+      <SectionLabel>Why choose Amelia</SectionLabel>
+      <h2 className="text-2xl md:text-3xl font-serif font-medium text-ink tracking-tight leading-snug text-center mb-10">
+        Your trusted partner every step of the way
+      </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {WHY_CHOOSE.map((item) => (
-          <Card key={item.title} className="bg-white border-0 shadow-apple">
-            <CardContent className="flex flex-col items-center text-center gap-3 pt-6">
-              <div className="w-12 h-12 rounded-full bg-ink flex items-center justify-center">
-                {item.icon}
-              </div>
-              <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-              <span className="text-xs text-ash leading-relaxed">
-                {item.description}
-              </span>
-            </CardContent>
-          </Card>
+          <div
+            key={item.title}
+            className="border border-wire rounded-2xl p-6 hover:shadow-apple-sm transition-shadow duration-200"
+          >
+            <div className="w-9 h-9 bg-ink rounded-xl flex items-center justify-center mb-4">
+              {item.icon}
+            </div>
+            <h3 className="text-sm font-medium text-ink mb-2">{item.title}</h3>
+            <p className="text-xs text-ash leading-relaxed">
+              {item.description}
+            </p>
+          </div>
         ))}
       </div>
     </div>
