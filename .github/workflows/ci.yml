@@ -10,8 +10,7 @@ jobs:
   quality-checks:
     name: Lint · Type Check · Build
     runs-on: ubuntu-latest
-    environment: ${{ github.base_ref == 'main' && 'production' || 'develop' }}
-
+    
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
