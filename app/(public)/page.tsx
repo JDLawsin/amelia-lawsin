@@ -23,7 +23,7 @@ export const Home = async () => {
     ]);
 
   return (
-    <main>
+    <main className="bg-white">
       <HeroSection latestListing={latestListing} />
       <StatsBar activeListings={activeListingsCount} />
       <FeaturedProperties properties={featuredProperties} />

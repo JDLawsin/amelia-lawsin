@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/shadcn/button";
-import clsx from "clsx";
 import { formatPrice, getPrimaryImage, getPropertyLabel } from "@/lib/utils";
 import { PropertyListItem } from "@/services/property.service";
+import { ctaPrimary, ctaSecondary } from "@/components/ui/cta";
 
 type HeroSectionProps = {
   latestListing: PropertyListItem | null;
@@ -14,20 +13,13 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
-      <div className="flex flex-col items-center justify-center  border-r border-wire">
-        <div className="flex flex-col gap-5 px-8 py-16 md:px-16 xl:px-24">
-          <div
-            className={clsx(
-              "flex items-center w-fit",
-              "text-ink text-sm font-medium",
-              "px-4 h-9 rounded-full",
-              "border border-wire bg-ink/10",
-            )}
-          >
+      <div className="flex flex-col items-center justify-center border-r border-wire">
+        <div className="flex flex-col gap-5 w-full max-w-7xl px-6 py-16 md:py-20">
+          <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em]">
             Licensed Real Estate Agent · Cebu
-          </div>
+          </p>
 
-          <h1 className="text-4xl xl:text-5xl font-serif font-semibold text-ink leading-tight">
+          <h1 className="text-4xl xl:text-5xl font-serif font-medium text-ink tracking-tight leading-tight">
             Find Your Dream <br className="hidden md:block" />
             Property in Cebu
           </h1>
@@ -39,19 +31,12 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
           </p>
 
           <div className="flex flex-wrap gap-3">
-            <Button
-              asChild
-              className="h-11 px-6 bg-ink text-white hover:bg-ink/90"
-            >
-              <Link href="/properties">Browse properties</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="h-11 px-6 border-wire text-ink bg-transparent hover:bg-ink/10 hover:text-ink"
-            >
-              <Link href="/contact">Contact Amelia</Link>
-            </Button>
+            <Link href="/properties" className={ctaPrimary}>
+              Browse properties
+            </Link>
+            <Link href="/contact" className={ctaSecondary}>
+              Contact Amelia
+            </Link>
           </div>
         </div>
       </div>
@@ -83,7 +68,7 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             className="relative z-10 m-6 bg-white rounded-2xl shadow-apple-lg p-4 min-w-48 hover:shadow-apple-hover transition-shadow duration-200"
           >
             <p className="text-xs text-ash mb-1">Latest listing</p>
-            <p className="text-sm font-semibold text-ink line-clamp-1">
+            <p className="text-sm font-medium text-ink line-clamp-1">
               {getPropertyLabel(latestListing)}
             </p>
             <p className="text-sm font-medium text-ink mt-0.5">

@@ -7,6 +7,8 @@ import {
   TESTIMONIALS,
 } from "@/constants";
 import { getActiveListingsCount } from "@/services/property.service";
+import SectionLabel from "@/components/ui/SectionLabel";
+import { ctaPrimaryDark, ctaSecondaryDark } from "@/components/ui/cta";
 
 export const metadata: Metadata = {
   title: "About Amelia Lawsin — Licensed Real Estate Agent in Cebu",
@@ -133,12 +135,6 @@ const SPECIALIZATIONS = [
   },
 ];
 
-const SectionLabel = ({ children }: { children: string }) => (
-  <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] text-center mb-8">
-    {children}
-  </p>
-);
-
 const AboutPage = async () => {
   const activeListings = await getActiveListingsCount();
 
@@ -257,7 +253,7 @@ const AboutPage = async () => {
                 &ldquo;My goal is to find you the right property at the right
                 price — with as little stress as possible.&rdquo;
               </p>
-              <p className="text-xs text-white/40">— {SITE_CONFIG.name}</p>
+              <p className="text-xs text-white/55">— {SITE_CONFIG.name}</p>
             </div>
           </div>
         </div>
@@ -353,14 +349,11 @@ const AboutPage = async () => {
               href={SITE_CONFIG.messengerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white text-ink text-sm font-medium px-7 py-3 rounded-full hover:bg-white/90 transition-colors"
+              className={ctaPrimaryDark}
             >
               Message on Messenger
             </a>
-            <Link
-              href="/properties"
-              className="border border-white/20 text-white/60 text-sm px-7 py-3 rounded-full hover:bg-white/10 hover:text-white transition-colors"
-            >
+            <Link href="/properties" className={ctaSecondaryDark}>
               Browse properties
             </Link>
           </div>
