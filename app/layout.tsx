@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import { getSiteUrl } from "@/lib/site";
+import { SITE_CONFIG } from "@/constants";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,13 +15,50 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 });
 
+const siteUrl = getSiteUrl();
+
+const siteDescription = `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}. Browse condos, house & lot, townhouses, and pre-selling properties across ${SITE_CONFIG.location}, with guidance on Pag-IBIG, bank, and in-house financing for buyers and OFWs.`;
+
 export const metadata: Metadata = {
-  title: "Amelia Lawsin",
-  description: "A real estate agent website",
-  applicationName: "Amelia",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${SITE_CONFIG.name} | Licensed Real Estate Agent in Cebu`,
+    template: `%s | ${SITE_CONFIG.name}`,
+  },
+  description: siteDescription,
+  applicationName: SITE_CONFIG.name,
+  authors: [{ name: SITE_CONFIG.name }],
+  creator: SITE_CONFIG.name,
+  publisher: SITE_CONFIG.name,
+  keywords: [
+    "Amelia Lawsin",
+    "Cebu real estate agent",
+    "Cebu properties for sale",
+    "condos in Cebu",
+    "house and lot Cebu",
+    "pre-selling properties Cebu",
+    "Pag-IBIG financing Philippines",
+    "real estate broker Cebu",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_PH",
+    siteName: SITE_CONFIG.name,
+    title: `${SITE_CONFIG.name} | Licensed Real Estate Agent in Cebu`,
+    description: siteDescription,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_CONFIG.name} | Licensed Real Estate Agent in Cebu`,
+    description: siteDescription,
+  },
   appleWebApp: {
     capable: true,
-    title: "Amelia",
+    title: SITE_CONFIG.name,
     statusBarStyle: "default",
   },
 };
