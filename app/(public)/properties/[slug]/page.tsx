@@ -46,6 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     PRE_SELLING: "Pre-selling",
   };
 
+  // absolute title: the root layout's `%s | Amelia Lawsin` template would
+  // double-suffix these long-tail titles, so bypass it here.
   const title = `${property.title} ${statusLabel[property.status] ?? ""} | Amelia Lawsin`;
 
   const description = [
@@ -58,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .join(" · ");
 
   return {
-    title: title,
+    title: { absolute: title },
     description: description,
     openGraph: {
       title: title,
