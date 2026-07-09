@@ -45,8 +45,12 @@ const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
   if (view === "list") {
     return (
       <div className="px-6 flex flex-col gap-2">
-        {properties.map((property) => (
-          <PropertyListRow key={property.id} property={property} />
+        {properties.map((property, i) => (
+          <PropertyListRow
+            key={property.id}
+            property={property}
+            loading={i === 0 ? "eager" : undefined}
+          />
         ))}
       </div>
     );
@@ -59,9 +63,12 @@ const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
         "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
       )}
     >
-      {properties.map((property) => (
+      {properties.map((property, i) => (
         <div key={property.id} className="bg-white h-full">
-          <PropertyCard property={property} />
+          <PropertyCard
+            property={property}
+            loading={i === 0 ? "eager" : undefined}
+          />
         </div>
       ))}
     </div>

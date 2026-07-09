@@ -3,7 +3,8 @@
 import { Search, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@uidotdev/usehooks";
 import useUpdateQueryString from "@/hooks/useQueryString";
 import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/shadcn/button";
@@ -22,25 +23,34 @@ const SearchBar = ({
 }: SearchBarProps) => {
   const updateQueryString = useUpdateQueryString();
   const searchParams = useSearchParams();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const initialQ = searchParams.get("q") ?? "";
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value) {
-      updateQueryString({ q: value, page: "1" });
+  // Controlled local value; only commit to the URL after the user stops
+  // typing (debounced). Avoids a full server refetch per keystroke and uses
+  // router.replace so rapid typing doesn't pollute browser history.
+  const [searchValue, setSearchValue] = useState(initialQ);
+  const debouncedSearch = useDebounce(searchValue, 300);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      updateQueryString(
+        { q: debouncedSearch, page: "1" },
+        [],
+        { replace: true },
+      );
     } else {
-      updateQueryString({}, ["q", "page"]);
+      updateQueryString({}, ["q", "page"], { replace: true });
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
 
   return (
     <div className="flex items-center gap-3 px-6 pt-5">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash" />
         <Input
-          ref={inputRef}
-          defaultValue={searchParams.get("q") ?? ""}
-          onChange={handleSearch}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
           placeholder="Search by location, developer, or keyword..."
           className={clsx(
             "pl-9 h-11 bg-cloud",

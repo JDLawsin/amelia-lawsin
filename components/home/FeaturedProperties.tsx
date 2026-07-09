@@ -20,10 +20,11 @@ const FeaturedProperties = ({ properties }: Props) => {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-          {properties.map((property) => (
+          {properties.map((property, i) => (
             <PropertyCard
               key={property.id}
               property={property}
+              loading={i === 0 ? "eager" : undefined}
               className="shadow-apple-lg"
             />
           ))}

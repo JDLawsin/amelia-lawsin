@@ -3,7 +3,12 @@ import Image from "next/image";
 import { estimateReadTime, formatDate } from "@/lib/utils";
 import { BlogPreviewItem } from "@/services/blog.service";
 
-const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
+type BlogCardProps = {
+  blog: BlogPreviewItem;
+  loading?: "eager" | "lazy";
+};
+
+const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => (
   <Link
     href={`/blog/${blog.slug}`}
     className="group flex flex-col bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
@@ -14,6 +19,9 @@ const BlogCard = ({ blog }: { blog: BlogPreviewItem }) => (
           src={blog.coverImage}
           alt={blog.title}
           fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          loading={loading}
+          decoding="async"
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
       ) : (

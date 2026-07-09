@@ -111,7 +111,8 @@ export const getAllBlogs = async (
     where,
     select: blogPreviewSelect,
     orderBy: { publishedAt: "desc" },
-    take: page * pageSize,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
 };
 

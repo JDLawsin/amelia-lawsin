@@ -8,15 +8,21 @@ import ChipsRow from "./ChipsRow";
 import FilterPanel from "./FilterPanel";
 import ResultsMeta from "./ResultsMeta";
 import PropertyGrid from "./PropertyGrid";
-import LoadMore from "./LoadMore";
+import Pagination from "@/components/ui/Pagination";
 
 type Props = {
   properties: PropertyListItem[];
   total: number;
   pageSize: number;
+  currentPage: number;
 };
 
-const PropertiesClient = ({ properties, total, pageSize }: Props) => {
+const PropertiesClient = ({
+  properties,
+  total,
+  pageSize,
+  currentPage,
+}: Props) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const searchParams = useSearchParams();
 
@@ -44,9 +50,18 @@ const PropertiesClient = ({ properties, total, pageSize }: Props) => {
       />
       <ChipsRow />
       <FilterPanel isOpen={isFilterOpen} />
-      <ResultsMeta total={total} showing={properties.length} />
+      <ResultsMeta total={total} />
       <PropertyGrid properties={properties} view={view} />
-      <LoadMore showing={properties.length} total={total} pageSize={pageSize} />
+      {total > pageSize && (
+        <div className="mt-6 -mx-6 px-6">
+          <Pagination
+            page={currentPage}
+            pageSize={pageSize}
+            total={total}
+            label="properties"
+          />
+        </div>
+      )}
     </div>
   );
 };

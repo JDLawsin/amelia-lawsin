@@ -28,6 +28,7 @@ const FeaturedGrid = ({ blogs }: Props) => {
               src={main.coverImage}
               alt={main.title}
               fill
+              sizes="(max-width: 768px) 100vw, 66vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               priority
             />
@@ -73,6 +74,9 @@ const FeaturedGrid = ({ blogs }: Props) => {
                     src={blog.coverImage}
                     alt={blog.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    loading="eager"
+                    decoding="async"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 )}

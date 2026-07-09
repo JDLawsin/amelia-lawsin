@@ -9,6 +9,7 @@ import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
 
 type PropertyListRowProps = {
   property: PropertyListItem;
+  loading?: "eager" | "lazy";
 };
 
 const formatPrice = (property: PropertyListItem): string => {
@@ -23,7 +24,7 @@ const formatPrice = (property: PropertyListItem): string => {
 const getPrimaryImage = (images: PropertyListItem["images"]) =>
   images.find((i) => i.isPrimary)?.url ?? images[0]?.url ?? null;
 
-const PropertyListRow = ({ property }: PropertyListRowProps) => {
+const PropertyListRow = ({ property, loading = "lazy" }: PropertyListRowProps) => {
   const imageUrl = getPrimaryImage(property.images);
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
@@ -41,6 +42,8 @@ const PropertyListRow = ({ property }: PropertyListRowProps) => {
             src={imageUrl}
             alt={property.title}
             fill
+            sizes="112px"
+            loading={loading}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
