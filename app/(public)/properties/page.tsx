@@ -72,6 +72,7 @@ const PropertiesPage = async ({ searchParams }: Props) => {
           properties={properties}
           total={total}
           pageSize={PAGE_SIZE}
+          currentPage={currentPage}
         />
       </Suspense>
     </main>
@@ -93,8 +94,19 @@ export async function generateMetadata({ searchParams }: Props) {
       ? `${parts.join(" ")} properties | Amelia Lawsin`
       : "Properties | Amelia Lawsin Real Estate Agent Cebu";
 
+  const description = `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`;
+
+  // Canonical to the unfiltered base to consolidate ranking signals across
+  // the many filter permutations; filters still drive the title/description.
   return {
-    title,
-    description: `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`,
+    title: { absolute: title },
+    description,
+    alternates: { canonical: "/properties" },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: "/properties",
+    },
   };
 }

@@ -5,9 +5,13 @@ import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
 import { PropertyListItem } from "@/services/property.service";
 import clsx from "clsx";
 
-type Props = { property: PropertyListItem; className?: string };
+type Props = {
+  property: PropertyListItem;
+  className?: string;
+  loading?: "eager" | "lazy";
+};
 
-const PropertyCard = ({ property, className }: Props) => {
+const PropertyCard = ({ property, className, loading = "lazy" }: Props) => {
   const imageUrl = getPrimaryImage(property.images);
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
@@ -28,6 +32,8 @@ const PropertyCard = ({ property, className }: Props) => {
             src={imageUrl}
             alt={property.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            loading={loading}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (

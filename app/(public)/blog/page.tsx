@@ -112,6 +112,7 @@ const BlogPage = async ({ searchParams }: Props) => {
             blogs={blogs}
             total={totalCount}
             pageSize={PAGE_SIZE}
+            currentPage={currentPage}
             tags={tags}
             activeTag={params.tag}
           />

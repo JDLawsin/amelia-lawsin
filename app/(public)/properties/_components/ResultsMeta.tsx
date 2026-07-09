@@ -15,10 +15,9 @@ import { SORT_OPTIONS } from "@/constants";
 
 type ResultsMetaProps = {
   total: number;
-  showing: number;
 };
 
-const ResultsMeta = ({ total, showing }: ResultsMetaProps) => {
+const ResultsMeta = ({ total }: ResultsMetaProps) => {
   const searchParams = useSearchParams();
   const updateQueryString = useUpdateQueryString();
 
@@ -40,9 +39,6 @@ const ResultsMeta = ({ total, showing }: ResultsMetaProps) => {
         <span className="text-sm text-ash">
           {total === 1 ? "property" : "properties"} found
         </span>
-        {showing < total && (
-          <span className="text-xs text-ash/70">· showing {showing}</span>
-        )}
       </div>
 
       <div className="flex items-center gap-2">

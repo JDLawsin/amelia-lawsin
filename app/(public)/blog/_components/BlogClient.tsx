@@ -4,12 +4,13 @@ import { BlogPreviewItem, BlogTag } from "@/services/blog.service";
 import { Suspense } from "react";
 import TagPills from "./TagPills";
 import BlogCard from "@/components/ui/BlogCard";
-import BlogLoadMore from "./BlogLoadMore";
+import Pagination from "@/components/ui/Pagination";
 
 type BlogClientProps = {
   blogs: BlogPreviewItem[];
   total: number;
   pageSize: number;
+  currentPage: number;
   tags: BlogTag[];
   activeTag?: string;
 };
@@ -18,6 +19,7 @@ const BlogClient = ({
   blogs,
   total,
   pageSize,
+  currentPage,
   tags,
   activeTag,
 }: BlogClientProps) => (
@@ -51,22 +53,27 @@ const BlogClient = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {blogs.map((blog) => (
-            <BlogCard key={blog.id} blog={blog} />
+          {blogs.map((blog, i) => (
+            <BlogCard
+              key={blog.id}
+              blog={blog}
+              loading={i < 3 ? "eager" : undefined}
+            />
           ))}
         </div>
       )}
     </div>
 
-    <div className="px-6">
-      <Suspense>
-        <BlogLoadMore
-          showing={blogs.length}
-          total={total}
+    {total > pageSize && (
+      <div className="mt-8 -mx-6 px-6">
+        <Pagination
+          page={currentPage}
           pageSize={pageSize}
+          total={total}
+          label="articles"
         />
-      </Suspense>
-    </div>
+      </div>
+    )}
   </div>
 );
 
