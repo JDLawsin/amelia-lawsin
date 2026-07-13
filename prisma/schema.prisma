@@ -48,6 +48,12 @@ enum Role {
   CLIENT
 }
 
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
 model Profile {
   id          String   @id 
   email       String   @unique
@@ -263,4 +269,26 @@ model TagsOnBlogs {
 
   @@id([blogId, tagId])
   @@map("tags_on_blogs")
+}
+
+model Inquiry {
+  id               String        @id @default(uuid())
+  name             String
+  email            String
+  phone            String?
+  propertyType     String?
+  propertyTitle    String?
+  propertySlug     String?
+  propertyPrice    String?
+  propertyLocation String?
+  propertyStatus   String?
+  source           String
+  message          String
+  status           InquiryStatus @default(NEW)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("inquiries")
 }

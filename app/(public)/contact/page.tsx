@@ -158,7 +158,7 @@ const ContactPage = () => (
           Get in touch
         </p>
         <h1 className="text-4xl md:text-5xl font-serif font-medium text-ink tracking-tight leading-tight mb-4">
-          Let&apos;s find your dream
+          Let&apos;s find your dream{" "}
           <br className="hidden md:block" />
           property together.
         </h1>

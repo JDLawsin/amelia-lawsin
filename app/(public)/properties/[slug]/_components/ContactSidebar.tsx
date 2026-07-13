@@ -2,17 +2,23 @@
 
 // app/(public)/properties/[slug]/_components/ContactSidebar.tsx
 
-import { useState } from "react";
+import { useState, useSyncExternalStore, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import clsx from "clsx";
 import { PropertyDetail } from "@/services/property.service";
-import { SITE_CONFIG } from "@/constants";
+import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
+import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
+import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
 
 type Props = {
   property: Pick<
     PropertyDetail,
     | "title"
+    | "slug"
+    | "type"
     | "price"
     | "priceLabel"
     | "status"
@@ -33,6 +39,8 @@ const ContactSidebar = ({ property }: Props) => {
   const location = [property.barangay, property.city]
     .filter(Boolean)
     .join(", ");
+  const statusLabel = STATUS_LABELS[property.status];
+  const typeLabel = TYPE_LABELS[property.type];
 
   const messageText = encodeURIComponent(
     `Hi Amelia! I'm interested in: ${property.title}. Can you send me more details?`,
@@ -113,6 +121,11 @@ const ContactSidebar = ({ property }: Props) => {
       {inquiryOpen && (
         <InquiryModal
           propertyTitle={property.title}
+          propertySlug={property.slug}
+          propertyPrice={price}
+          propertyLocation={location}
+          propertyStatus={statusLabel}
+          propertyType={typeLabel}
           onClose={() => setInquiryOpen(false)}
         />
       )}
@@ -123,15 +136,19 @@ const ContactSidebar = ({ property }: Props) => {
 const ShareButtons = ({ title }: { title: string }) => {
   const [copied, setCopied] = useState(false);
 
+  const shareUrl = useSyncExternalStore(
+    () => () => {},
+    () => (typeof window !== "undefined" ? window.location.href : ""),
+    () => "",
+  );
+
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-    typeof window !== "undefined" ? window.location.href : "",
-  )}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
   return (
     <div className="bg-cloud rounded-2xl p-4">
@@ -157,7 +174,7 @@ const ShareButtons = ({ title }: { title: string }) => {
           {copied ? "Copied!" : "Copy link"}
         </button>
         <a
-          href={`viber://forward?text=${encodeURIComponent(title + " " + (typeof window !== "undefined" ? window.location.href : ""))}`}
+          href={`viber://forward?text=${encodeURIComponent(title + " " + shareUrl)}`}
           className="flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors"
         >
           Viber
@@ -167,35 +184,72 @@ const ShareButtons = ({ title }: { title: string }) => {
   );
 };
 
+const inputStyles = clsx(
+  "w-full h-10 px-3 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-fog focus:outline-none focus:border-ink transition-colors",
+);
+
 const InquiryModal = ({
   propertyTitle,
+  propertySlug,
+  propertyPrice,
+  propertyLocation,
+  propertyStatus,
+  propertyType,
   onClose,
 }: {
   propertyTitle: string;
+  propertySlug: string;
+  propertyPrice: string;
+  propertyLocation: string;
+  propertyStatus: string;
+  propertyType: string;
   onClose: () => void;
 }) => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [serverState, setServerState] = useState<InquiryState>(null);
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      await fetch("/api/inquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, propertyTitle }),
-      });
-      setSuccess(true);
-    } finally {
-      setLoading(false);
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: clientErrors },
+  } = useForm<InquiryInput>({
+    resolver: zodResolver(InquirySchema),
+    defaultValues: {
+      source: "Property listing",
+      propertyTitle,
+      propertySlug,
+      propertyPrice,
+      propertyLocation,
+      propertyStatus,
+      propertyType,
+      honeypot: "",
+    },
+  });
+
+  const onSubmit = (data: InquiryInput) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    });
+
+    startTransition(async () => {
+      const result = await submitInquiry(null, formData);
+      setServerState(result);
+    });
   };
+
+  const serverErrors =
+    serverState && !serverState.success && "errors" in serverState
+      ? serverState.errors
+      : {};
+  const serverMessage =
+    serverState && !serverState.success && "message" in serverState
+      ? serverState.message
+      : undefined;
+
+  const success = serverState?.success ?? false;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
@@ -238,52 +292,115 @@ const InquiryModal = ({
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+            <input type="hidden" {...register("source")} />
+            <input type="hidden" {...register("propertyTitle")} />
+            <input type="hidden" {...register("propertySlug")} />
+            <input type="hidden" {...register("propertyPrice")} />
+            <input type="hidden" {...register("propertyLocation")} />
+            <input type="hidden" {...register("propertyStatus")} />
+            <input type="hidden" {...register("propertyType")} />
+
+            {/* Honeypot */}
+            <input
+              type="text"
+              {...register("honeypot")}
+              tabIndex={-1}
+              autoComplete="off"
+              className="absolute opacity-0 -z-10"
+              aria-hidden="true"
+            />
+
             <p className="text-xs text-ash -mt-1 mb-1">
               Re: <span className="text-ink font-medium">{propertyTitle}</span>
             </p>
 
-            {[
-              { key: "name", placeholder: "Your full name", type: "text" },
-              { key: "email", placeholder: "Email address", type: "email" },
-              {
-                key: "phone",
-                placeholder: "Phone / WhatsApp (optional)",
-                type: "tel",
-              },
-            ].map((field) => (
-              <input
-                key={field.key}
-                type={field.type}
-                placeholder={field.placeholder}
-                value={form[field.key as keyof typeof form]}
-                onChange={(e) =>
-                  setForm({ ...form, [field.key]: e.target.value })
-                }
-                className="w-full h-10 px-3 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-fog focus:outline-none focus:border-ink transition-colors"
-              />
-            ))}
+            {serverMessage && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                <p className="text-xs text-red-600">{serverMessage}</p>
+              </div>
+            )}
 
-            <textarea
-              placeholder="Your message (optional)"
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              rows={3}
-              className="w-full px-3 py-2.5 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-fog focus:outline-none focus:border-ink transition-colors resize-none"
-            />
+            <div>
+              <input
+                type="text"
+                {...register("name")}
+                placeholder="Your full name"
+                className={clsx(inputStyles, {
+                  "border-red-300 focus:border-red-400": clientErrors.name || serverErrors.name,
+                })}
+              />
+              {(clientErrors.name || serverErrors.name) && (
+                <p className="text-xs text-red-500 mt-1">
+                  {clientErrors.name?.message || serverErrors.name?.[0]}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="email"
+                {...register("email")}
+                placeholder="Email address"
+                className={clsx(inputStyles, {
+                  "border-red-300 focus:border-red-400": clientErrors.email || serverErrors.email,
+                })}
+              />
+              {(clientErrors.email || serverErrors.email) && (
+                <p className="text-xs text-red-500 mt-1">
+                  {clientErrors.email?.message || serverErrors.email?.[0]}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="tel"
+                {...register("phone")}
+                placeholder="Phone / WhatsApp (optional)"
+                className={clsx(inputStyles, {
+                  "border-red-300 focus:border-red-400": clientErrors.phone || serverErrors.phone,
+                })}
+              />
+              {(clientErrors.phone || serverErrors.phone) && (
+                <p className="text-xs text-red-500 mt-1">
+                  {clientErrors.phone?.message || serverErrors.phone?.[0]}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <textarea
+                {...register("message")}
+                placeholder="Your message"
+                rows={3}
+                className={clsx(
+                  inputStyles,
+                  "py-2.5 h-auto resize-none",
+                  {
+                    "border-red-300 focus:border-red-400": clientErrors.message || serverErrors.message,
+                  },
+                )}
+              />
+              {(clientErrors.message || serverErrors.message) && (
+                <p className="text-xs text-red-500 mt-1">
+                  {clientErrors.message?.message || serverErrors.message?.[0]}
+                </p>
+              )}
+            </div>
 
             <button
-              onClick={handleSubmit}
-              disabled={loading || !form.name || !form.email}
+              type="submit"
+              disabled={isPending}
               className="w-full h-11 bg-ink text-white text-sm font-medium rounded-xl hover:bg-ink/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Sending..." : "Send inquiry"}
+              {isPending ? "Sending..." : "Send inquiry"}
             </button>
 
             <p className="text-[10px] text-fog text-center">
               Your details are only shared with Amelia Lawsin
             </p>
-          </div>
+          </form>
         )}
       </div>
     </div>
