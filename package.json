@@ -36,6 +36,7 @@
     "react-dropzone": "^15.0.0",
     "react-hook-form": "^7.72.1",
     "react-hot-toast": "^2.6.0",
+    "resend": "^6.17.2",
     "serialize-error": "^13.0.1",
     "shadcn": "^4.0.5",
     "swr": "^2.4.1",

@@ -457,6 +457,8 @@ const PropertyDetailPage = async ({ params }: Props) => {
             <ContactSidebar
               property={{
                 title: property.title,
+                slug: property.slug,
+                type: property.type,
                 price: property.price,
                 priceLabel: property.priceLabel,
                 status: property.status,
@@ -485,6 +487,8 @@ const PropertyDetailPage = async ({ params }: Props) => {
             <ContactSidebar
               property={{
                 title: property.title,
+                slug: property.slug,
+                type: property.type,
                 price: property.price,
                 priceLabel: property.priceLabel,
                 status: property.status,
