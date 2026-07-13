@@ -101,7 +101,7 @@ export const COMPANY_LINKS = [
   { href: "/about", label: "About Amelia" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
-  // { href: "/privacy-policy", label: "Privacy Policy" }, //TODO: Add privacy policy page
+  { href: "/privacy-policy", label: "Privacy Policy" },
 ];
 
 export const BEDROOM_OPTIONS = [
