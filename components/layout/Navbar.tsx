@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   NavigationMenu,
@@ -74,6 +75,14 @@ const HamburgerIcon = ({
 export const Navbar = () => {
   const pathname = usePathname();
   const { user, role } = useAuth();
+  const router = useRouter();
+  const supabase = getSupabaseBrowserClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
@@ -151,11 +160,13 @@ export const Navbar = () => {
                   </DropdownMenuItem>
                 )}
 
-                <DropdownMenuItem asChild disabled>
-                  <Link href="/profile">Profile</Link>
+                <DropdownMenuItem
+                  onSelect={handleLogout}
+                  variant="destructive"
+                  className="cursor-pointer"
+                >
+                  Logout
                 </DropdownMenuItem>
-
-                <DropdownMenuItem disabled>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
