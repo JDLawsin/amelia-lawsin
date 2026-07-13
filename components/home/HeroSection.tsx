@@ -47,8 +47,10 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             src={imageUrl}
             alt={latestListing?.title ?? "Latest listing"}
             fill
+            sizes="(max-width: 1024px) 50vw, 40vw"
+            loading="eager"
+            decoding="async"
             className="object-cover"
-            priority
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-cloud">

@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   NavigationMenu,
@@ -11,7 +12,11 @@ import {
 } from "@/components/ui/shadcn/navigation-menu";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/shadcn/sheet";
 import { cn } from "@/lib/utils";
@@ -70,6 +75,14 @@ const HamburgerIcon = ({
 export const Navbar = () => {
   const pathname = usePathname();
   const { user, role } = useAuth();
+  const router = useRouter();
+  const supabase = getSupabaseBrowserClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
@@ -147,11 +160,13 @@ export const Navbar = () => {
                   </DropdownMenuItem>
                 )}
 
-                <DropdownMenuItem asChild disabled>
-                  <Link href="/profile">Profile</Link>
+                <DropdownMenuItem
+                  onSelect={handleLogout}
+                  variant="destructive"
+                  className="cursor-pointer"
+                >
+                  Logout
                 </DropdownMenuItem>
-
-                <DropdownMenuItem disabled>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -167,36 +182,45 @@ export const Navbar = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-6">
-              <Link href="/" className="mb-8 block">
-                <Logo />
-              </Link>
+              <SheetHeader className="sr-only">
+                <SheetTitle>Navigation Menu</SheetTitle>
+                <SheetDescription>Mobile site navigation menu</SheetDescription>
+              </SheetHeader>
+              <SheetClose asChild>
+                <Link href="/" className="mb-8 block">
+                  <Logo />
+                </Link>
+              </SheetClose>
               <nav className="flex flex-col gap-1">
                 {NAV_LINKS.map((link) => {
                   const isActive = pathname === link.href;
                   return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={cn(
-                        "rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                        "hover:bg-cloud hover:text-ink",
-                        isActive
-                          ? "bg-cloud text-ink font-semibold"
-                          : "text-ash",
-                      )}
-                    >
-                      {link.label}
-                    </Link>
+                    <SheetClose key={link.href} asChild>
+                      <Link
+                        href={link.href}
+                        className={cn(
+                          "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                          "hover:bg-cloud hover:text-ink",
+                          isActive
+                            ? "bg-cloud text-ink font-semibold"
+                            : "text-ash",
+                        )}
+                      >
+                        {link.label}
+                      </Link>
+                    </SheetClose>
                   );
                 })}
               </nav>
               <div className="mt-6 pt-6 border-t border-wire">
-                <Button
-                  asChild
-                  className="w-full bg-ink text-white hover:bg-ink/90"
-                >
-                  <Link href="/contact">{"Get in touch"}</Link>
-                </Button>
+                <SheetClose asChild>
+                  <Button
+                    asChild
+                    className="w-full bg-ink text-white hover:bg-ink/90"
+                  >
+                    <Link href="/contact">{"Get in touch"}</Link>
+                  </Button>
+                </SheetClose>
               </div>
             </SheetContent>
           </Sheet>

@@ -27,7 +27,9 @@ export const generateMetadata = async ({
   const description = blog.metaDescription ?? blog.excerpt;
 
   return {
-    title,
+    // absolute title: the root layout's `%s | Amelia Lawsin` template would
+    // double-suffix these long-tail titles, so bypass it here.
+    title: { absolute: title },
     description,
     alternates: { canonical: `/blog/${slug}` },
     openGraph: {
@@ -132,6 +134,7 @@ const BlogDetailPage = async ({ params }: Props) => {
               src={blog.coverImage}
               alt={blog.title}
               fill
+              sizes="(max-width: 1280px) 100vw, 1280px"
               className="object-cover"
               priority
             />

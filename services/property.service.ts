@@ -272,7 +272,8 @@ export const getAllProperties = async (
     where,
     select: propertyListSelect,
     orderBy,
-    take: page * pageSize,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
 };
 

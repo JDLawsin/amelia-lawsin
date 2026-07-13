@@ -19,8 +19,8 @@ export const SITE_CONFIG = {
 
   // Deep links
   messengerUrl: "https://m.me/amelialawsin",
-  viberUrl: "viber://chat?number=+639XXXXXXXXX",
-  smsUrl: "sms:+639XXXXXXXXX?body=Hi Amelia! I'm interested in a property.",
+  viberUrl: "viber://chat?number=+639565005442",
+  smsUrl: "sms:+639565005442?body=Hi Amelia! I'm interested in a property.",
 
   // Social media
   facebookUrl: "https://facebook.com/amelialawsin",
@@ -101,7 +101,7 @@ export const COMPANY_LINKS = [
   { href: "/about", label: "About Amelia" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
-  // { href: "/privacy-policy", label: "Privacy Policy" }, //TODO: Add privacy policy page
+  { href: "/privacy-policy", label: "Privacy Policy" },
 ];
 
 export const BEDROOM_OPTIONS = [

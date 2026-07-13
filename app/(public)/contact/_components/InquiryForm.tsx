@@ -1,7 +1,11 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
+import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
+import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
 
 const PROPERTY_TYPES = [
   "Condo",
@@ -13,172 +17,279 @@ const PROPERTY_TYPES = [
   "Not sure yet",
 ];
 
-// const SuccessState = () => (
-//   <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-//     <div className="w-14 h-14 bg-cloud border border-wire rounded-full flex items-center justify-center">
-//       <svg
-//         width="22"
-//         height="22"
-//         viewBox="0 0 24 24"
-//         fill="none"
-//         stroke="#1d1d1f"
-//         strokeWidth="1.5"
-//       >
-//         <path
-//           d="M20 6 9 17l-5-5"
-//           strokeLinecap="round"
-//           strokeLinejoin="round"
-//         />
-//       </svg>
-//     </div>
-//     <div>
-//       <p className="text-base font-serif font-medium text-ink mb-1">
-//         Inquiry sent!
-//       </p>
-//       <p className="text-sm text-ash leading-relaxed max-w-xs">
-//         Amelia will get back to you shortly — usually within a few hours via
-//         Messenger or email.
-//       </p>
-//     </div>
-//   </div>
-// );
+const inputStyles = clsx(
+  "h-10 px-3 rounded-xl text-sm text-ink",
+  "bg-cloud border border-wire",
+  "placeholder:text-fog",
+  "focus:outline-none focus:border-ink transition-colors",
+);
+
+const labelStyles = "text-xs text-fog";
+
+const SuccessState = ({ message }: { message: string }) => (
+  <div className="flex flex-col items-center justify-center py-12 text-center gap-4 animate-in fade-in zoom-in-95 duration-300">
+    <div className="w-14 h-14 bg-cloud border border-wire rounded-full flex items-center justify-center">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#1d1d1f"
+        strokeWidth="1.5"
+      >
+        <path
+          d="M20 6 9 17l-5-5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
+    <div>
+      <p className="text-base font-serif font-medium text-ink mb-1">
+        Inquiry sent!
+      </p>
+      <p className="text-sm text-ash leading-relaxed max-w-xs">{message}</p>
+    </div>
+  </div>
+);
 
 const InquiryForm = () => {
-  const [, action, isPending] = useActionState(() => {}, undefined);
-  const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
+  const [state, setState] = useState<InquiryState>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: clientErrors },
+    reset,
+  } = useForm<InquiryInput>({
+    resolver: zodResolver(InquirySchema),
+    defaultValues: {
+      source: "Contact page",
+      honeypot: "",
+    },
+  });
+
+  const onSubmit = (data: InquiryInput) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    });
+
+    startTransition(async () => {
+      const result = await submitInquiry(null, formData);
+      setState(result);
+      if (result?.success) {
+        setShowSuccess(true);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (!showSuccess) return;
+
+    const timer = setTimeout(() => {
+      setShowSuccess(false);
+      setState(null);
+      reset();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [showSuccess, reset]);
+
+  const serverErrors =
+    state && !state.success && "errors" in state ? state.errors : {};
+  const serverMessage =
+    state && !state.success && "message" in state ? state.message : undefined;
 
   return (
-    <form ref={formRef} action={action} className="flex flex-col gap-4">
-      <input type="hidden" name="source" value="Contact page" />
+    <div className="relative">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={clsx(
+          "flex flex-col gap-4 transition-all duration-300 ease-out",
+          showSuccess && "opacity-0 scale-[0.98] pointer-events-none",
+        )}
+        aria-busy={isPending}
+      >
+        <input type="hidden" {...register("source")} />
 
-      {/* Error message */}
-      {/* {state && !state.success && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-          <p className="text-xs text-red-600">{state.error}</p>
-        </div>
-      )} */}
-
-      {/* Name + Email */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-fog" htmlFor="name">
-            Full name <span className="text-red-400">*</span>
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            placeholder="Juan Dela Cruz"
-            className={clsx(
-              "h-10 px-3 rounded-xl text-sm text-ink",
-              "bg-cloud border border-wire",
-              "placeholder:text-fog",
-              "focus:outline-none focus:border-ink transition-colors",
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-fog" htmlFor="email">
-            Email address <span className="text-red-400">*</span>
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            placeholder="juan@email.com"
-            className={clsx(
-              "h-10 px-3 rounded-xl text-sm text-ink",
-              "bg-cloud border border-wire",
-              "placeholder:text-fog",
-              "focus:outline-none focus:border-ink transition-colors",
-            )}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs text-fog" htmlFor="phone">
-          Phone / WhatsApp <span className="text-fog">(optional)</span>
-        </label>
+        {/* Honeypot field: hidden from humans, traps bots */}
         <input
-          id="phone"
-          name="phone"
-          type="tel"
-          placeholder="+63 9XX XXX XXXX"
-          className={clsx(
-            "h-10 px-3 rounded-xl text-sm text-ink",
-            "bg-cloud border border-wire",
-            "placeholder:text-fog",
-            "focus:outline-none focus:border-ink transition-colors",
-          )}
+          type="text"
+          {...register("honeypot")}
+          tabIndex={-1}
+          autoComplete="off"
+          className="absolute opacity-0 -z-10"
+          aria-hidden="true"
         />
-      </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs text-fog" htmlFor="propertyType">
-          I&apos;m interested in
-        </label>
-        <select
-          id="propertyType"
-          name="propertyType"
-          defaultValue=""
+        {/* Loading overlay */}
+        <div
           className={clsx(
-            "h-10 px-3 rounded-xl text-sm text-ink",
-            "bg-cloud border border-wire",
-            "focus:outline-none focus:border-ink transition-colors",
-            "appearance-none cursor-pointer",
+            "absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/80 backdrop-blur-sm transition-opacity duration-300",
+            isPending ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
-          <option value="" disabled>
-            Select property type...
-          </option>
-          {PROPERTY_TYPES.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="w-8 h-8 border-2 border-wire border-t-ink rounded-full animate-spin" />
+          <p className="text-xs font-medium text-ink">Sending inquiry...</p>
+        </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs text-fog" htmlFor="message">
-          Message <span className="text-red-400">*</span>
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          required
-          rows={4}
-          placeholder="Hi Amelia! I'm looking for..."
-          className={clsx(
-            "px-3 py-2.5 rounded-xl text-sm text-ink",
-            "bg-cloud border border-wire",
-            "placeholder:text-fog",
-            "focus:outline-none focus:border-ink transition-colors",
-            "resize-none",
-          )}
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={isPending}
-        className={clsx(
-          "w-full h-11 rounded-xl text-sm font-medium transition-colors mt-1",
-          isPending
-            ? "bg-ink/60 text-white cursor-not-allowed"
-            : "bg-ink text-white hover:bg-ink/90",
+        {/* Global error message */}
+        {serverMessage && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 animate-in slide-in-from-top-1 duration-200">
+            <p className="text-xs text-red-600">{serverMessage}</p>
+          </div>
         )}
-      >
-        {isPending ? "Sending..." : "Send inquiry"}
-      </button>
 
-      <p className="text-xs text-fog text-center">
-        Your details are only shared with Amelia Lawsin
-      </p>
-    </form>
+        {/* Name + Email */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className={labelStyles} htmlFor="name">
+              Full name <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="name"
+              {...register("name")}
+              type="text"
+              placeholder="Juan Dela Cruz"
+              className={clsx(inputStyles, {
+                "border-red-300 focus:border-red-400": clientErrors.name || serverErrors.name,
+              })}
+            />
+            {(clientErrors.name || serverErrors.name) && (
+              <p className="text-xs text-red-500">
+                {clientErrors.name?.message || serverErrors.name?.[0]}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className={labelStyles} htmlFor="email">
+              Email address <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="email"
+              {...register("email")}
+              type="email"
+              placeholder="juan@email.com"
+              className={clsx(inputStyles, {
+                "border-red-300 focus:border-red-400": clientErrors.email || serverErrors.email,
+              })}
+            />
+            {(clientErrors.email || serverErrors.email) && (
+              <p className="text-xs text-red-500">
+                {clientErrors.email?.message || serverErrors.email?.[0]}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelStyles} htmlFor="phone">
+            Phone / WhatsApp <span className="text-fog">(optional)</span>
+          </label>
+          <input
+            id="phone"
+            {...register("phone")}
+            type="tel"
+            placeholder="+63 9XX XXX XXXX"
+            className={clsx(inputStyles, {
+              "border-red-300 focus:border-red-400": clientErrors.phone || serverErrors.phone,
+            })}
+          />
+          {(clientErrors.phone || serverErrors.phone) && (
+            <p className="text-xs text-red-500">
+              {clientErrors.phone?.message || serverErrors.phone?.[0]}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelStyles} htmlFor="propertyType">
+            I&apos;m interested in
+          </label>
+          <select
+            id="propertyType"
+            {...register("propertyType")}
+            defaultValue=""
+            className={clsx(
+              inputStyles,
+              "appearance-none cursor-pointer",
+              {
+                "border-red-300 focus:border-red-400": clientErrors.propertyType || serverErrors.propertyType,
+              },
+            )}
+          >
+            <option value="" disabled>
+              Select property type...
+            </option>
+            {PROPERTY_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+          {(clientErrors.propertyType || serverErrors.propertyType) && (
+            <p className="text-xs text-red-500">
+              {clientErrors.propertyType?.message || serverErrors.propertyType?.[0]}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelStyles} htmlFor="message">
+            Message <span className="text-red-400">*</span>
+          </label>
+          <textarea
+            id="message"
+            {...register("message")}
+            rows={4}
+            placeholder="Hi Amelia! I'm looking for..."
+            className={clsx(
+              "px-3 py-2.5 rounded-xl text-sm text-ink",
+              "bg-cloud border border-wire",
+              "placeholder:text-fog",
+              "focus:outline-none focus:border-ink transition-colors",
+              "resize-none",
+              {
+                "border-red-300 focus:border-red-400": clientErrors.message || serverErrors.message,
+              },
+            )}
+          />
+          {(clientErrors.message || serverErrors.message) && (
+            <p className="text-xs text-red-500">
+              {clientErrors.message?.message || serverErrors.message?.[0]}
+            </p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className={clsx(
+            "w-full h-11 rounded-xl text-sm font-medium transition-colors mt-1",
+            isPending
+              ? "bg-ink/60 text-white cursor-not-allowed"
+              : "bg-ink text-white hover:bg-ink/90",
+          )}
+        >
+          {isPending ? "Sending..." : "Send inquiry"}
+        </button>
+
+        <p className="text-xs text-fog text-center">
+          Your details are only shared with Amelia Lawsin
+        </p>
+      </form>
+
+      {showSuccess && state?.success && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <SuccessState message={state.message} />
+        </div>
+      )}
+    </div>
   );
 };
 

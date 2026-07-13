@@ -53,6 +53,7 @@ const PropertyGallery = ({ images, title }: Props) => {
               src={primary.url}
               alt={title}
               fill
+              sizes="(max-width: 1280px) 66vw, 840px"
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               priority
             />
@@ -79,6 +80,7 @@ const PropertyGallery = ({ images, title }: Props) => {
               src={img.url}
               alt={`${title} photo ${i + 2}`}
               fill
+              sizes="(max-width: 1280px) 33vw, 420px"
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
