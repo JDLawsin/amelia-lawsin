@@ -6,6 +6,7 @@ import PropertyImageManager from "@/app/(admin)/admin/properties/[slug]/update/_
 
 interface MediaStepProps {
   control: Control<FullPropertyFormValues>;
+  onSetPrimary?: (imageId: string) => void;
   existingImages?: Array<{
     id: string;
     url: string;
@@ -15,7 +16,11 @@ interface MediaStepProps {
   }>;
 }
 
-const MediaStep = ({ control, existingImages = [] }: MediaStepProps) => {
+const MediaStep = ({
+  control,
+  onSetPrimary,
+  existingImages = [],
+}: MediaStepProps) => {
   const isEditMode = existingImages.length > 0;
 
   if (isEditMode) {
@@ -31,6 +36,7 @@ const MediaStep = ({ control, existingImages = [] }: MediaStepProps) => {
               existingImages={existingImages}
               newFiles={field.value || []}
               onNewFilesChange={field.onChange}
+              onSetPrimary={onSetPrimary}
               errors={fieldState.error}
             />
           )}

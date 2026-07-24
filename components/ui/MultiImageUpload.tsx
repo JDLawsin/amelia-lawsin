@@ -6,6 +6,7 @@ import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import clsx from "clsx";
 import { ALLOWED_TYPES, MAX_FILES } from "@/constants";
+import { compressImage } from "@/lib/image/compressImage";
 import { FieldError } from "react-hook-form";
 import Image from "next/image";
 
@@ -29,19 +30,24 @@ const MultiImageUpload = ({
   const rootError = !isArrayError ? errors?.message : null;
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      // 1. Prevent duplicates by comparing name and size
-      const newFiles = acceptedFiles.filter((file) => {
+    async (acceptedFiles: File[]) => {
+      // 1. Compress images client-side before upload
+      const compressedFiles = await Promise.all(
+        acceptedFiles.map((file) => compressImage(file)),
+      );
+
+      // 2. Prevent duplicates by comparing name and size
+      const newFiles = compressedFiles.filter((file) => {
         return !value.some(
           (existing) =>
             existing.name === file.name && existing.size === file.size,
         );
       });
 
-      // 2. Merge existing files with new unique files
+      // 3. Merge existing files with new unique files
       const updatedFiles = [...value, ...newFiles];
 
-      // 3. Update React Hook Form
+      // 4. Update React Hook Form
       onValueChange(updatedFiles);
     },
     [value, onValueChange],

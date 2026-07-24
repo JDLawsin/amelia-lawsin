@@ -1,16 +1,22 @@
 "use client";
 
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState, useState, useTransition } from "react";
 import {
   FullPropertyFormValues,
   FullPropertySchema,
   PROPERTY_TABS,
   STEP_FIELD_NAMES,
 } from "../../../_schema/property.schema";
-import { FormState, updatePropertyAction } from "@/actions/property.action";
+import {
+  FormState,
+  setPrimaryImageAction,
+  updatePropertyAction,
+} from "@/actions/property.action";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 import Wizardry from "@/components/ui/Wizardry";
 import BasicStep from "@/components/step/BasicStep";
 import LocationStep from "@/components/step/LocationStep";
@@ -32,11 +38,28 @@ type Props = {
 
 const UpdatePropertyContainer = ({ property }: Props) => {
   const [currentStep, setCurrentStep] = useState(PROPERTY_TABS[0]);
+  const [isSettingPrimary, startSetPrimaryTransition] = useTransition();
+  const router = useRouter();
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     updatePropertyAction,
     null,
   );
+
+  const handleSetPrimary = async (imageId: string) => {
+    if (isSettingPrimary) return;
+
+    startSetPrimaryTransition(async () => {
+      const result = await setPrimaryImageAction(property.id, imageId);
+
+      if (result.success) {
+        toast.success(result.message);
+        router.refresh();
+      } else {
+        toast.error(result.message);
+      }
+    });
+  };
 
   const form = useForm<FullPropertyFormValues>({
     resolver: zodResolver(
@@ -114,7 +137,11 @@ const UpdatePropertyContainer = ({ property }: Props) => {
           <AmenityStep control={control} />
           <PaymentSchemeStep control={control} />
           <LandmarkStep control={control} />
-          <MediaStep control={control} existingImages={property.images} />
+          <MediaStep
+            control={control}
+            existingImages={property.images}
+            onSetPrimary={handleSetPrimary}
+          />
         </Wizardry>
       </div>
     </form>

@@ -212,6 +212,45 @@ export const createPropertyAction = withAdminAuth(
   },
 );
 
+export const setPrimaryImageAction = withAdminAuth(
+  async (propertyId: string, imageId: string): Promise<ActionResult> => {
+    if (!propertyId || !imageId) {
+      return { success: false, message: "Invalid property or image ID." };
+    }
+
+    try {
+      await prisma.$transaction(async (tx) => {
+        const image = await tx.propertyImage.findFirst({
+          where: { id: imageId, propertyId },
+          select: { id: true },
+        });
+
+        if (!image) {
+          throw new Error("Image not found for this property.");
+        }
+
+        await tx.propertyImage.updateMany({
+          where: { propertyId },
+          data: { isPrimary: false },
+        });
+
+        await tx.propertyImage.update({
+          where: { id: imageId },
+          data: { isPrimary: true },
+        });
+      });
+
+      revalidatePath("/properties");
+      revalidatePath("/admin/properties");
+
+      return { success: true, message: "Primary image updated." };
+    } catch (error) {
+      console.error("Set primary image error:", error);
+      return { success: false, message: "Failed to set primary image." };
+    }
+  },
+);
+
 export const updatePropertyAction = withAdminAuth(
   async (_, formData: FormData): Promise<FormState> => {
     let uploadedImages: { url: string; publicId: string }[] = [];
