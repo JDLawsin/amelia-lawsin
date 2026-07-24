@@ -63,6 +63,48 @@ export const uploadImages = async (files: File[], propertyId: string) => {
   return results.filter(Boolean) as { url: string; publicId: string }[];
 };
 
+export const uploadCoverImage = async (
+  file: File,
+  blogId: string,
+): Promise<{ url: string; publicId: string } | null> => {
+  if (!file || file.size === 0) return null;
+
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    throw new Error(`Invalid file type: ${file.type}`);
+  }
+
+  if (file.size > MAX_SIZE) {
+    throw new Error(`File too large: ${file.name}`);
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream(
+        {
+          folder: `blogs/${blogId}`,
+          resource_type: "image",
+          transformation: [
+            { width: 1920, height: 1080, crop: "limit" },
+            { quality: "auto:good", fetch_format: "auto" },
+          ],
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else if (result) resolve(result);
+          else reject(new Error("Upload failed: no result"));
+        },
+      )
+      .end(buffer);
+  });
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+  };
+};
+
 export const deleteImages = async (publicIds: string[]) => {
   if (!publicIds.length) return;
 

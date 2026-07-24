@@ -189,6 +189,22 @@ export const STATUS_VARIANT: Record<
   RENTED: "outline",
 };
 
+export const BLOG_STATUS_LABELS: Record<string, string> = {
+  all: "All",
+  published: "Published",
+  draft: "Draft",
+  deleted: "Deleted",
+};
+
+export const BLOG_STATUS_VARIANTS: Record<
+  string,
+  "default" | "secondary" | "outline" | "destructive"
+> = {
+  published: "default",
+  draft: "secondary",
+  deleted: "destructive",
+};
+
 export const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 export const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const MAX_FILES = 10;

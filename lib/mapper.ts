@@ -1,6 +1,8 @@
 import { FullPropertyFormValues } from "@/app/(admin)/admin/properties/_schema/property.schema";
+import { BlogFormValues } from "@/app/(admin)/admin/blogs/_schema/blog.schema";
 import { PropertyType } from "@/app/generated/prisma/enums";
 import { PropertyAdminDetail } from "@/services/property.admin.service";
+import { BlogAdminDetail } from "@/services/blog.admin.service";
 
 export const mapPropertyData = (data: FullPropertyFormValues) => ({
   title: data.title,
@@ -144,4 +146,26 @@ export const mapLandmarkToForm = (
   name: item.landmark.name,
   category: item.landmark.category ?? undefined,
   distance: item.distance ?? undefined,
+});
+
+export const mapBlogToForm = (blog: BlogAdminDetail): BlogFormValues => ({
+  title: blog.title,
+  slug: blog.slug,
+  excerpt: blog.excerpt,
+  content:
+    typeof blog.content === "object" && blog.content !== null
+      ? (blog.content as BlogFormValues["content"])
+      : { type: "doc", content: [] },
+  coverImage: undefined,
+  tags:
+    blog.tags?.map(({ tag }) => ({
+      name: tag.name,
+      slug: tag.slug,
+    })) ?? [],
+  isPublished: blog.isPublished,
+  publishedAt: blog.publishedAt
+    ? new Date(blog.publishedAt).toISOString().split("T")[0]
+    : undefined,
+  metaTitle: blog.metaTitle ?? undefined,
+  metaDescription: blog.metaDescription ?? undefined,
 });
