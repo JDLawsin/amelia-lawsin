@@ -258,51 +258,13 @@ export const updatePropertyAction = withAdminAuth(
     try {
       const propertyId = formData.get("id") as string;
 
-      // 1. Handle deleted images
-      const deletedImageIds = formData.get("deletedImageIds");
-      if (deletedImageIds) {
-        const ids = JSON.parse(deletedImageIds as string) as string[];
-
-        const imagesToDelete = await prisma.propertyImage.findMany({
-          where: { id: { in: ids } },
-          select: { publicId: true },
-        });
-
-        await deleteImages(imagesToDelete.map((img) => img.publicId));
-
-        await prisma.propertyImage.deleteMany({
-          where: { id: { in: ids } },
-        });
-      }
-
-      // 2. Handle new image uploads
+      // 1. Extract destructive inputs without acting on them
+      const deletedImageIdsRaw = formData.get("deletedImageIds");
       const imageFiles = (formData.getAll("images") as File[]).filter(
         (file) => file && file.size > 0,
       );
 
-      if (imageFiles.length > 0) {
-        uploadedImages = await uploadImages(imageFiles, propertyId);
-
-        const maxOrder = await prisma.propertyImage.findFirst({
-          where: { propertyId },
-          orderBy: { order: "desc" },
-          select: { order: true },
-        });
-
-        const startOrder = (maxOrder?.order ?? -1) + 1;
-
-        await prisma.propertyImage.createMany({
-          data: uploadedImages.map((img, index) => ({
-            propertyId,
-            url: img.url,
-            publicId: img.publicId,
-            order: startOrder + index,
-            isPrimary: false,
-          })),
-        });
-      }
-
-      // 3. Parse and validate other fields
+      // 2. Parse and validate the payload before any destructive work
       const parseJSON = (value: FormDataEntryValue | null) => {
         if (!value || typeof value !== "string") return undefined;
         try {
@@ -343,7 +305,7 @@ export const updatePropertyAction = withAdminAuth(
 
       const data = result.data;
 
-      // 4. Process lookup data
+      // 3. Process lookup data
       const [amenityConnections, landmarkConnections, schemeConnections] =
         await Promise.all([
           processAmenities(data.amenities),
@@ -351,7 +313,46 @@ export const updatePropertyAction = withAdminAuth(
           processPaymentSchemes(data.paymentSchemes),
         ]);
 
-      // 5. Update property with cascade deletes
+      // 4. Handle deleted images (only after validation passes)
+      if (deletedImageIdsRaw) {
+        const ids = JSON.parse(deletedImageIdsRaw as string) as string[];
+
+        const imagesToDelete = await prisma.propertyImage.findMany({
+          where: { id: { in: ids } },
+          select: { publicId: true },
+        });
+
+        await deleteImages(imagesToDelete.map((img) => img.publicId));
+
+        await prisma.propertyImage.deleteMany({
+          where: { id: { in: ids } },
+        });
+      }
+
+      // 5. Handle new image uploads (only after validation passes)
+      if (imageFiles.length > 0) {
+        uploadedImages = await uploadImages(imageFiles, propertyId);
+
+        const maxOrder = await prisma.propertyImage.findFirst({
+          where: { propertyId },
+          orderBy: { order: "desc" },
+          select: { order: true },
+        });
+
+        const startOrder = (maxOrder?.order ?? -1) + 1;
+
+        await prisma.propertyImage.createMany({
+          data: uploadedImages.map((img, index) => ({
+            propertyId,
+            url: img.url,
+            publicId: img.publicId,
+            order: startOrder + index,
+            isPrimary: false,
+          })),
+        });
+      }
+
+      // 6. Update property with cascade deletes
       await prisma.property.update({
         where: { id: propertyId },
         data: {
