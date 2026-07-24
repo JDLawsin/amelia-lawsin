@@ -193,10 +193,10 @@ export const getAdminPropertiesCount = async (
   filters: PropertyAdminFilters = {},
 ): Promise<number> => prisma.property.count({ where: buildWhere(filters) });
 
-export const getAdminPropertyById = async (
-  id: string,
+export const getAdminPropertyBySlug = async (
+  slug: string,
 ): Promise<PropertyAdminDetail | null> =>
   prisma.property.findUnique({
-    where: { id },
+    where: { slug },
     select: propertyAdminDetailSelect,
   });
