@@ -1,5 +1,8 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
+import { sanitizeNextPath } from "@/lib/utils";
+import { getRole } from "@/services/profile.service";
+import { Role } from "@/app/generated/prisma/browser";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
@@ -34,6 +37,21 @@ export const GET = async (request: Request) => {
     );
   }
 
-  // Redirect to the intended path or fallback to homepage
-  return NextResponse.redirect(`${origin}/admin${next}`);
+  // Determine the user's role so we can redirect safely
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const profile = user ? await getRole(user.id) : null;
+  const isAdmin = profile?.role === Role.ADMIN;
+
+  const safeNext = sanitizeNextPath(next);
+  const baseUrl = `${origin}${safeNext}`;
+
+  if (isAdmin) {
+    return NextResponse.redirect(safeNext === "/" ? `${origin}/admin` : baseUrl);
+  }
+
+  return NextResponse.redirect(
+    safeNext.startsWith("/admin") ? `${origin}/` : baseUrl,
+  );
 };

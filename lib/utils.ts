@@ -100,6 +100,31 @@ export const getPropertyLabel = (property: PropertyListItem): string => {
   return parts.filter(Boolean).join(" · ");
 };
 
+export const sanitizeNextPath = (raw: unknown): string => {
+  if (typeof raw !== "string" || !raw.trim()) return "/";
+
+  const normalized = raw
+    .trim()
+    .replace(/\/+/g, "/")
+    .replace(/\/$/, "") || "/";
+
+  const unsafePatterns = [
+    /^[^/]/,
+    /\.\./,
+    /^\/\//,
+    /^https?:/i,
+    /^javascript:/i,
+    /^data:/i,
+    /^vbscript:/i,
+  ];
+
+  if (unsafePatterns.some((pattern) => pattern.test(normalized))) {
+    return "/";
+  }
+
+  return normalized;
+};
+
 export const getEnvironmentVariables = () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
