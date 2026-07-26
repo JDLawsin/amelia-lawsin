@@ -32,7 +32,7 @@ const SIDE_BAR = [
     menus: [
       {
         title: "Dashboard",
-        url: "/admin/dashboard",
+        url: "/admin",
         icon: LayoutDashboardIcon,
       },
     ],
@@ -79,7 +79,7 @@ const DashboardSidebar = ({ unreadInquiryCount = 0 }: Props) => {
               <SidebarMenu>
                 {group.menus.map((menu) => {
                   const isActive =
-                    menu.url === "/admin/dashboard"
+                    menu.url === "/admin"
                       ? pathname === menu.url
                       : pathname.startsWith(menu.url);
                   const showBadge =

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 // Map routes to readable page titles
 const PAGE_TITLES: Record<string, string> = {
-  "/admin/dashboard": "Dashboard",
+  "/admin": "Dashboard",
   "/admin/properties": "Properties",
   "/admin/blogs": "Blog",
   "/admin/inquiries": "Inquiries",
@@ -14,9 +14,9 @@ const PAGE_TITLES: Record<string, string> = {
 const getPageTitle = (pathname: string): string => {
   if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
 
-  const match = Object.keys(PAGE_TITLES).find((key) =>
-    pathname.startsWith(key),
-  );
+  const match = Object.keys(PAGE_TITLES)
+    .filter((key) => pathname.startsWith(key))
+    .sort((a, b) => b.length - a.length)[0];
   return match ? PAGE_TITLES[match] : "Admin";
 };
 
