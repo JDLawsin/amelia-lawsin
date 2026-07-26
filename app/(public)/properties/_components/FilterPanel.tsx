@@ -63,23 +63,13 @@ const FilterPanel = ({ isOpen }: FilterPanelProps) => {
   const committedCity = searchParams.get("city") ?? "";
   const committedMinPrice = searchParams.get("minPrice") ?? "";
   const committedMaxPrice = searchParams.get("maxPrice") ?? "";
+  const committedSpecial = searchParams.get("special") ?? "";
 
   const [localBedrooms, setLocalBedrooms] = useState(committedBedrooms);
   const [localCity, setLocalCity] = useState(committedCity);
   const [localMinPrice, setLocalMinPrice] = useState(committedMinPrice);
   const [localMaxPrice, setLocalMaxPrice] = useState(committedMaxPrice);
-
-  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
-
-  if (prevIsOpen !== isOpen) {
-    setPrevIsOpen(isOpen);
-    if (isOpen) {
-      setLocalBedrooms(committedBedrooms);
-      setLocalCity(committedCity);
-      setLocalMinPrice(committedMinPrice);
-      setLocalMaxPrice(committedMaxPrice);
-    }
-  }
+  const [localSpecial, setLocalSpecial] = useState(committedSpecial);
 
   const handlePricePreset = (min?: string, max?: string) => {
     setLocalMinPrice(min ?? "");
@@ -96,6 +86,7 @@ const FilterPanel = ({ isOpen }: FilterPanelProps) => {
         city: localCity || undefined,
         minPrice: localMinPrice || undefined,
         maxPrice: localMaxPrice || undefined,
+        special: localSpecial || undefined,
         page: "1",
       },
       [
@@ -103,6 +94,7 @@ const FilterPanel = ({ isOpen }: FilterPanelProps) => {
         ...(!localCity ? ["city"] : []),
         ...(!localMinPrice ? ["minPrice"] : []),
         ...(!localMaxPrice ? ["maxPrice"] : []),
+        ...(!localSpecial ? ["special"] : []),
         "page",
       ],
     );
@@ -113,7 +105,11 @@ const FilterPanel = ({ isOpen }: FilterPanelProps) => {
     setLocalCity("");
     setLocalMinPrice("");
     setLocalMaxPrice("");
-    updateQueryString({}, ["bedrooms", "city", "minPrice", "maxPrice", "page"]);
+    setLocalSpecial("");
+    updateQueryString(
+      {},
+      ["bedrooms", "city", "minPrice", "maxPrice", "special", "page"],
+    );
   };
 
   if (!isOpen) return null;
@@ -212,19 +208,11 @@ const FilterPanel = ({ isOpen }: FilterPanelProps) => {
             { param: "inhouse", label: "In-house financing" },
             { param: "renttoown", label: "Rent-to-Own" },
           ].map((f) => {
-            const isActive = searchParams.get("special") === f.param;
+            const isActive = localSpecial === f.param;
             return (
               <button
                 key={f.param}
-                onClick={() =>
-                  updateQueryString(
-                    {
-                      special: isActive ? undefined : f.param,
-                      page: "1",
-                    },
-                    isActive ? ["special"] : [],
-                  )
-                }
+                onClick={() => setLocalSpecial(isActive ? "" : f.param)}
                 className={clsx(
                   "flex items-center gap-2 text-xs py-1 text-left transition-colors",
                   isActive ? "text-ink font-medium" : "text-ash hover:text-ink",

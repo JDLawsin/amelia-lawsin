@@ -3,7 +3,7 @@
 import { Search, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "@uidotdev/usehooks";
 import useUpdateQueryString from "@/hooks/useQueryString";
 import { Input } from "@/components/ui/shadcn/input";
@@ -31,17 +31,33 @@ const SearchBar = ({
   const [searchValue, setSearchValue] = useState(initialQ);
   const debouncedSearch = useDebounce(searchValue, 300);
 
+  // Keep a live ref to the query-string updater so the debounced commit
+  // effect below can stay keyed only to the debounced value. The updater
+  // internally reads searchParams when called, so a stale closure is safe.
+  const updateQueryStringRef = useRef(updateQueryString);
+  useEffect(() => {
+    updateQueryStringRef.current = updateQueryString;
+  });
+
+  // Sync input with external URL changes (e.g. back/forward navigation)
+  // without disturbing the debounced commit below.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchValue((current) => (current === initialQ ? current : initialQ));
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [initialQ]);
+
   useEffect(() => {
     if (debouncedSearch) {
-      updateQueryString(
+      updateQueryStringRef.current(
         { q: debouncedSearch, page: "1" },
         [],
         { replace: true },
       );
     } else {
-      updateQueryString({}, ["q", "page"], { replace: true });
+      updateQueryStringRef.current({}, ["q", "page"], { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
   return (

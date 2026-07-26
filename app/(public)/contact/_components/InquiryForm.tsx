@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
@@ -26,7 +26,13 @@ const inputStyles = clsx(
 
 const labelStyles = "text-xs text-fog";
 
-const SuccessState = ({ message }: { message: string }) => (
+const SuccessState = ({
+  message,
+  onReset,
+}: {
+  message: string;
+  onReset: () => void;
+}) => (
   <div className="flex flex-col items-center justify-center py-12 text-center gap-4 animate-in fade-in zoom-in-95 duration-300">
     <div className="w-14 h-14 bg-cloud border border-wire rounded-full flex items-center justify-center">
       <svg
@@ -48,7 +54,14 @@ const SuccessState = ({ message }: { message: string }) => (
       <p className="text-base font-serif font-medium text-ink mb-1">
         Inquiry sent!
       </p>
-      <p className="text-sm text-ash leading-relaxed max-w-xs">{message}</p>
+      <p className="text-sm text-ash leading-relaxed max-w-xs mb-4">{message}</p>
+      <button
+        type="button"
+        onClick={onReset}
+        className="text-xs font-medium text-ink underline underline-offset-2 hover:text-ash transition-colors"
+      >
+        Send another inquiry
+      </button>
     </div>
   </div>
 );
@@ -88,17 +101,11 @@ const InquiryForm = () => {
     });
   };
 
-  useEffect(() => {
-    if (!showSuccess) return;
-
-    const timer = setTimeout(() => {
-      setShowSuccess(false);
-      setState(null);
-      reset();
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [showSuccess, reset]);
+  const handleReset = () => {
+    setShowSuccess(false);
+    setState(null);
+    reset();
+  };
 
   const serverErrors =
     state && !state.success && "errors" in state ? state.errors : {};
@@ -286,7 +293,7 @@ const InquiryForm = () => {
 
       {showSuccess && state?.success && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <SuccessState message={state.message} />
+          <SuccessState message={state.message} onReset={handleReset} />
         </div>
       )}
     </div>

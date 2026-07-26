@@ -21,6 +21,10 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
     `Hi Amelia! I'm interested in the ${active.label} unit of ${propertyTitle}.`,
   )}`;
 
+  const isCheapestUnit = activeIndex === 0;
+  const priceLabel =
+    units.length > 1 && isCheapestUnit ? "Starting price" : "Price";
+
   return (
     <div>
       <div className="flex gap-2 mb-3 flex-wrap">
@@ -41,12 +45,12 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
       </div>
 
       <div className="bg-cloud rounded-xl p-4">
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3 mb-4">
           <div>
             <p className="text-base font-medium text-ink">
               {formatUnitPrice(active)}
             </p>
-            <p className="text-[10px] text-fog mt-0.5">Starting price</p>
+            <p className="text-[10px] text-fog mt-0.5">{priceLabel}</p>
           </div>
           {active.floorArea && (
             <div>
@@ -70,7 +74,7 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
                 {active.bedrooms === 0 ? "Studio" : active.bedrooms}
               </p>
               <p className="text-[10px] text-fog mt-0.5">
-                {active.bedrooms === 0 ? "" : "Bedrooms"}
+                {active.bedrooms === 0 ? "Unit type" : "Bedrooms"}
               </p>
             </div>
           )}

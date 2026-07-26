@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ImageLightbox from "@/components/ui/ImageLightbox";
 
 type TipTapMark = {
   type: "bold" | "italic" | "underline" | "link" | "code";
@@ -170,11 +171,23 @@ const RenderNode = ({ node }: { node: TipTapNode }) => {
     case "image":
       return node.attrs?.src ? (
         <figure className="my-6">
-          <Image
+          <ImageLightbox
             src={node.attrs.src}
             alt={node.attrs.alt ?? ""}
-            className="w-full rounded-xl border border-wire"
-          />
+            title={node.attrs.title}
+          >
+            <button
+              type="button"
+              className="group w-full overflow-hidden rounded-xl border border-wire cursor-pointer p-0 bg-transparent"
+              aria-label="View larger image"
+            >
+              <Image
+                src={node.attrs.src}
+                alt={node.attrs.alt ?? ""}
+                className="w-full rounded-xl transition-transform duration-300 group-hover:scale-105"
+              />
+            </button>
+          </ImageLightbox>
           {node.attrs.title && (
             <figcaption className="text-xs text-fog text-center mt-2">
               {node.attrs.title}

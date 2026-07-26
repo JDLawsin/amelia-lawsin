@@ -40,15 +40,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .filter(Boolean)
     .join(" · ");
 
-  const statusLabel: Record<string, string> = {
-    FOR_SALE: "For Sale",
-    FOR_RENT: "For Rent",
-    PRE_SELLING: "Pre-selling",
-  };
-
   // absolute title: the root layout's `%s | Amelia Lawsin` template would
   // double-suffix these long-tail titles, so bypass it here.
-  const title = `${property.title} ${statusLabel[property.status] ?? ""} | Amelia Lawsin`;
+  const title = `${property.title} ${STATUS_LABELS[property.status] ?? ""} | Amelia Lawsin`;
 
   const description = [
     price,

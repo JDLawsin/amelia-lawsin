@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
@@ -147,22 +148,14 @@ const AboutPage = async () => {
 
   return (
     <main className="bg-white">
-      <section className="relative h-130 md:h-145 bg-cloud overflow-hidden flex items-end">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs text-fog opacity-50">
-            Professional photo of Amelia Lawsin
-          </span>
-        </div>
-
-        {/* Uncomment when you have a real photo:
+      <section className="relative h-130 md:h-175 bg-cloud overflow-hidden flex items-end">
         <Image
-          src="/images/amelia-hero.jpg"
+          src="/amelia.webp"
           alt="Amelia Lawsin — Licensed Real Estate Agent in Cebu"
           fill
-          className="object-cover object-top"
+          className="object-cover md:object-contain"
           priority
         />
-        */}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/10 to-transparent" />
 
@@ -235,18 +228,13 @@ const AboutPage = async () => {
           </div>
 
           <div className="flex flex-col">
-            <div className="relative flex-1 min-h-60 bg-cloud flex items-center justify-center">
-              <span className="text-xs text-fog opacity-50">
-                Photo — Amelia at a property
-              </span>
-              {/* Uncomment when you have a real photo:
+            <div className="relative flex-1 min-h-70 md:min-h-90 bg-cloud">
               <Image
-                src="/images/amelia-story.jpg"
+                src="/amelia2.webp"
                 alt="Amelia Lawsin at a property showing in Cebu"
                 fill
                 className="object-cover"
               />
-              */}
             </div>
             <div className="bg-ink px-8 py-7">
               <p className="text-sm font-serif font-medium text-white/90 leading-relaxed italic mb-3">
