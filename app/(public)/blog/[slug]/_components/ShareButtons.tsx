@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+import { useCurrentUrl } from "@/lib/hooks/useCurrentUrl";
 
 type Props = {
   title: string;
@@ -10,11 +11,10 @@ type Props = {
 
 const ShareButtons = ({ title, variant = "inline" }: Props) => {
   const [copied, setCopied] = useState(false);
-
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const currentUrl = useCurrentUrl();
 
   const copyLink = () => {
-    navigator.clipboard.writeText(currentUrl);
+    navigator.clipboard.writeText(currentUrl || window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

@@ -43,7 +43,7 @@ const PropertyGallery = ({ images, title }: Props) => {
 
   return (
     <>
-      <div className="grid grid-cols-3 grid-rows-2 gap-0.5 h-85 px-6 max-w-7xl mx-auto w-full">
+      <div className="relative grid grid-cols-3 grid-rows-2 gap-0.5 h-85 px-6 max-w-7xl mx-auto w-full">
         <div
           className="col-span-2 row-span-2 relative bg-cloud rounded-l-2xl overflow-hidden cursor-pointer group"
           onClick={() => openLightbox(0)}

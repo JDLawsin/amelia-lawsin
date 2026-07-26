@@ -47,6 +47,37 @@ export const estimateReadTime = (excerpt: string): string => {
   return `${minutes} min read`;
 };
 
+type TipTapNode = {
+  type?: string;
+  content?: unknown[];
+  text?: string;
+};
+
+export const extractTextFromTipTap = (content: unknown): string => {
+  if (!content || typeof content !== "object") return "";
+
+  const node = content as TipTapNode;
+
+  if (typeof node.text === "string") return node.text;
+
+  if (Array.isArray(node.content)) {
+    return node.content
+      .map(extractTextFromTipTap)
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  return "";
+};
+
+export const estimateReadTimeFromContent = (
+  content: unknown,
+  fallbackExcerpt = "",
+): string => {
+  const text = extractTextFromTipTap(content) || fallbackExcerpt;
+  return estimateReadTime(text);
+};
+
 export const formatDate = (date: Date | null): string => {
   if (!date) return "";
   return new Intl.DateTimeFormat("en-PH", {

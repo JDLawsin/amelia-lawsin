@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getBlogBySlug, getRelatedBlogs } from "@/services/blog.service";
 import { SITE_CONFIG } from "@/constants";
-import { estimateReadTime, formatDate } from "@/lib/utils";
+import { estimateReadTimeFromContent, formatDate } from "@/lib/utils";
 import ShareButtons from "./_components/ShareButtons";
 import TableOfContents from "./_components/TableOfContents";
 import BlogContent from "./_components/BlogContent";
@@ -54,7 +54,7 @@ const BlogDetailPage = async ({ params }: Props) => {
     { id: blog.id, tags: blog.tags },
     3,
   );
-  const readTime = estimateReadTime(blog.excerpt);
+  const readTime = estimateReadTimeFromContent(blog.content, blog.excerpt);
   const publishedDate = formatDate(blog.publishedAt);
 
   return (
