@@ -104,6 +104,8 @@ const propertyAdminDetailSelect = {
       bathrooms: true,
       parking: true,
       towerOrPhase: true,
+      floorPlanImage: true,
+      floorPlanPublicId: true,
     },
   },
   paymentSchemes: {

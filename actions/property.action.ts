@@ -6,7 +6,7 @@ import { withAdminAuth } from "@/lib/auth";
 import { ActionResult } from "@/types";
 import { FullPropertySchema } from "@/app/(admin)/admin/properties/_schema/property.schema";
 import { FieldErrors } from "react-hook-form";
-import { deleteImages, uploadImages } from "@/lib/cloudinary";
+import { deleteImages, uploadImages, uploadSingleImage } from "@/lib/cloudinary";
 import { mapPropertyData, mapUnit } from "@/lib/mapper";
 import { randomUUID } from "crypto";
 import {
@@ -72,25 +72,80 @@ export type FormState =
     }
   | null;
 
-export const createPropertyAction = withAdminAuth(
-  async (_, formData: FormData): Promise<FormState> => {
-    let uploadedImages: { url: string; publicId: string }[] = [];
+type UploadedAsset = { url: string; publicId: string };
 
-    try {
-      // 1. Extract files
-      const imageFiles = (formData.getAll("images") as File[]).filter(
-        (file) => file && file.size > 0,
+type ImageItemInput = {
+  id?: string;
+  caption?: string;
+  order: number;
+  isPrimary: boolean;
+};
+
+const parseJSON = (value: FormDataEntryValue | null) => {
+  if (!value || typeof value !== "string") return undefined;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return undefined;
+  }
+};
+
+const extractFloorPlanFiles = (formData: FormData): Map<number, File> => {
+  const map = new Map<number, File>();
+
+  for (const [key, value] of formData.entries()) {
+    if (key.startsWith("floorPlanFiles_") && value instanceof File) {
+      const index = Number(key.replace("floorPlanFiles_", ""));
+      if (!Number.isNaN(index)) {
+        map.set(index, value);
+      }
+    }
+  }
+
+  return map;
+};
+
+const uploadFloorPlanImages = async (
+  units: { floorPlanImage?: string | null; floorPlanPublicId?: string | null }[],
+  floorPlanFiles: Map<number, File>,
+  propertyId: string,
+  uploadedAssets: UploadedAsset[],
+): Promise<
+  Array<{ floorPlanImage?: string; floorPlanPublicId?: string } | undefined>
+> => {
+  return Promise.all(
+    units.map(async (unit, index) => {
+      const file = floorPlanFiles.get(index);
+      if (!file) return undefined;
+
+      const uploaded = await uploadSingleImage(
+        file,
+        `properties/${propertyId}/units`,
       );
 
-      // 2. Parse JSON fields
-      const parseJSON = (value: FormDataEntryValue | null) => {
-        if (!value || typeof value !== "string") return undefined;
-        try {
-          return JSON.parse(value);
-        } catch {
-          return undefined;
-        }
+      if (!uploaded) return undefined;
+
+      uploadedAssets.push(uploaded);
+
+      return {
+        floorPlanImage: uploaded.url,
+        floorPlanPublicId: uploaded.publicId,
       };
+    }),
+  );
+};
+
+export const createPropertyAction = withAdminAuth(
+  async (_, formData: FormData): Promise<FormState> => {
+    const uploadedAssets: UploadedAsset[] = [];
+
+    try {
+      const imageFiles = (formData.getAll("imageFiles") as File[]).filter(
+        (file) => file && file.size > 0,
+      );
+      const imageItems = (parseJSON(formData.get("imageItems")) ??
+        []) as ImageItemInput[];
+      const floorPlanFiles = extractFloorPlanFiles(formData);
 
       const rawData = {
         ...Object.fromEntries(formData.entries()),
@@ -98,10 +153,9 @@ export const createPropertyAction = withAdminAuth(
         amenities: parseJSON(formData.get("amenities")) ?? [],
         paymentSchemes: parseJSON(formData.get("paymentSchemes")) ?? [],
         landmarks: parseJSON(formData.get("landmarks")) ?? [],
-        images: [],
+        imageItems,
       };
 
-      // 3. Validate with Zod
       const result = FullPropertySchema.safeParse(rawData);
 
       if (!result.success) {
@@ -123,13 +177,36 @@ export const createPropertyAction = withAdminAuth(
 
       const data = result.data;
 
-      // 4. Upload images
       const propertyId = randomUUID();
-      if (imageFiles && imageFiles.length > 0) {
+
+      let uploadedImages: UploadedAsset[] = [];
+      if (imageFiles.length > 0) {
         uploadedImages = await uploadImages(imageFiles, propertyId);
+        uploadedAssets.push(...uploadedImages);
       }
 
-      // 5. Process lookup data (find or create)
+      const newImageItems = imageItems.filter((item) => !item.id);
+      const hasPrimary = newImageItems.some((item) => item.isPrimary);
+
+      const imagesWithFiles = newImageItems
+        .map((item, index) => ({
+          ...item,
+          uploaded: uploadedImages[index],
+        }))
+        .filter((item) => item.uploaded);
+
+      const floorPlanUpdates = await uploadFloorPlanImages(
+        data.units,
+        floorPlanFiles,
+        propertyId,
+        uploadedAssets,
+      );
+
+      const unitsWithFloorPlans = data.units.map((unit, index) => ({
+        ...mapUnit(unit),
+        ...(floorPlanUpdates[index] ?? {}),
+      }));
+
       const [amenityConnections, landmarkConnections, schemeConnections] =
         await Promise.all([
           processAmenities(data.amenities),
@@ -137,26 +214,27 @@ export const createPropertyAction = withAdminAuth(
           processPaymentSchemes(data.paymentSchemes),
         ]);
 
-      // 6. Create property with all relations
       const property = await prisma.property.create({
         data: {
           id: propertyId,
           ...mapPropertyData(data),
 
           images:
-            uploadedImages.length > 0
+            imagesWithFiles.length > 0
               ? {
-                  create: uploadedImages.map((img, index) => ({
-                    url: img.url,
-                    publicId: img.publicId,
-                    order: index,
-                    isPrimary: index === 0,
+                  create: imagesWithFiles.map((item, index) => ({
+                    url: item.uploaded.url,
+                    publicId: item.uploaded.publicId,
+                    caption: item.caption,
+                    order: item.order,
+                    isPrimary:
+                      item.isPrimary || (!hasPrimary && index === 0),
                   })),
                 }
               : undefined,
 
           units: {
-            create: data.units.map(mapUnit),
+            create: unitsWithFloorPlans,
           },
 
           amenities: {
@@ -200,8 +278,8 @@ export const createPropertyAction = withAdminAuth(
     } catch (error) {
       console.error("Create property error:", error);
 
-      if (uploadedImages.length) {
-        await deleteImages(uploadedImages.map((img) => img.publicId));
+      if (uploadedAssets.length) {
+        await deleteImages(uploadedAssets.map((img) => img.publicId));
       }
 
       return {
@@ -212,67 +290,41 @@ export const createPropertyAction = withAdminAuth(
   },
 );
 
-export const setPrimaryImageAction = withAdminAuth(
-  async (propertyId: string, imageId: string): Promise<ActionResult> => {
-    if (!propertyId || !imageId) {
-      return { success: false, message: "Invalid property or image ID." };
-    }
+const ensurePrimaryImage = async (propertyId: string) => {
+  const primaryCount = await prisma.propertyImage.count({
+    where: { propertyId, isPrimary: true },
+  });
 
-    try {
-      await prisma.$transaction(async (tx) => {
-        const image = await tx.propertyImage.findFirst({
-          where: { id: imageId, propertyId },
-          select: { id: true },
-        });
+  if (primaryCount > 0) return;
 
-        if (!image) {
-          throw new Error("Image not found for this property.");
-        }
+  const firstImage = await prisma.propertyImage.findFirst({
+    where: { propertyId },
+    orderBy: { order: "asc" },
+    select: { id: true },
+  });
 
-        await tx.propertyImage.updateMany({
-          where: { propertyId },
-          data: { isPrimary: false },
-        });
+  if (!firstImage) return;
 
-        await tx.propertyImage.update({
-          where: { id: imageId },
-          data: { isPrimary: true },
-        });
-      });
-
-      revalidatePath("/properties");
-      revalidatePath("/admin/properties");
-
-      return { success: true, message: "Primary image updated." };
-    } catch (error) {
-      console.error("Set primary image error:", error);
-      return { success: false, message: "Failed to set primary image." };
-    }
-  },
-);
+  await prisma.propertyImage.update({
+    where: { id: firstImage.id },
+    data: { isPrimary: true },
+  });
+};
 
 export const updatePropertyAction = withAdminAuth(
   async (_, formData: FormData): Promise<FormState> => {
-    let uploadedImages: { url: string; publicId: string }[] = [];
+    const uploadedAssets: UploadedAsset[] = [];
 
     try {
       const propertyId = formData.get("id") as string;
 
-      // 1. Extract destructive inputs without acting on them
       const deletedImageIdsRaw = formData.get("deletedImageIds");
-      const imageFiles = (formData.getAll("images") as File[]).filter(
+      const imageFiles = (formData.getAll("imageFiles") as File[]).filter(
         (file) => file && file.size > 0,
       );
-
-      // 2. Parse and validate the payload before any destructive work
-      const parseJSON = (value: FormDataEntryValue | null) => {
-        if (!value || typeof value !== "string") return undefined;
-        try {
-          return JSON.parse(value);
-        } catch {
-          return undefined;
-        }
-      };
+      const imageItems = (parseJSON(formData.get("imageItems")) ??
+        []) as ImageItemInput[];
+      const floorPlanFiles = extractFloorPlanFiles(formData);
 
       const rawData = {
         ...Object.fromEntries(formData.entries()),
@@ -280,7 +332,7 @@ export const updatePropertyAction = withAdminAuth(
         amenities: parseJSON(formData.get("amenities")) ?? [],
         paymentSchemes: parseJSON(formData.get("paymentSchemes")) ?? [],
         landmarks: parseJSON(formData.get("landmarks")) ?? [],
-        images: [],
+        imageItems,
         id: undefined,
         deletedImageIds: undefined,
       };
@@ -305,7 +357,6 @@ export const updatePropertyAction = withAdminAuth(
 
       const data = result.data;
 
-      // 3. Process lookup data
       const [amenityConnections, landmarkConnections, schemeConnections] =
         await Promise.all([
           processAmenities(data.amenities),
@@ -313,58 +364,103 @@ export const updatePropertyAction = withAdminAuth(
           processPaymentSchemes(data.paymentSchemes),
         ]);
 
-      // 4. Handle deleted images (only after validation passes)
+      // Capture old floor-plan public IDs before recreating units
+      const oldUnits = await prisma.propertyUnit.findMany({
+        where: { propertyId },
+        select: { floorPlanPublicId: true },
+      });
+      const oldFloorPlanPublicIds = oldUnits
+        .map((u) => u.floorPlanPublicId)
+        .filter(Boolean) as string[];
+
+      // Handle deleted existing images
+      let deletedPublicIds: string[] = [];
       if (deletedImageIdsRaw) {
         const ids = JSON.parse(deletedImageIdsRaw as string) as string[];
 
         const imagesToDelete = await prisma.propertyImage.findMany({
-          where: { id: { in: ids } },
+          where: { id: { in: ids }, propertyId },
           select: { publicId: true },
         });
 
-        await deleteImages(imagesToDelete.map((img) => img.publicId));
+        deletedPublicIds = imagesToDelete.map((img) => img.publicId);
 
         await prisma.propertyImage.deleteMany({
-          where: { id: { in: ids } },
+          where: { id: { in: ids }, propertyId },
         });
       }
 
-      // 5. Handle new image uploads (only after validation passes)
+      // Update existing image metadata (caption/order/primary)
+      const existingImageItems = imageItems.filter((item) => item.id);
+      for (const item of existingImageItems) {
+        await prisma.propertyImage.update({
+          where: { id: item.id, propertyId },
+          data: {
+            caption: item.caption ?? null,
+            order: item.order,
+            isPrimary: item.isPrimary,
+          },
+        });
+      }
+
+      // Upload new main images
+      let uploadedImages: UploadedAsset[] = [];
       if (imageFiles.length > 0) {
         uploadedImages = await uploadImages(imageFiles, propertyId);
+        uploadedAssets.push(...uploadedImages);
 
-        const maxOrder = await prisma.propertyImage.findFirst({
-          where: { propertyId },
-          orderBy: { order: "desc" },
-          select: { order: true },
-        });
+        const newImageItems = imageItems.filter((item) => !item.id);
+        const createData = uploadedImages
+          .map((uploaded, index) => {
+            const item = newImageItems[index];
+            if (!item) return null;
+            return {
+              propertyId,
+              url: uploaded.url,
+              publicId: uploaded.publicId,
+              caption: item.caption ?? null,
+              order: item.order,
+              isPrimary: item.isPrimary,
+            };
+          })
+          .filter(Boolean) as {
+          propertyId: string;
+          url: string;
+          publicId: string;
+          caption: string | null;
+          order: number;
+          isPrimary: boolean;
+        }[];
 
-        const startOrder = (maxOrder?.order ?? -1) + 1;
-
-        await prisma.propertyImage.createMany({
-          data: uploadedImages.map((img, index) => ({
-            propertyId,
-            url: img.url,
-            publicId: img.publicId,
-            order: startOrder + index,
-            isPrimary: false,
-          })),
-        });
+        if (createData.length > 0) {
+          await prisma.propertyImage.createMany({ data: createData });
+        }
       }
 
-      // 6. Update property with cascade deletes
+      // Upload new unit floor plans
+      const floorPlanUpdates = await uploadFloorPlanImages(
+        data.units,
+        floorPlanFiles,
+        propertyId,
+        uploadedAssets,
+      );
+
+      const unitsWithFloorPlans = data.units.map((unit, index) => ({
+        ...mapUnit(unit),
+        ...(floorPlanUpdates[index] ?? {}),
+      }));
+
+      // Update property and recreate relations
       await prisma.property.update({
         where: { id: propertyId },
         data: {
           ...mapPropertyData(data),
 
-          // Delete and recreate units
           units: {
             deleteMany: {},
-            create: data.units.map(mapUnit),
+            create: unitsWithFloorPlans,
           },
 
-          // Delete and recreate amenities
           amenities: {
             deleteMany: {},
             create: amenityConnections.map((conn) => ({
@@ -374,7 +470,6 @@ export const updatePropertyAction = withAdminAuth(
             })),
           },
 
-          // Delete and recreate landmarks
           landmarks: {
             deleteMany: {},
             create: landmarkConnections.map((conn) => ({
@@ -385,7 +480,6 @@ export const updatePropertyAction = withAdminAuth(
             })),
           },
 
-          // Delete and recreate payment schemes
           paymentSchemes: {
             deleteMany: {},
             create: schemeConnections.map((conn) => ({
@@ -396,6 +490,27 @@ export const updatePropertyAction = withAdminAuth(
           },
         },
       });
+
+      // Delete replaced floor-plan Cloudinary assets
+      const newFloorPlanPublicIds = new Set(
+        unitsWithFloorPlans
+          .map((u) => u.floorPlanPublicId)
+          .filter(Boolean) as string[],
+      );
+      const replacedFloorPlanIds = oldFloorPlanPublicIds.filter(
+        (id) => !newFloorPlanPublicIds.has(id),
+      );
+
+      const cloudinaryPublicIdsToDelete = [
+        ...deletedPublicIds,
+        ...replacedFloorPlanIds,
+      ];
+
+      if (cloudinaryPublicIdsToDelete.length > 0) {
+        await deleteImages(cloudinaryPublicIdsToDelete);
+      }
+
+      await ensurePrimaryImage(propertyId);
 
       revalidatePath("/properties");
       revalidatePath(`/properties/${data.slug}`);
@@ -409,8 +524,8 @@ export const updatePropertyAction = withAdminAuth(
     } catch (error) {
       console.error("Update property error:", error);
 
-      if (uploadedImages.length) {
-        await deleteImages(uploadedImages.map((img) => img.publicId));
+      if (uploadedAssets.length) {
+        await deleteImages(uploadedAssets.map((img) => img.publicId));
       }
 
       return {

@@ -102,7 +102,14 @@ export const mapPropertyToForm = (property: PropertyAdminDetail) => ({
   expectedTurnover: property.expectedTurnover ?? undefined,
 
   // Relations - will be populated separately
-  images: [],
+  imageItems:
+    property.images?.map((image) => ({
+      id: image.id,
+      url: image.url,
+      caption: image.caption ?? undefined,
+      order: image.order,
+      isPrimary: image.isPrimary,
+    })) ?? [],
   units: property.units?.map(mapUnitToForm) ?? [],
   amenities: property.amenities?.map(mapAmenityToForm) ?? [],
   paymentSchemes: property.paymentSchemes?.map(mapPaymentSchemeToForm) ?? [],
@@ -120,6 +127,9 @@ export const mapUnitToForm = (unit: PropertyAdminDetail["units"][number]) => ({
   bathrooms: unit.bathrooms ?? undefined,
   parking: unit.parking ?? undefined,
   towerOrPhase: unit.towerOrPhase ?? undefined,
+  floorPlanImage: unit.floorPlanImage ?? undefined,
+  floorPlanPublicId: unit.floorPlanPublicId ?? undefined,
+  floorPlanImageFile: undefined,
 });
 
 export const mapAmenityToForm = (

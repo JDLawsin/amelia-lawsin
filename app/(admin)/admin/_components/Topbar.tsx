@@ -9,7 +9,6 @@ const PAGE_TITLES: Record<string, string> = {
   "/admin/properties": "Properties",
   "/admin/blogs": "Blog",
   "/admin/inquiries": "Inquiries",
-  "/admin/settings": "Settings",
 };
 
 const getPageTitle = (pathname: string): string => {

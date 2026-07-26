@@ -138,6 +138,54 @@ const SpecStep = ({ control }: Props) => (
         />
       )}
     />
+
+    <Controller
+      name="associationDue"
+      control={control}
+      render={({ field, fieldState }) => (
+        <FormInput
+          id="associationDue"
+          label="Association Due"
+          type="number"
+          placeholder="e.g. 2500"
+          errors={fieldState.error ? [fieldState.error.message!] : undefined}
+          {...field}
+          value={field.value ?? ""}
+        />
+      )}
+    />
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <Controller
+        name="floorLevel"
+        control={control}
+        render={({ field, fieldState }) => (
+          <FormInput
+            id="floorLevel"
+            label="Floor Level"
+            placeholder="e.g. 12th floor"
+            errors={fieldState.error ? [fieldState.error.message!] : undefined}
+            {...field}
+          />
+        )}
+      />
+
+      <Controller
+        name="totalFloors"
+        control={control}
+        render={({ field, fieldState }) => (
+          <FormInput
+            id="totalFloors"
+            label="Total Floors"
+            type="number"
+            placeholder="e.g. 25"
+            errors={fieldState.error ? [fieldState.error.message!] : undefined}
+            {...field}
+            value={field.value ?? ""}
+          />
+        )}
+      />
+    </div>
   </div>
 );
 

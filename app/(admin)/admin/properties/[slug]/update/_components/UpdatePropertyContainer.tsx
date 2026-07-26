@@ -1,22 +1,16 @@
 "use client";
 
-import { startTransition, useActionState, useState, useTransition } from "react";
+import { startTransition, useActionState, useState } from "react";
 import {
   FullPropertyFormValues,
   FullPropertySchema,
   PROPERTY_TABS,
   STEP_FIELD_NAMES,
 } from "../../../_schema/property.schema";
-import {
-  FormState,
-  setPrimaryImageAction,
-  updatePropertyAction,
-} from "@/actions/property.action";
+import { FormState, updatePropertyAction } from "@/actions/property.action";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
 import Wizardry from "@/components/ui/Wizardry";
 import BasicStep from "@/components/step/BasicStep";
 import LocationStep from "@/components/step/LocationStep";
@@ -38,28 +32,11 @@ type Props = {
 
 const UpdatePropertyContainer = ({ property }: Props) => {
   const [currentStep, setCurrentStep] = useState(PROPERTY_TABS[0]);
-  const [isSettingPrimary, startSetPrimaryTransition] = useTransition();
-  const router = useRouter();
 
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     updatePropertyAction,
     null,
   );
-
-  const handleSetPrimary = async (imageId: string) => {
-    if (isSettingPrimary) return;
-
-    startSetPrimaryTransition(async () => {
-      const result = await setPrimaryImageAction(property.id, imageId);
-
-      if (result.success) {
-        toast.success(result.message);
-        router.refresh();
-      } else {
-        toast.error(result.message);
-      }
-    });
-  };
 
   const form = useForm<FullPropertyFormValues>({
     resolver: zodResolver(
@@ -83,13 +60,35 @@ const UpdatePropertyContainer = ({ property }: Props) => {
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
 
-    if (data.images && data.images.length > 0) {
-      data.images.forEach((file: File) => {
-        formData.append("images", file);
-      });
-    }
+    const imageItemsForServer = data.imageItems.map((item) => ({
+      id: item.id,
+      caption: item.caption,
+      order: item.order,
+      isPrimary: item.isPrimary,
+    }));
+    formData.append("imageItems", JSON.stringify(imageItemsForServer));
 
-    const { ...rest } = data;
+    data.imageItems.forEach((item) => {
+      if (item.file) {
+        formData.append("imageFiles", item.file);
+      }
+    });
+
+      const unitsForServer = data.units.map((unit) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { floorPlanImageFile, ...rest } = unit;
+        return rest;
+      });
+    formData.append("units", JSON.stringify(unitsForServer));
+
+    data.units.forEach((unit, index) => {
+      if (unit.floorPlanImageFile) {
+        formData.append(`floorPlanFiles_${index}`, unit.floorPlanImageFile);
+      }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { imageItems, units, ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
@@ -137,11 +136,7 @@ const UpdatePropertyContainer = ({ property }: Props) => {
           <AmenityStep control={control} />
           <PaymentSchemeStep control={control} />
           <LandmarkStep control={control} />
-          <MediaStep
-            control={control}
-            existingImages={property.images}
-            onSetPrimary={handleSetPrimary}
-          />
+          <MediaStep control={control} />
         </Wizardry>
       </div>
     </form>

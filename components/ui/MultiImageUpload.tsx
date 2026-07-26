@@ -100,7 +100,7 @@ const MultiImageUpload = ({
               >
                 <div
                   className={clsx(
-                    "relative group rounded-xl overflow-hidden border transition-all",
+                    "relative group rounded-xl overflow-hidden border aspect-square transition-all",
                     fileError
                       ? "border-destructive ring-1 ring-destructive"
                       : "border-wire",
@@ -145,14 +145,16 @@ const PreviewImage = ({ file }: { file: File | string }) => {
 
   if (!url)
     return (
-      <div className="w-full aspect-square bg-muted rounded-xl animate-pulse" />
+      <div className="w-full h-full aspect-square bg-muted rounded-xl animate-pulse" />
     );
 
   return (
     <Image
       src={url}
       alt="preview"
-      className="w-full aspect-square object-cover rounded-xl border"
+      fill
+      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+      className="object-cover"
     />
   );
 };

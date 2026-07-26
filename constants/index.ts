@@ -1,4 +1,4 @@
-import { PropertyStatus } from "@/app/generated/prisma/enums";
+import { PropertyStatus, InquiryStatus } from "@/app/generated/prisma/enums";
 
 export const STATIC_STATS = {
   propertiesSold: "200+",
@@ -208,3 +208,30 @@ export const BLOG_STATUS_VARIANTS: Record<
 export const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 export const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const MAX_FILES = 10;
+
+export const INQUIRY_STATUS_LABELS: Record<
+  InquiryStatus | "archived" | "all",
+  string
+> = {
+  all: "All",
+  NEW: "New",
+  CONTACTED: "Contacted",
+  CLOSED: "Closed",
+  archived: "Archived",
+};
+
+export const INQUIRY_STATUS_VARIANTS: Record<
+  InquiryStatus | "archived",
+  "default" | "secondary" | "outline" | "destructive"
+> = {
+  NEW: "default",
+  CONTACTED: "secondary",
+  CLOSED: "outline",
+  archived: "destructive",
+};
+
+export const INQUIRY_SOURCE_LABELS: Record<string, string> = {
+  all: "All sources",
+  "Contact page": "Contact page",
+  "Property listing": "Property listing",
+};

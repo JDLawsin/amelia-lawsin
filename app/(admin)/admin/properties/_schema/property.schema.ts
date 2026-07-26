@@ -1,5 +1,10 @@
-import { PropertyType } from "@/app/generated/prisma/enums";
-import { ALLOWED_TYPES, MAX_SIZE } from "@/constants";
+import {
+  ListingType,
+  PaymentSchemeType,
+  PropertyStatus,
+  PropertyType,
+} from "@/app/generated/prisma/enums";
+
 import { z } from "zod";
 
 const optionalNumber = z.preprocess(
@@ -39,18 +44,15 @@ export const BasicsSchema = z.object({
     .min(1, "Description is required")
     .min(10, "Description must be at least 10 characters"),
   type: z
-    .enum(Object.keys(PropertyType), {
+    .enum(Object.values(PropertyType), {
       error: "Please select a valid property type",
     })
     .describe("Property type is required"),
-  status: z
-    .enum(["FOR_SALE", "FOR_RENT", "PRE_SELLING", "SOLD", "RENTED"])
-    .refine(
-      (val) => val !== null && val !== undefined,
-      "Please select a valid status",
-    ),
+  status: z.enum(Object.values(PropertyStatus), {
+    error: "Please select a valid status",
+  }),
   listingType: z
-    .enum(["BRAND_NEW", "RESALE"], {
+    .enum(Object.values(ListingType), {
       error: "Please select a valid listing type",
     })
     .default("BRAND_NEW"),
@@ -98,9 +100,7 @@ export const DeveloperSchema = z.object({
 
 export const PropertyUnitSchema = z.object({
   label: z.string().min(1, "Unit label is required"),
-  status: z
-    .enum(["FOR_SALE", "FOR_RENT", "PRE_SELLING", "SOLD", "RENTED"])
-    .optional(),
+  status: z.enum(Object.values(PropertyStatus)).optional(),
   price: optionalNumber,
   priceLabel: optionalString,
   floorArea: optionalNumber,
@@ -111,6 +111,7 @@ export const PropertyUnitSchema = z.object({
   towerOrPhase: optionalString,
   floorPlanImage: optionalString,
   floorPlanPublicId: optionalString,
+  floorPlanImageFile: z.instanceof(File).optional(),
 });
 
 export const PropertyAmenitySchema = z.object({
@@ -119,13 +120,7 @@ export const PropertyAmenitySchema = z.object({
 });
 
 export const PropertyPaymentSchemeSchema = z.object({
-  type: z.enum([
-    "SPOT_CASH",
-    "IN_HOUSE_FINANCING",
-    "BANK_FINANCING",
-    "PAG_IBIG_FINANCING",
-    "RENT_TO_OWN",
-  ]),
+  type: z.enum(Object.values(PaymentSchemeType)),
   description: optionalString,
   downPayment: optionalNumber,
   monthlyAmount: optionalNumber,
@@ -139,22 +134,21 @@ export const PropertyLandmarkSchema = z.object({
   distance: optionalString,
 });
 
-const imageSchema = z
-  .array(
-    z
-      .instanceof(File)
-      .refine((file) => file.size <= MAX_SIZE, "Max 5MB")
-      .refine((file) => ALLOWED_TYPES.includes(file.type), "Invalid file type"),
-  )
-  .max(10, "Maximum 10 images allowed")
-  .optional();
+export const ImageItemSchema = z.object({
+  id: z.string().optional(),
+  file: z.instanceof(File).optional(),
+  url: z.string().optional(),
+  caption: optionalString,
+  order: z.number().default(0),
+  isPrimary: z.boolean().default(false),
+});
 
 export const FullPropertySchema = BasicsSchema.merge(LocationSchema)
   .merge(SpecsSchema)
   .merge(FeaturesSchema)
   .merge(DeveloperSchema)
   .extend({
-    images: imageSchema.default([]),
+    imageItems: z.array(ImageItemSchema).default([]),
     units: z.array(PropertyUnitSchema).default([]),
     amenities: z.array(PropertyAmenitySchema).default([]),
     paymentSchemes: z.array(PropertyPaymentSchemeSchema).default([]),
@@ -173,7 +167,7 @@ export const STEP_SCHEMAS = {
   Amenities: PropertyAmenitySchema,
   "Payment Plans": PropertyPaymentSchemeSchema,
   Landmarks: PropertyLandmarkSchema,
-  Media: imageSchema,
+  Media: z.array(ImageItemSchema),
 } as const;
 
 export type StepName = keyof typeof STEP_SCHEMAS;
@@ -217,7 +211,7 @@ export const STEP_FIELD_NAMES = {
   Amenities: ["amenities"],
   "Payment Plans": ["paymentSchemes"],
   Landmarks: ["landmarks"],
-  Media: ["images"] as const,
+  Media: ["imageItems"] as const,
 } as const;
 
 export const PROPERTY_TABS: StepName[] = [

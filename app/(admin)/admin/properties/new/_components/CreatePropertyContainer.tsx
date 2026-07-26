@@ -10,6 +10,7 @@ import {
   STEP_FIELD_NAMES,
   PROPERTY_TABS,
 } from "../../_schema/property.schema";
+import { PropertyType } from "@/app/generated/prisma/enums";
 import { createPropertyAction, FormState } from "@/actions/property.action";
 import BasicStep from "@/components/step/BasicStep";
 import LocationStep from "@/components/step/LocationStep";
@@ -43,10 +44,10 @@ const CreatePropertyContainer = () => {
       title: "",
       slug: "",
       description: "",
-      type: "",
+      type: PropertyType.CONDO,
       address: "",
       city: "",
-      images: [],
+      imageItems: [],
     },
     mode: "onTouched",
   });
@@ -65,13 +66,37 @@ const CreatePropertyContainer = () => {
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
 
-    if (data.images && data.images.length > 0) {
-      data.images.forEach((file: File) => {
-        formData.append("images", file);
-      });
-    }
+    // Extract files from imageItems before serialization
+    const imageItemsForServer = data.imageItems.map((item) => ({
+      id: item.id,
+      caption: item.caption,
+      order: item.order,
+      isPrimary: item.isPrimary,
+    }));
+    formData.append("imageItems", JSON.stringify(imageItemsForServer));
 
-    const { ...rest } = data;
+    data.imageItems.forEach((item) => {
+      if (item.file) {
+        formData.append("imageFiles", item.file);
+      }
+    });
+
+    // Extract floor-plan files from units before serialization
+      const unitsForServer = data.units.map((unit) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { floorPlanImageFile, ...rest } = unit;
+        return rest;
+      });
+    formData.append("units", JSON.stringify(unitsForServer));
+
+    data.units.forEach((unit, index) => {
+      if (unit.floorPlanImageFile) {
+        formData.append(`floorPlanFiles_${index}`, unit.floorPlanImageFile);
+      }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { imageItems, units, ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
