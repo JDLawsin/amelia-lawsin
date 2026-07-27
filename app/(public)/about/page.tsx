@@ -8,6 +8,9 @@ import {
   TESTIMONIALS,
 } from "@/constants";
 import { getActiveListingsCount } from "@/services/property.service";
+import { getSiteUrl } from "@/lib/site";
+import { breadcrumbListJsonLd, realEstateAgentJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaPrimaryDark, ctaSecondaryDark } from "@/components/ui/cta";
 
@@ -146,8 +149,19 @@ const AboutPage = async () => {
     { value: STATIC_STATS.clientRating, label: "Client rating" },
   ];
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="bg-white">
+      <JsonLd
+        data={[
+          realEstateAgentJsonLd(baseUrl),
+          breadcrumbListJsonLd(baseUrl, [
+            { name: "Home", url: "/" },
+            { name: "About", url: "/about" },
+          ]),
+        ]}
+      />
       <section className="relative h-130 md:h-175 bg-cloud overflow-hidden flex items-end">
         <Image
           src="/amelia.webp"

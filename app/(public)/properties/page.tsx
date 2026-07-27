@@ -3,6 +3,9 @@ import {
   getPropertiesCount,
   PropertyFilters,
 } from "@/services/property.service";
+import { getSiteUrl } from "@/lib/site";
+import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import { Suspense } from "react";
 import PropertiesLoadingFallback from "./_components/PropertiesLoadingFallback";
 import PropertiesClient from "./_components/PropertiesClient";
@@ -37,8 +40,16 @@ const PropertiesPage = async ({ searchParams }: Props) => {
     getPropertiesCount(filters),
   ]);
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="min-h-screen bg-background">
+      <JsonLd
+        data={breadcrumbListJsonLd(baseUrl, [
+          { name: "Home", url: "/" },
+          { name: "Properties", url: "/properties" },
+        ])}
+      />
       <div className="bg-cloud border-b border-wire px-6 py-5">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs text-ash mb-1">

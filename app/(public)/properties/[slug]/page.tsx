@@ -8,6 +8,12 @@ import {
   getRelatedProperties,
 } from "@/services/property.service";
 import { PAYMENT_TYPE_LABELS, STATUS_LABELS, STATUS_STYLES } from "@/constants";
+import { getSiteUrl } from "@/lib/site";
+import {
+  breadcrumbListJsonLd,
+  realEstateListingJsonLd,
+} from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import { formatPriceWithNote } from "@/lib/utils";
 import PropertyGallery from "./_components/PropertyGallery";
 import UnitSelector from "./_components/UnitSelector";
@@ -90,6 +96,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
   const { price, note } = formatPriceWithNote(property);
   const address = [property.address, property.city].filter(Boolean).join(", ");
   const hasUnits = property.units.length > 0;
+  const baseUrl = getSiteUrl();
   const hasDeveloperInfo =
     property.developerName ||
     property.projectPhase ||
@@ -98,6 +105,16 @@ const PropertyDetailPage = async ({ params }: Props) => {
 
   return (
     <main className="bg-white min-h-screen">
+      <JsonLd
+        data={[
+          realEstateListingJsonLd(baseUrl, property),
+          breadcrumbListJsonLd(baseUrl, [
+            { name: "Home", url: "/" },
+            { name: "Properties", url: "/properties" },
+            { name: property.title, url: `/properties/${property.slug}` },
+          ]),
+        ]}
+      />
       <nav className="py-3 flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"

@@ -4,6 +4,9 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getBlogBySlug, getRelatedBlogs } from "@/services/blog.service";
 import { SITE_CONFIG } from "@/constants";
+import { getSiteUrl } from "@/lib/site";
+import { blogPostingJsonLd, breadcrumbListJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import { estimateReadTimeFromContent, formatDate } from "@/lib/utils";
 import ShareButtons from "./_components/ShareButtons";
 import TableOfContents from "./_components/TableOfContents";
@@ -56,9 +59,20 @@ const BlogDetailPage = async ({ params }: Props) => {
   );
   const readTime = estimateReadTimeFromContent(blog.content, blog.excerpt);
   const publishedDate = formatDate(blog.publishedAt);
+  const baseUrl = getSiteUrl();
 
   return (
     <main className="bg-white min-h-screen">
+      <JsonLd
+        data={[
+          blogPostingJsonLd(baseUrl, blog),
+          breadcrumbListJsonLd(baseUrl, [
+            { name: "Home", url: "/" },
+            { name: "Blog", url: "/blog" },
+            { name: blog.title, url: `/blog/${blog.slug}` },
+          ]),
+        ]}
+      />
       <nav className="py-3 flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"

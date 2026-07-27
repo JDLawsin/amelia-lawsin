@@ -14,6 +14,9 @@ import {
 } from "@/services/property.service";
 import { getLatestBlogs } from "@/services/blog.service";
 import { SITE_CONFIG } from "@/constants";
+import { getSiteUrl } from "@/lib/site";
+import { organizationJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 
 const title = `${SITE_CONFIG.name} — Licensed Real Estate Agent in ${SITE_CONFIG.location}`;
 const description = `Find condos, house & lot, townhouses, and pre-selling properties in ${SITE_CONFIG.location} with ${SITE_CONFIG.name}. Get expert guidance on Pag-IBIG, bank, and in-house financing — trusted by local buyers, OFWs, and investors.`;
@@ -46,8 +49,11 @@ export const Home = async () => {
       getLatestBlogs(),
     ]);
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="bg-white">
+      <JsonLd data={organizationJsonLd(baseUrl)} />
       <HeroSection latestListing={latestListing} />
       <StatsBar activeListings={activeListingsCount} />
       <FeaturedProperties properties={featuredProperties} />

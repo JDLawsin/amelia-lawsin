@@ -5,6 +5,9 @@ import {
   getAllBlogTags,
   getBlogsCount,
 } from "@/services/blog.service";
+import { getSiteUrl } from "@/lib/site";
+import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import FeaturedGrid from "./_components/FeaturedGrid";
 import BlogCTAStrip from "./_components/BlogCTAStrip";
 import BlogPageSkeleton from "./_components/BlogPageSkeleton";
@@ -65,8 +68,16 @@ const BlogPage = async ({ searchParams }: Props) => {
   ]);
   const featuredBlogs = blogs.slice(0, 3);
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="bg-white min-h-screen">
+      <JsonLd
+        data={breadcrumbListJsonLd(baseUrl, [
+          { name: "Home", url: "/" },
+          { name: "Blog", url: "/blog" },
+        ])}
+      />
       <div className="bg-cloud border-b border-wire px-6 py-10">
         <div className="max-w-7xl mx-auto flex items-end justify-between">
           <div>
