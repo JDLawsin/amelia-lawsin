@@ -22,35 +22,37 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
   const hasMore = images.length > 3;
 
   return (
-    <div className="relative grid grid-cols-3 grid-rows-2 gap-0.5 h-85 px-6 max-w-7xl mx-auto w-full">
-      <button
-        type="button"
-        data-gallery-index={0}
-        className="col-span-2 row-span-2 relative bg-cloud rounded-l-2xl overflow-hidden cursor-pointer group text-left p-0 border-0"
-        aria-label={`View photo 1 of ${images.length}`}
-      >
-        {primary ? (
-          <Image
-            src={primary.url}
-            alt={title}
-            fill
-            sizes={PROPERTY_GALLERY_PRIMARY_SIZES}
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            priority
-            fetchPriority="high"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs text-ash">No photo</span>
-          </div>
-        )}
+    <div className="relative grid grid-cols-3 grid-rows-2 gap-0.5 aspect-[16/9] px-6 max-w-7xl mx-auto w-full">
+      <div className="col-span-2 row-span-2 relative">
+        <button
+          type="button"
+          data-gallery-index={0}
+          className="relative w-full h-full bg-cloud rounded-l-2xl overflow-hidden cursor-pointer group text-left p-0 border-0"
+          aria-label={`View photo 1 of ${images.length}`}
+        >
+          {primary ? (
+            <Image
+              src={primary.url}
+              alt={title}
+              fill
+              sizes={PROPERTY_GALLERY_PRIMARY_SIZES}
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              priority
+              fetchPriority="high"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xs text-ash">No photo</span>
+            </div>
+          )}
+        </button>
         <div
           aria-hidden="true"
           className="absolute top-3 left-3 bg-black/40 text-white text-[10px] px-2 py-1 rounded-md pointer-events-none"
         >
           1 / {images.length}
         </div>
-      </button>
+      </div>
 
       {rest.map((img, i) => (
         <button
