@@ -147,6 +147,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
   const address = [property.address, property.city].filter(Boolean).join(", ");
   const hasUnits = property.units.length > 0;
   const baseUrl = getSiteUrl();
+  const shareUrl = `${baseUrl}/properties/${property.slug}`;
   const hasDeveloperInfo =
     property.developerName ||
     property.projectPhase ||
@@ -537,6 +538,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
             <Divider />
             <SectionTitle>Interested in this property?</SectionTitle>
             <ContactSidebar
+              shareUrl={shareUrl}
               property={{
                 title: property.title,
                 slug: property.slug,
@@ -567,6 +569,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
         <div className="hidden lg:block py-6 pl-8">
           <div className="sticky top-17">
             <ContactSidebar
+              shareUrl={shareUrl}
               property={{
                 title: property.title,
                 slug: property.slug,
