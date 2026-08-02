@@ -112,7 +112,7 @@ const ContactSidebar = ({ property }: Props) => {
           </div>
         )}
 
-        <p className="text-[10px] text-fog text-center mt-3 leading-relaxed">
+        <p className="text-xs text-ash text-center mt-3 leading-relaxed">
           Free consultation · No commitment required
         </p>
       </div>
@@ -393,7 +393,7 @@ const InquiryModal = ({
               {isPending ? "Sending..." : "Send inquiry"}
             </button>
 
-            <p className="text-[10px] text-fog text-center">
+            <p className="text-xs text-ash text-center">
               Your details are only shared with Amelia Lawsin
             </p>
           </form>

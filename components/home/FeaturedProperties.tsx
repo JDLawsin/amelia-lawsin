@@ -24,7 +24,7 @@ const FeaturedProperties = ({ properties }: Props) => {
             <PropertyCard
               key={property.id}
               property={property}
-              loading={i === 0 ? "eager" : undefined}
+              priority={i === 0}
               className="shadow-apple-lg"
             />
           ))}

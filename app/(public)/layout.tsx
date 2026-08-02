@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import AuthProvider from "@/providers/AuthProvider";
 import { FavoritesProvider } from "@/providers/FavoritesProvider";
 import { CompareProvider } from "@/providers/CompareProvider";
-import { ToolsFab } from "@/components/tools/ToolsFab";
+import ToolsFabLoader from "@/components/tools/ToolsFabLoader";
 import { PublicTooltipProvider } from "@/components/providers/PublicTooltipProvider";
 import { getUser } from "@/services/auth.service";
 import { getRole } from "@/services/profile.service";
@@ -25,7 +25,7 @@ const PublicLayout = async ({ children }: Props) => {
             <Navbar />
             {children}
             <Footer />
-            <ToolsFab />
+            <ToolsFabLoader />
           </CompareProvider>
         </FavoritesProvider>
       </PublicTooltipProvider>

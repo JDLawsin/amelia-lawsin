@@ -11,9 +11,15 @@ type Props = {
   property: PropertyListItem;
   className?: string;
   loading?: "eager" | "lazy";
+  priority?: boolean;
 };
 
-const PropertyCard = ({ property, className, loading = "lazy" }: Props) => {
+const PropertyCard = ({
+  property,
+  className,
+  loading = "lazy",
+  priority = false,
+}: Props) => {
   const imageUrl = getPrimaryImage(property.images);
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
@@ -39,7 +45,8 @@ const PropertyCard = ({ property, className, loading = "lazy" }: Props) => {
               alt={property.title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              loading={loading}
+              priority={priority}
+              loading={priority ? undefined : loading}
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (

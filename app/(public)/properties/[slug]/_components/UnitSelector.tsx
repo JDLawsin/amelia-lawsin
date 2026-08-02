@@ -50,14 +50,14 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
             <p className="text-base font-medium text-ink">
               {formatUnitPrice(active)}
             </p>
-            <p className="text-[10px] text-fog mt-0.5">{priceLabel}</p>
+            <p className="text-xs text-ash mt-0.5">{priceLabel}</p>
           </div>
           {active.floorArea && (
             <div>
               <p className="text-base font-medium text-ink">
                 {active.floorArea}sqm
               </p>
-              <p className="text-[10px] text-fog mt-0.5">Floor area</p>
+              <p className="text-xs text-ash mt-0.5">Floor area</p>
             </div>
           )}
           {active.lotArea && (
@@ -65,7 +65,7 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
               <p className="text-base font-medium text-ink">
                 {active.lotArea}sqm
               </p>
-              <p className="text-[10px] text-fog mt-0.5">Lot area</p>
+              <p className="text-xs text-ash mt-0.5">Lot area</p>
             </div>
           )}
           {active.bedrooms != null && (
@@ -73,7 +73,7 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
               <p className="text-base font-medium text-ink">
                 {active.bedrooms === 0 ? "Studio" : active.bedrooms}
               </p>
-              <p className="text-[10px] text-fog mt-0.5">
+              <p className="text-xs text-ash mt-0.5">
                 {active.bedrooms === 0 ? "Unit type" : "Bedrooms"}
               </p>
             </div>
@@ -83,20 +83,20 @@ const UnitSelector = ({ units, propertyTitle }: Props) => {
               <p className="text-base font-medium text-ink">
                 {active.bathrooms}
               </p>
-              <p className="text-[10px] text-fog mt-0.5">Bathrooms</p>
+              <p className="text-xs text-ash mt-0.5">Bathrooms</p>
             </div>
           )}
           {active.parking != null && active.parking > 0 && (
             <div>
               <p className="text-base font-medium text-ink">{active.parking}</p>
-              <p className="text-[10px] text-fog mt-0.5">Parking</p>
+              <p className="text-xs text-ash mt-0.5">Parking</p>
             </div>
           )}
         </div>
 
         {active.towerOrPhase && (
           <p className="text-xs text-ash mb-4">
-            <span className="text-fog">Phase / Tower: </span>
+            <span className="text-ash">Phase / Tower: </span>
             {active.towerOrPhase}
           </p>
         )}

@@ -14,13 +14,13 @@ export default function PropertyDetailLoading() {
         <div className="h-3 w-32 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
       </div>
 
+      <div className="px-6 max-w-7xl mx-auto mb-6">
+        <div className="w-full h-96 bg-cloud rounded-2xl animate-pulse motion-reduce:animate-none" />
+      </div>
+
       <div className="px-6 pt-5 pb-3 max-w-7xl mx-auto">
         <div className="h-6 w-3/4 bg-cloud rounded animate-pulse motion-reduce:animate-none mb-2" />
         <div className="h-3 w-1/3 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
-      </div>
-
-      <div className="px-6 max-w-7xl mx-auto mb-6">
-        <div className="w-full h-96 bg-cloud rounded-2xl animate-pulse motion-reduce:animate-none" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 px-6 max-w-7xl mx-auto">

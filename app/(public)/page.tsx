@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { preload } from "react-dom";
 import FeaturedProperties from "@/components/home/FeaturedProperties";
 import HeroSection from "@/components/home/HeroSection";
 import StatsBar from "@/components/home/StatsBar";
 import WhyChooseSection from "@/components/home/WhyChooseSection";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-import FinalCTASection from "@/components/home/FinalCTASection";
-import BlogPreviewSection from "@/components/home/BlogPreviewSection";
 import {
   getActiveListingsCount,
   getFeaturedProperties,
@@ -18,6 +17,17 @@ import { ogImageMetadata } from "@/lib/og-metadata";
 import { getSiteUrl } from "@/lib/site";
 import { organizationJsonLd } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
+import { getPrimaryImage } from "@/lib/utils";
+
+const TestimonialsSection = dynamic(
+  () => import("@/components/home/TestimonialsSection"),
+);
+const BlogPreviewSection = dynamic(
+  () => import("@/components/home/BlogPreviewSection"),
+);
+const FinalCTASection = dynamic(
+  () => import("@/components/home/FinalCTASection"),
+);
 
 const title = `${SITE_CONFIG.name} — Licensed Real Estate Agent in ${SITE_CONFIG.location}`;
 const description = `Find condos, house & lot, townhouses, and pre-selling properties in ${SITE_CONFIG.location} with ${SITE_CONFIG.name}. Get expert guidance on Pag-IBIG, bank, and in-house financing — trusted by local buyers, OFWs, and investors.`;
@@ -52,6 +62,13 @@ export const Home = async () => {
       getLatestListing(),
       getLatestBlogs(),
     ]);
+
+  const heroImage = latestListing
+    ? getPrimaryImage(latestListing.images)
+    : null;
+  if (heroImage) {
+    preload(heroImage, { as: "image", fetchPriority: "high" });
+  }
 
   const baseUrl = getSiteUrl();
 

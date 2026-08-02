@@ -9,7 +9,7 @@ const FinalCTASection = () => (
         Ready to find your dream property?
       </h2>
 
-      <p className="text-sm text-white/45 leading-relaxed max-w-md">
+      <p className="text-sm text-white/50 leading-relaxed max-w-md">
         Let Amelia guide you through every step, from browsing to turnover.
         Reach out now — it&apos;s free and no commitment required.
       </p>

@@ -31,7 +31,7 @@ const TestimonialsSection = () => (
                 <p className="text-xs font-medium text-ink">
                   {testimonial.name}
                 </p>
-                <p className="text-[10px] text-fog">{testimonial.location}</p>
+                <p className="text-[10px] text-ash">{testimonial.location}</p>
               </div>
             </div>
           </div>
