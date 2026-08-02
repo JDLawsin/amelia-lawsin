@@ -3,6 +3,11 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ensureMetaDescription } from "@/lib/metadata-helpers";
 import { preloadLcpImage } from "@/lib/preload-lcp-image";
+import {
+  PROPERTY_GALLERY_PRIMARY_HEIGHT,
+  PROPERTY_GALLERY_PRIMARY_SIZES,
+  PROPERTY_GALLERY_PRIMARY_WIDTH,
+} from "@/lib/image-layout";
 import { MapPin } from "lucide-react";
 import clsx from "clsx";
 import type { Metadata } from "next";
@@ -152,9 +157,9 @@ const PropertyDetailPage = async ({ params }: Props) => {
     property.images.find((i) => i.isPrimary) ?? property.images[0];
   if (primaryImage?.url) {
     preloadLcpImage(primaryImage.url, property.title, {
-      width: 1200,
-      height: 800,
-      sizes: "(max-width: 1024px) 100vw, 66vw",
+      width: PROPERTY_GALLERY_PRIMARY_WIDTH,
+      height: PROPERTY_GALLERY_PRIMARY_HEIGHT,
+      sizes: PROPERTY_GALLERY_PRIMARY_SIZES,
     });
   }
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { preload } from "react-dom";
 import FeaturedProperties from "@/components/home/FeaturedProperties";
 import HeroSection from "@/components/home/HeroSection";
 import StatsBar from "@/components/home/StatsBar";
@@ -17,6 +16,12 @@ import { ogImageMetadata } from "@/lib/og-metadata";
 import { getSiteUrl } from "@/lib/site";
 import { organizationJsonLd } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
+import {
+  HERO_IMAGE_HEIGHT,
+  HERO_IMAGE_SIZES,
+  HERO_IMAGE_WIDTH,
+} from "@/lib/image-layout";
+import { preloadLcpImage } from "@/lib/preload-lcp-image";
 import { getPrimaryImage } from "@/lib/utils";
 
 const TestimonialsSection = dynamic(
@@ -67,7 +72,11 @@ export const Home = async () => {
     ? getPrimaryImage(latestListing.images)
     : null;
   if (heroImage) {
-    preload(heroImage, { as: "image", fetchPriority: "high" });
+    preloadLcpImage(heroImage, latestListing?.title ?? "Latest listing", {
+      width: HERO_IMAGE_WIDTH,
+      height: HERO_IMAGE_HEIGHT,
+      sizes: HERO_IMAGE_SIZES,
+    });
   }
 
   const baseUrl = getSiteUrl();

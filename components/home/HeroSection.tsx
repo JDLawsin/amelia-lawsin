@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { HERO_IMAGE_SIZES } from "@/lib/image-layout";
 import { formatPrice, getPrimaryImage, getPropertyLabel } from "@/lib/utils";
 import { PropertyListItem } from "@/services/property.service";
 import { ctaPrimary, ctaSecondary } from "@/components/ui/cta";
@@ -48,8 +49,9 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             src={imageUrl}
             alt={imageAlt}
             fill
-            sizes="(max-width: 1024px) 50vw, 40vw"
+            sizes={HERO_IMAGE_SIZES}
             priority
+            fetchPriority="high"
             className="object-cover"
           />
         ) : (

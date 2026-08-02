@@ -44,7 +44,10 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
             <span className="text-xs text-ash">No photo</span>
           </div>
         )}
-        <div className="absolute top-3 left-3 bg-black/40 text-white text-[10px] px-2 py-1 rounded-md pointer-events-none">
+        <div
+          aria-hidden="true"
+          className="absolute top-3 left-3 bg-black/40 text-white text-[10px] px-2 py-1 rounded-md pointer-events-none"
+        >
           1 / {images.length}
         </div>
       </button>
