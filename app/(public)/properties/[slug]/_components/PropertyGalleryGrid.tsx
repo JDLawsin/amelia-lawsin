@@ -1,5 +1,9 @@
 import Image from "next/image";
 import clsx from "clsx";
+import {
+  PROPERTY_GALLERY_PRIMARY_SIZES,
+  PROPERTY_GALLERY_THUMB_SIZES,
+} from "@/lib/image-layout";
 
 export type GalleryImage = {
   url: string;
@@ -30,7 +34,7 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
             src={primary.url}
             alt={title}
             fill
-            sizes="(max-width: 1024px) 100vw, 66vw"
+            sizes={PROPERTY_GALLERY_PRIMARY_SIZES}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             priority
             fetchPriority="high"
@@ -60,7 +64,7 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
             src={img.url}
             alt={`${title} photo ${i + 2}`}
             fill
-            sizes="(max-width: 1024px) 50vw, 33vw"
+            sizes={PROPERTY_GALLERY_THUMB_SIZES}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </button>

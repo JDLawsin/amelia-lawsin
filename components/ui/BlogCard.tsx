@@ -1,6 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { estimateReadTime, formatDate } from "@/lib/utils";
+import {
+  BLOG_CARD_IMAGE_SIZES,
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+} from "@/lib/image-layout";
 import { BlogPreviewItem } from "@/services/blog.service";
 
 type BlogCardProps = {
@@ -13,16 +18,17 @@ const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => (
     href={`/blog/${blog.slug}`}
     className="group flex flex-col bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
   >
-    <div className="relative h-44 bg-cloud overflow-hidden">
+    <div className="relative overflow-hidden bg-cloud">
       {blog.coverImage ? (
         <Image
           src={blog.coverImage}
           alt={blog.title}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          width={BLOG_IMAGE_WIDTH}
+          height={BLOG_IMAGE_HEIGHT}
+          sizes={BLOG_CARD_IMAGE_SIZES}
           loading={loading}
           decoding="async"
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center">

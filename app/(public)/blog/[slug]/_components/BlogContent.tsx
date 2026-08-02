@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import ImageLightbox from "@/components/ui/ImageLightbox";
+import {
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+  BLOG_INLINE_IMAGE_SIZES,
+} from "@/lib/image-layout";
 
 type TipTapMark = {
   type: "bold" | "italic" | "underline" | "link" | "code";
@@ -184,7 +189,10 @@ const RenderNode = ({ node }: { node: TipTapNode }) => {
               <Image
                 src={node.attrs.src}
                 alt={node.attrs.alt ?? ""}
-                className="w-full rounded-xl transition-transform duration-300 group-hover:scale-105"
+                width={BLOG_IMAGE_WIDTH}
+                height={BLOG_IMAGE_HEIGHT}
+                sizes={BLOG_INLINE_IMAGE_SIZES}
+                className="w-full h-auto rounded-xl transition-transform duration-300 group-hover:scale-105"
               />
             </button>
           </ImageLightbox>

@@ -13,6 +13,11 @@ import { blogPostingJsonLd, breadcrumbListJsonLd } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
 import { estimateReadTimeFromContent, formatDate } from "@/lib/utils";
 import { preloadLcpImage } from "@/lib/preload-lcp-image";
+import {
+  BLOG_HERO_IMAGE_SIZES,
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+} from "@/lib/image-layout";
 import ShareButtons from "./_components/ShareButtons";
 import TableOfContents from "./_components/TableOfContents";
 import BlogContent from "./_components/BlogContent";
@@ -79,12 +84,13 @@ const BlogDetailPage = async ({ params }: Props) => {
   const readTime = estimateReadTimeFromContent(blog.content, blog.excerpt);
   const publishedDate = formatDate(blog.publishedAt);
   const baseUrl = getSiteUrl();
+  const shareUrl = `${baseUrl}/blog/${blog.slug}`;
 
   if (blog.coverImage) {
     preloadLcpImage(blog.coverImage, blog.title, {
-      width: 1280,
-      height: 720,
-      sizes: "(max-width: 1280px) 100vw, 1280px",
+      width: BLOG_IMAGE_WIDTH,
+      height: BLOG_IMAGE_HEIGHT,
+      sizes: BLOG_HERO_IMAGE_SIZES,
     });
   }
 
@@ -162,7 +168,11 @@ const BlogDetailPage = async ({ params }: Props) => {
             )}
 
             <div className="ml-auto">
-              <ShareButtons title={blog.title} variant="inline" />
+              <ShareButtons
+                title={blog.title}
+                url={shareUrl}
+                variant="inline"
+              />
             </div>
           </div>
         </div>
@@ -170,17 +180,16 @@ const BlogDetailPage = async ({ params }: Props) => {
 
       {blog.coverImage && (
         <div className="max-w-7xl mx-auto px-6 pb-8">
-          <div className="relative w-full aspect-[16/9] md:aspect-auto md:h-100 rounded-2xl overflow-hidden bg-cloud">
-            <Image
-              src={blog.coverImage}
-              alt={blog.title}
-              fill
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              className="object-cover"
-              priority
-              fetchPriority="high"
-            />
-          </div>
+          <Image
+            src={blog.coverImage}
+            alt={blog.title}
+            width={BLOG_IMAGE_WIDTH}
+            height={BLOG_IMAGE_HEIGHT}
+            sizes={BLOG_HERO_IMAGE_SIZES}
+            className="w-full h-auto rounded-2xl object-cover"
+            priority
+            fetchPriority="high"
+          />
         </div>
       )}
 
@@ -260,7 +269,11 @@ const BlogDetailPage = async ({ params }: Props) => {
                 </a>
               </div>
 
-              <ShareButtons title={blog.title} variant="sidebar" />
+              <ShareButtons
+                title={blog.title}
+                url={shareUrl}
+                variant="sidebar"
+              />
             </div>
           </div>
         </div>

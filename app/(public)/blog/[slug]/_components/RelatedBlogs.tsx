@@ -2,6 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { BlogPreviewItem } from "@/services/blog.service";
 import { estimateReadTime, formatDate } from "@/lib/utils";
+import {
+  BLOG_CARD_IMAGE_SIZES,
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+} from "@/lib/image-layout";
 
 type RelatedBlogsProps = {
   blogs: BlogPreviewItem[];
@@ -22,14 +27,15 @@ const RelatedBlogs = ({ blogs }: RelatedBlogsProps) => {
             href={`/blog/${blog.slug}`}
             className="group flex flex-col bg-white border border-wire rounded-xl overflow-hidden hover:shadow-apple hover:border-wire/60 transition-all duration-200"
           >
-            <div className="relative h-28 bg-cloud overflow-hidden">
+            <div className="relative overflow-hidden bg-cloud aspect-video">
               {blog.coverImage ? (
                 <Image
                   src={blog.coverImage}
                   alt={blog.title}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  width={BLOG_IMAGE_WIDTH}
+                  height={BLOG_IMAGE_HEIGHT}
+                  sizes={BLOG_CARD_IMAGE_SIZES}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">

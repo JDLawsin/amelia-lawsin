@@ -2,25 +2,24 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { useCurrentUrl } from "@/lib/hooks/useCurrentUrl";
 
 type Props = {
   title: string;
+  url: string;
   variant?: "inline" | "sidebar";
 };
 
-const ShareButtons = ({ title, variant = "inline" }: Props) => {
+const ShareButtons = ({ title, url, variant = "inline" }: Props) => {
   const [copied, setCopied] = useState(false);
-  const currentUrl = useCurrentUrl();
 
   const copyLink = () => {
-    navigator.clipboard.writeText(currentUrl || window.location.href);
+    navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-  const viberUrl = `viber://forward?text=${encodeURIComponent(`${title} ${currentUrl}`)}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  const viberUrl = `viber://forward?text=${encodeURIComponent(`${title} ${url}`)}`;
 
   if (variant === "inline") {
     return (
@@ -31,12 +30,19 @@ const ShareButtons = ({ title, variant = "inline" }: Props) => {
           rel="noopener noreferrer"
           className="h-8 px-3 flex items-center gap-1.5 rounded-full border border-wire text-xs text-ash hover:text-ink hover:border-ink transition-colors"
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" />
           </svg>
           Share
         </a>
         <button
+          type="button"
           onClick={copyLink}
           className={clsx(
             "h-8 px-3 flex items-center rounded-full border text-xs transition-colors",
@@ -64,6 +70,7 @@ const ShareButtons = ({ title, variant = "inline" }: Props) => {
           Share on Facebook
         </a>
         <button
+          type="button"
           onClick={copyLink}
           className={clsx(
             "w-full bg-cloud rounded-lg py-2 text-xs text-center transition-colors",

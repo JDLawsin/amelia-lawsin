@@ -1,4 +1,7 @@
 import { cn, formatPrice, getPrimaryImage } from "@/lib/utils";
+import {
+  PROPERTY_CARD_IMAGE_SIZES,
+} from "@/lib/image-layout";
 import Link from "next/link";
 import Image from "next/image";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
@@ -38,13 +41,13 @@ const PropertyCard = ({
         <CompareButton slug={property.slug} size="sm" />
       </div>
       <Link href={`/properties/${property.slug}`} className="block h-full">
-        <div className="relative h-52 bg-cloud overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-cloud">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={property.title}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes={PROPERTY_CARD_IMAGE_SIZES}
               priority={priority}
               loading={priority ? undefined : loading}
               className="object-cover group-hover:scale-105 transition-transform duration-300"

@@ -66,12 +66,14 @@ const BlogClient = ({
 
     {total > pageSize && (
       <div className="mt-8 -mx-6 px-6">
-        <Pagination
-          page={currentPage}
-          pageSize={pageSize}
-          total={total}
-          label="articles"
-        />
+        <Suspense>
+          <Pagination
+            page={currentPage}
+            pageSize={pageSize}
+            total={total}
+            label="articles"
+          />
+        </Suspense>
       </div>
     )}
   </div>
