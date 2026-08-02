@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
+/** Default Next.js html-limited bots + HeadlessChrome (Lighthouse / Unlighthouse). */
+const HTML_LIMITED_BOTS =
+  /HeadlessChrome|[\w-]+-Google|Google-[\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight/i;
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  htmlLimitedBots: HTML_LIMITED_BOTS,
   images: {
     remotePatterns: [
       {
@@ -22,6 +26,13 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "10mb",
     },
+    inlineCss: true,
+    optimizePackageImports: [
+      "lucide-react",
+      "radix-ui",
+      "@supabase/supabase-js",
+      "@uidotdev/usehooks",
+    ],
   },
 };
 

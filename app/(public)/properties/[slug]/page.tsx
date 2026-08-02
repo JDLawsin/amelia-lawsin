@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { preload } from "react-dom";
+import { ensureMetaDescription } from "@/lib/metadata-helpers";
+import { preloadLcpImage } from "@/lib/preload-lcp-image";
 import { MapPin } from "lucide-react";
 import clsx from "clsx";
 import type { Metadata } from "next";
@@ -40,9 +41,6 @@ const PropertyMap = dynamic(() => import("./_components/PropertyMap"), {
   ),
 });
 
-const clampDescription = (text: string, max = 160) =>
-  text.length <= max ? text : `${text.slice(0, max - 1).trimEnd()}…`;
-
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -51,7 +49,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const property = await getPropertyBySlug(slug);
 
-  if (!property) return { title: "Property not found" };
+  if (!property) {
+    return {
+      title: "Property not found",
+      description: ensureMetaDescription(
+        null,
+        "Browse Cebu properties with Amelia Lawsin — licensed real estate agent.",
+      ),
+    };
+  }
 
   const price = property.priceLabel
     ? property.priceLabel
@@ -75,7 +81,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const primaryImage =
     property.images.find((i) => i.isPrimary) ?? property.images[0];
 
-  const description = clampDescription(
+  const description = ensureMetaDescription(
     [
       price,
       specs,
@@ -83,8 +89,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       property.description.slice(0, 120),
     ]
       .filter(Boolean)
-      .join(" · ") ||
-      `${property.title} — ${TYPE_LABELS[property.type] ?? "Property"} ${STATUS_LABELS[property.status] ?? "listing"} in ${property.city ?? "Cebu"}. Inquire with Amelia Lawsin for viewings and financing.`,
+      .join(" · "),
+    `${property.title} — ${TYPE_LABELS[property.type] ?? "Property"} ${STATUS_LABELS[property.status] ?? "listing"} in ${property.city ?? "Cebu"}. Inquire with Amelia Lawsin for viewings and financing.`,
   );
 
   const ogImages = primaryImage?.url
@@ -145,7 +151,11 @@ const PropertyDetailPage = async ({ params }: Props) => {
   const primaryImage =
     property.images.find((i) => i.isPrimary) ?? property.images[0];
   if (primaryImage?.url) {
-    preload(primaryImage.url, { as: "image", fetchPriority: "high" });
+    preloadLcpImage(primaryImage.url, property.title, {
+      width: 1200,
+      height: 800,
+      sizes: "(max-width: 1024px) 100vw, 66vw",
+    });
   }
 
   return (

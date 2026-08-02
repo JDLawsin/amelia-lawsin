@@ -45,7 +45,7 @@ const ViberIcon = () => (
 );
 
 const Footer = () => (
-  <footer className="bg-ink text-white">
+  <footer className="bg-ink text-white shrink-0 min-h-72 md:min-h-60">
     <div className="max-w-7xl mx-auto py-12 px-6 2xl:px-0">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 flex flex-col gap-4">

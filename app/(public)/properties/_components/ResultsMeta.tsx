@@ -44,6 +44,7 @@ const ResultsMeta = ({ total }: ResultsMetaProps) => {
       <div className="flex items-center gap-2">
         <Select value={activeSort} onValueChange={handleSort}>
           <SelectTrigger
+            aria-label="Sort properties"
             className={clsx(
               "h-8 px-3 text-xs gap-2 rounded-lg",
               "border-wire text-ash",
@@ -62,9 +63,16 @@ const ResultsMeta = ({ total }: ResultsMetaProps) => {
           </SelectContent>
         </Select>
 
-        <div className="flex border border-wire rounded-lg overflow-hidden">
+        <div
+          className="flex border border-wire rounded-lg overflow-hidden"
+          role="group"
+          aria-label="View layout"
+        >
           <button
+            type="button"
             onClick={() => handleView("grid")}
+            aria-label="Grid view"
+            aria-pressed={activeView === "grid"}
             className={clsx(
               "w-8 h-8 flex items-center justify-center transition-colors",
               activeView === "grid"
@@ -72,10 +80,13 @@ const ResultsMeta = ({ total }: ResultsMetaProps) => {
                 : "bg-white text-ash hover:bg-cloud hover:text-ink",
             )}
           >
-            <LayoutGrid className="w-3.5 h-3.5" />
+            <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
           <button
+            type="button"
             onClick={() => handleView("list")}
+            aria-label="List view"
+            aria-pressed={activeView === "list"}
             className={clsx(
               "w-8 h-8 flex items-center justify-center transition-colors border-l border-wire",
               activeView === "list"
@@ -83,7 +94,7 @@ const ResultsMeta = ({ total }: ResultsMetaProps) => {
                 : "bg-white text-ash hover:bg-cloud hover:text-ink",
             )}
           >
-            <List className="w-3.5 h-3.5" />
+            <List className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
         </div>
       </div>

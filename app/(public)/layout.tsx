@@ -22,9 +22,11 @@ const PublicLayout = async ({ children }: Props) => {
       <PublicTooltipProvider>
         <FavoritesProvider>
           <CompareProvider>
-            <Navbar />
-            {children}
-            <Footer />
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </div>
             <ToolsFabLoader />
           </CompareProvider>
         </FavoritesProvider>

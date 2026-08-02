@@ -33,6 +33,7 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
             sizes="(max-width: 1024px) 100vw, 66vw"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             priority
+            fetchPriority="high"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
