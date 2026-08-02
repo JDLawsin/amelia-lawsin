@@ -4,6 +4,7 @@ import {
   PropertyType,
 } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { orderBySlugList } from "@/lib/utils";
 
 const propertyListSelect = {
   id: true,
@@ -140,8 +141,24 @@ const propertyDetailSelect = {
   },
 } satisfies Prisma.PropertySelect;
 
+const comparePropertySelect = {
+  ...propertyListSelect,
+  parking: true,
+  amenities: {
+    select: {
+      amenity: {
+        select: { name: true },
+      },
+    },
+  },
+} satisfies Prisma.PropertySelect;
+
 export type PropertyListItem = Prisma.PropertyGetPayload<{
   select: typeof propertyListSelect;
+}>;
+
+export type ComparePropertyItem = Prisma.PropertyGetPayload<{
+  select: typeof comparePropertySelect;
 }>;
 
 export type PropertyDetail = Prisma.PropertyGetPayload<{
@@ -283,6 +300,38 @@ export const getPropertiesCount = async (
   return prisma.property.count({
     where: buildWhereClause(filters),
   });
+};
+
+export const getPropertiesBySlugs = async (
+  slugs: string[],
+): Promise<PropertyListItem[]> => {
+  if (slugs.length === 0) return [];
+
+  const properties = await prisma.property.findMany({
+    where: {
+      slug: { in: slugs },
+      deletedAt: null,
+    },
+    select: propertyListSelect,
+  });
+
+  return orderBySlugList(properties, slugs);
+};
+
+export const getComparePropertiesBySlugs = async (
+  slugs: string[],
+): Promise<ComparePropertyItem[]> => {
+  if (slugs.length === 0) return [];
+
+  const properties = await prisma.property.findMany({
+    where: {
+      slug: { in: slugs },
+      deletedAt: null,
+    },
+    select: comparePropertySelect,
+  });
+
+  return orderBySlugList(properties, slugs);
 };
 
 export const getPropertyBySlug = async (

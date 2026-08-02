@@ -16,6 +16,7 @@ export type BlogFormState =
       success: true;
       message: string;
       slug: string;
+      isPublished: boolean;
       errors?: never;
     }
   | {
@@ -132,7 +133,7 @@ export const createBlogAction = withAdminAuth(
             create: tagConnectionPayload(tagConnections),
           },
         },
-        select: { slug: true },
+        select: { slug: true, isPublished: true },
       });
 
       revalidatePath("/blog");
@@ -141,6 +142,7 @@ export const createBlogAction = withAdminAuth(
       return {
         success: true,
         slug: blog.slug,
+        isPublished: blog.isPublished,
         message: "Blog post created successfully.",
       };
     } catch (error) {
@@ -261,7 +263,7 @@ export const updateBlogAction = withAdminAuth(
             create: tagConnectionPayload(tagConnections),
           },
         },
-        select: { slug: true },
+        select: { slug: true, isPublished: true },
       });
 
       if (uploadedCover && oldCoverPublicId) {
@@ -276,6 +278,7 @@ export const updateBlogAction = withAdminAuth(
       return {
         success: true,
         slug: blog.slug,
+        isPublished: blog.isPublished,
         message: "Blog post updated successfully.",
       };
     } catch (error) {
@@ -343,12 +346,22 @@ export const deleteBlogAction = withAdminAuth(
     }
 
     try {
+      const blog = await prisma.blog.findUnique({
+        where: { id },
+        select: { slug: true },
+      });
+
+      if (!blog) {
+        return { success: false, message: "Blog post not found." };
+      }
+
       await prisma.blog.update({
         where: { id },
         data: { deletedAt: new Date() },
       });
 
       revalidatePath("/blog");
+      revalidatePath(`/blog/${blog.slug}`);
       revalidatePath("/admin/blogs");
 
       return { success: true, message: "Blog post deleted." };

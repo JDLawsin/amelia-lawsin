@@ -179,10 +179,15 @@ export const createPropertyAction = withAdminAuth(
 
       const propertyId = randomUUID();
 
-      let uploadedImages: UploadedAsset[] = [];
+      let uploadedResults: Awaited<ReturnType<typeof uploadImages>> = [];
       if (imageFiles.length > 0) {
-        uploadedImages = await uploadImages(imageFiles, propertyId);
-        uploadedAssets.push(...uploadedImages);
+        uploadedResults = await uploadImages(imageFiles, propertyId);
+        uploadedAssets.push(
+          ...uploadedResults.filter(
+            (result): result is { url: string; publicId: string } =>
+              result !== null,
+          ),
+        );
       }
 
       const newImageItems = imageItems.filter((item) => !item.id);
@@ -191,9 +196,15 @@ export const createPropertyAction = withAdminAuth(
       const imagesWithFiles = newImageItems
         .map((item, index) => ({
           ...item,
-          uploaded: uploadedImages[index],
+          uploaded: uploadedResults[index] ?? null,
         }))
-        .filter((item) => item.uploaded);
+        .filter(
+          (
+            item,
+          ): item is typeof item & {
+            uploaded: { url: string; publicId: string };
+          } => item.uploaded !== null,
+        );
 
       const floorPlanUpdates = await uploadFloorPlanImages(
         data.units,
@@ -273,7 +284,7 @@ export const createPropertyAction = withAdminAuth(
       return {
         success: true,
         slug: property.slug,
-        message: `Property created successfully with ${uploadedImages.length} images!`,
+        message: `Property created successfully with ${imagesWithFiles.length} images!`,
       };
     } catch (error) {
       console.error("Create property error:", error);
@@ -375,18 +386,34 @@ export const updatePropertyAction = withAdminAuth(
 
       // Handle deleted existing images
       let deletedPublicIds: string[] = [];
+      let deletedIds: string[] = [];
       if (deletedImageIdsRaw) {
-        const ids = JSON.parse(deletedImageIdsRaw as string) as string[];
+        deletedIds = JSON.parse(deletedImageIdsRaw as string) as string[];
+      } else {
+        const existingImages = await prisma.propertyImage.findMany({
+          where: { propertyId },
+          select: { id: true },
+        });
+        const submittedIds = new Set(
+          imageItems
+            .map((item) => item.id)
+            .filter((id): id is string => Boolean(id)),
+        );
+        deletedIds = existingImages
+          .map((image) => image.id)
+          .filter((id) => !submittedIds.has(id));
+      }
 
+      if (deletedIds.length > 0) {
         const imagesToDelete = await prisma.propertyImage.findMany({
-          where: { id: { in: ids }, propertyId },
+          where: { id: { in: deletedIds }, propertyId },
           select: { publicId: true },
         });
 
         deletedPublicIds = imagesToDelete.map((img) => img.publicId);
 
         await prisma.propertyImage.deleteMany({
-          where: { id: { in: ids }, propertyId },
+          where: { id: { in: deletedIds }, propertyId },
         });
       }
 
@@ -404,16 +431,20 @@ export const updatePropertyAction = withAdminAuth(
       }
 
       // Upload new main images
-      let uploadedImages: UploadedAsset[] = [];
       if (imageFiles.length > 0) {
-        uploadedImages = await uploadImages(imageFiles, propertyId);
-        uploadedAssets.push(...uploadedImages);
+        const uploadedResults = await uploadImages(imageFiles, propertyId);
+        uploadedAssets.push(
+          ...uploadedResults.filter(
+            (result): result is { url: string; publicId: string } =>
+              result !== null,
+          ),
+        );
 
         const newImageItems = imageItems.filter((item) => !item.id);
-        const createData = uploadedImages
-          .map((uploaded, index) => {
-            const item = newImageItems[index];
-            if (!item) return null;
+        const createData = newImageItems
+          .map((item, index) => {
+            const uploaded = uploadedResults[index];
+            if (!uploaded) return null;
             return {
               propertyId,
               url: uploaded.url,

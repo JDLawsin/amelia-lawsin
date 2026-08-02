@@ -34,11 +34,23 @@ export const formatUnitPrice = (unit: Unit): string => {
   return `₱${unit.price.toLocaleString()}`;
 };
 
+type PropertyImageLike = { isPrimary: boolean; url: string };
+
 export const getPrimaryImage = (
-  images: PropertyListItem["images"],
+  images: PropertyImageLike[],
 ): string | null => {
   const primary = images.find((img) => img.isPrimary);
   return primary?.url ?? images[0]?.url ?? null;
+};
+
+export const orderBySlugList = <T extends { slug: string }>(
+  items: T[],
+  slugs: string[],
+): T[] => {
+  const map = new Map(items.map((item) => [item.slug, item]));
+  return slugs
+    .map((slug) => map.get(slug))
+    .filter((item): item is T => item !== undefined);
 };
 
 export const estimateReadTime = (excerpt: string): string => {

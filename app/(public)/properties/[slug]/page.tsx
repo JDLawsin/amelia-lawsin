@@ -15,6 +15,8 @@ import {
 } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
 import { formatPriceWithNote } from "@/lib/utils";
+import { FavoriteButton } from "@/components/favorites/FavoriteButton";
+import { CompareButton } from "@/components/tools/CompareButton";
 import PropertyGallery from "./_components/PropertyGallery";
 import UnitSelector from "./_components/UnitSelector";
 import PropertyMap from "./_components/PropertyMap";
@@ -146,6 +148,15 @@ const PropertyDetailPage = async ({ params }: Props) => {
               {address}
             </div>
           )}
+        </div>
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
+            Save Listing
+          </span>
+          <div className="flex items-center gap-2 rounded-xl border border-wire bg-cloud/50 p-1.5">
+            <FavoriteButton slug={property.slug} size="md" />
+            <CompareButton slug={property.slug} size="md" />
+          </div>
         </div>
       </div>
 

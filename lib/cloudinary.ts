@@ -58,9 +58,7 @@ export const uploadImages = async (files: File[], propertyId: string) => {
     }
   });
 
-  const results = await Promise.all(uploads);
-
-  return results.filter(Boolean) as { url: string; publicId: string }[];
+  return Promise.all(uploads);
 };
 
 export const uploadCoverImage = async (

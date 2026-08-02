@@ -5,6 +5,7 @@ import { updateBlogAction, BlogFormState } from "@/actions/blog.action";
 import { BlogAdminDetail } from "@/services/blog.admin.service";
 import { mapBlogToForm } from "@/lib/mapper";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
+import { getBlogRedirectPath } from "@/lib/blog-redirect";
 import BlogForm from "../../../_components/BlogForm";
 import PageHeader from "@/components/ui/PageHeader";
 
@@ -26,8 +27,7 @@ const UpdateBlogContainer = ({ blog, allTags }: Props) => {
   );
 
   useFormActionEffect(state, {
-    getRedirectPath: (state) =>
-      state?.slug ? `/blog/${state.slug}` : null,
+    getRedirectPath: getBlogRedirectPath,
   });
 
   return (

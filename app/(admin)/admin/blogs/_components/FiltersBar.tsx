@@ -27,6 +27,9 @@ const FiltersBar = ({ filters }: Props) => {
   const debouncedSearch = useDebounce(searchValue, 300);
 
   useEffect(() => {
+    const currentQ = filters.q ?? "";
+    if (debouncedSearch === currentQ) return;
+
     updateQueryString({
       q: debouncedSearch || undefined,
       page: "1",

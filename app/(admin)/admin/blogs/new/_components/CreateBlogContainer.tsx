@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { createBlogAction, BlogFormState } from "@/actions/blog.action";
 import BlogForm from "../../_components/BlogForm";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
+import { getBlogRedirectPath } from "@/lib/blog-redirect";
 import PageHeader from "@/components/ui/PageHeader";
 
 type AvailableTag = {
@@ -23,8 +24,7 @@ const CreateBlogContainer = ({ allTags }: Props) => {
   );
 
   useFormActionEffect(state, {
-    getRedirectPath: (state) =>
-      state?.slug ? `/blog/${state.slug}` : null,
+    getRedirectPath: getBlogRedirectPath,
   });
 
   return (

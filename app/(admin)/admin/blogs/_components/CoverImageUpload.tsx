@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
@@ -17,7 +17,18 @@ type Props = {
 const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const previewUrl = value ? URL.createObjectURL(value) : existingUrl;
+  const objectUrl = useMemo(() => {
+    if (!value) return null;
+    return URL.createObjectURL(value);
+  }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [objectUrl]);
+
+  const previewUrl = objectUrl ?? existingUrl ?? null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

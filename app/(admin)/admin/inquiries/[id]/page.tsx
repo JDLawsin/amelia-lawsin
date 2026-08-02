@@ -17,7 +17,11 @@ const InquiryDetailPage = async ({ params }: Props) => {
     await markInquiryAsReadAction(id, true);
   }
 
-  return <InquiryDetail inquiry={inquiry} />;
+  const displayInquiry = inquiry.isRead
+    ? inquiry
+    : { ...inquiry, isRead: true };
+
+  return <InquiryDetail inquiry={displayInquiry} />;
 };
 
 export default InquiryDetailPage;

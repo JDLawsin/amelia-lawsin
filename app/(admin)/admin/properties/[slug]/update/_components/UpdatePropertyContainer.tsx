@@ -68,6 +68,17 @@ const UpdatePropertyContainer = ({ property }: Props) => {
     }));
     formData.append("imageItems", JSON.stringify(imageItemsForServer));
 
+    const originalImageIds = property.images.map((image) => image.id);
+    const currentImageIds = data.imageItems
+      .map((item) => item.id)
+      .filter((id): id is string => Boolean(id));
+    const deletedImageIds = originalImageIds.filter(
+      (id) => !currentImageIds.includes(id),
+    );
+    if (deletedImageIds.length > 0) {
+      formData.append("deletedImageIds", JSON.stringify(deletedImageIds));
+    }
+
     data.imageItems.forEach((item) => {
       if (item.file) {
         formData.append("imageFiles", item.file);
