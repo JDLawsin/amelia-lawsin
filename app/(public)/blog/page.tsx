@@ -81,7 +81,7 @@ const BlogPage = async ({ searchParams }: Props) => {
       <div className="bg-cloud border-b border-wire px-6 py-10">
         <div className="max-w-7xl mx-auto flex items-end justify-between">
           <div>
-            <p className="text-xs font-medium text-fog uppercase tracking-widest mb-3">
+            <p className="text-xs font-medium text-ash uppercase tracking-widest mb-3">
               Real Estate Insights
             </p>
             <h1 className="text-4xl font-serif font-medium text-ink tracking-tight leading-tight mb-3">
@@ -97,7 +97,7 @@ const BlogPage = async ({ searchParams }: Props) => {
             <p className="text-4xl font-serif font-medium text-ink">
               {totalCount}
             </p>
-            <p className="text-xs text-fog mt-1">
+            <p className="text-xs text-ash mt-1">
               {totalCount === 1 ? "article" : "articles"} published
             </p>
           </div>

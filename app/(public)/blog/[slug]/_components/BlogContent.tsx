@@ -189,7 +189,7 @@ const RenderNode = ({ node }: { node: TipTapNode }) => {
             </button>
           </ImageLightbox>
           {node.attrs.title && (
-            <figcaption className="text-xs text-fog text-center mt-2">
+            <figcaption className="text-xs text-ash text-center mt-2">
               {node.attrs.title}
             </figcaption>
           )}
@@ -209,7 +209,7 @@ const BlogContent = ({ content }: BlogContentProps) => {
   const doc = content as TipTapDoc;
 
   if (!doc?.content?.length) {
-    return <p className="text-sm text-fog italic">No content available.</p>;
+    return <p className="text-sm text-ash italic">No content available.</p>;
   }
 
   return (

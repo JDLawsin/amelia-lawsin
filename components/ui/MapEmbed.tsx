@@ -53,7 +53,7 @@ const MapEmbed = ({
           <p className="text-sm font-medium text-ink mb-1 line-clamp-2">
             {fallbackLabel}
           </p>
-          <p className="text-xs text-fog mb-4">Map preview unavailable</p>
+          <p className="text-xs text-ash mb-4">Map preview unavailable</p>
           <span className="inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-lg bg-white border border-wire shadow-apple-sm hover:shadow-apple transition-shadow">
             Open in Maps →
           </span>

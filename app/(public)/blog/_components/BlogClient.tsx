@@ -29,9 +29,9 @@ const BlogClient = ({
     </Suspense>
 
     <div className="pt-8">
-      <p className="text-xs font-medium text-fog uppercase tracking-widest mb-5">
+      <h2 className="text-xs font-medium text-ash uppercase tracking-widest mb-5">
         All articles
-      </p>
+      </h2>
 
       {blogs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">

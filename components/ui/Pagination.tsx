@@ -24,7 +24,7 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
 
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t border-wire bg-cloud/50">
-      <p className="text-xs text-fog">
+      <p className="text-xs text-ash">
         Showing{" "}
         <span className="font-medium text-ink">
           {from}–{to}
@@ -55,7 +55,7 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
             }, [])
             .map((p, i) =>
               p === "..." ? (
-                <span key={`ellipsis-${i}`} className="text-xs text-fog px-1">
+                <span key={`ellipsis-${i}`} className="text-xs text-ash px-1">
                   …
                 </span>
               ) : (

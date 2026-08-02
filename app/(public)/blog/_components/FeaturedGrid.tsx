@@ -14,9 +14,9 @@ const FeaturedGrid = ({ blogs }: Props) => {
 
   return (
     <div>
-      <p className="text-xs font-medium text-fog uppercase tracking-widest mb-4">
+      <h2 className="text-xs font-medium text-ash uppercase tracking-widest mb-4">
         Latest articles
-      </p>
+      </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 h-auto md:h-70">
         <Link
@@ -41,9 +41,9 @@ const FeaturedGrid = ({ blogs }: Props) => {
                 {main.tags[0].tag.name}
               </span>
             )}
-            <h2 className="text-lg font-serif font-medium text-white leading-snug mb-2 group-hover:text-white/90 transition-colors">
+            <h3 className="text-lg font-serif font-medium text-white leading-snug mb-2 group-hover:text-white/90 transition-colors">
               {main.title}
-            </h2>
+            </h3>
             <div className="flex items-center gap-2 text-[10px] text-white/55">
               <span>{formatDate(main.publishedAt)}</span>
               <span>·</span>

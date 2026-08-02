@@ -20,11 +20,11 @@ const PROPERTY_TYPES = [
 const inputStyles = clsx(
   "h-10 px-3 rounded-xl text-sm text-ink",
   "bg-cloud border border-wire",
-  "placeholder:text-fog",
+  "placeholder:text-ash",
   "focus:outline-none focus:border-ink transition-colors",
 );
 
-const labelStyles = "text-xs text-fog";
+const labelStyles = "text-xs text-ash";
 
 const SuccessState = ({
   message,
@@ -196,7 +196,7 @@ const InquiryForm = () => {
 
         <div className="flex flex-col gap-1.5">
           <label className={labelStyles} htmlFor="phone">
-            Phone / WhatsApp <span className="text-fog">(optional)</span>
+            Phone / WhatsApp <span className="text-ash">(optional)</span>
           </label>
           <input
             id="phone"
@@ -258,7 +258,7 @@ const InquiryForm = () => {
             className={clsx(
               "px-3 py-2.5 rounded-xl text-sm text-ink",
               "bg-cloud border border-wire",
-              "placeholder:text-fog",
+              "placeholder:text-ash",
               "focus:outline-none focus:border-ink transition-colors",
               "resize-none",
               {
@@ -286,7 +286,7 @@ const InquiryForm = () => {
           {isPending ? "Sending..." : "Send inquiry"}
         </button>
 
-        <p className="text-xs text-fog text-center">
+        <p className="text-xs text-ash text-center">
           Your details are only shared with Amelia Lawsin
         </p>
       </form>

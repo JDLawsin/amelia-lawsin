@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 const SectionLabel = ({ children }: { children: string }) => (
-  <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-5">
+  <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-5">
     {children}
   </p>
 );
@@ -165,7 +165,7 @@ const ContactPage = () => (
   <main className="bg-white">
     <section className="border-b border-wire">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 text-center">
-        <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-4">
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-4">
           Get in touch
         </p>
         <h1 className="text-4xl md:text-5xl font-serif font-medium text-ink tracking-tight leading-tight mb-4">
@@ -182,7 +182,7 @@ const ContactPage = () => (
 
     <section className="bg-cloud border-b border-wire">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-6 text-center">
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-6 text-center">
           Quickest ways to reach me
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-wire rounded-2xl overflow-hidden">
@@ -314,7 +314,7 @@ const ContactPage = () => (
 
     <section className="bg-cloud border-b border-wire">
       <div className="max-w-7xl mx-auto px-6 py-14">
-        <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-2 text-center">
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-2 text-center">
           Frequently asked questions
         </p>
         <h2 className="text-2xl font-serif font-medium text-ink text-center mb-10 tracking-tight">

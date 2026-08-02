@@ -181,7 +181,7 @@ const ShareButtons = ({ title }: { title: string }) => {
 };
 
 const inputStyles = clsx(
-  "w-full h-10 px-3 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-fog focus:outline-none focus:border-ink transition-colors",
+  "w-full h-10 px-3 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-ash focus:outline-none focus:border-ink transition-colors",
 );
 
 const InquiryModal = ({

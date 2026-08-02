@@ -205,7 +205,7 @@ const AboutPage = async () => {
               <p className="text-4xl font-serif font-medium text-ink tracking-tight leading-none mb-1.5">
                 {stat.value}
               </p>
-              <p className="text-xs text-fog">{stat.label}</p>
+              <p className="text-xs text-ash">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -229,7 +229,7 @@ const AboutPage = async () => {
       <section className="border-b border-wire">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-wire">
           <div className="px-6 lg:px-12 py-14 flex flex-col justify-center gap-5">
-            <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em]">
+            <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
               My story
             </p>
             <h2 className="text-2xl font-serif font-medium text-ink tracking-tight leading-snug">
@@ -285,7 +285,7 @@ const AboutPage = async () => {
                   {cred.title}
                 </p>
                 <p className="text-xs text-ash mb-1">{cred.detail}</p>
-                <p className="text-[10px] text-fog leading-relaxed">
+                <p className="text-[10px] text-ash leading-relaxed">
                   {cred.note}
                 </p>
               </div>
@@ -338,7 +338,7 @@ const AboutPage = async () => {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-ink">{t.name}</p>
-                    <p className="text-[10px] text-fog">{t.location}</p>
+                    <p className="text-[10px] text-ash">{t.location}</p>
                   </div>
                 </div>
               </div>
@@ -354,7 +354,7 @@ const AboutPage = async () => {
             <br className="hidden md:block" />
             property together.
           </h2>
-          <p className="text-sm text-white/45 mb-10">
+          <p className="text-sm text-white/50 mb-10">
             Free consultation · No commitment required
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">

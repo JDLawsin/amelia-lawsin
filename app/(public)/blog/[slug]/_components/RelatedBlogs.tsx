@@ -33,7 +33,7 @@ const RelatedBlogs = ({ blogs }: RelatedBlogsProps) => {
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[9px] text-fog opacity-40">
+                  <span className="text-[9px] text-ash/60">
                     No cover
                   </span>
                 </div>
@@ -49,11 +49,11 @@ const RelatedBlogs = ({ blogs }: RelatedBlogsProps) => {
                 {blog.title}
               </h3>
               <div className="flex items-center gap-1.5 mt-auto pt-2">
-                <span className="text-[10px] text-fog">
+                <span className="text-[10px] text-ash">
                   {formatDate(blog.publishedAt)}
                 </span>
                 <span className="text-wire text-[10px]">·</span>
-                <span className="text-[10px] text-fog">
+                <span className="text-[10px] text-ash">
                   {estimateReadTime(blog.excerpt)}
                 </span>
               </div>

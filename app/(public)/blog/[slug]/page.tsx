@@ -129,7 +129,7 @@ const BlogDetailPage = async ({ params }: Props) => {
                 <span className="text-wire">·</span>
                 <div className="flex items-center gap-1.5 bg-cloud border border-wire rounded-md px-2.5 py-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-fog inline-block" />
-                  <span className="text-xs text-fog">AI assisted</span>
+                  <span className="text-xs text-ash">AI assisted</span>
                 </div>
               </>
             )}

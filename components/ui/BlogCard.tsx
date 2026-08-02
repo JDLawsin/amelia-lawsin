@@ -59,7 +59,7 @@ const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => (
         <span className="text-xs text-ash">{formatDate(blog.publishedAt)}</span>
         {blog.publishedAt && (
           <>
-            <span className="text-fog">·</span>
+            <span className="text-ash">·</span>
             <span className="text-xs text-ash">
               {estimateReadTime(blog.excerpt)}
             </span>
