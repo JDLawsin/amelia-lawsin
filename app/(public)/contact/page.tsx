@@ -1,8 +1,11 @@
 import { SITE_CONFIG } from "@/constants";
+import { ogImageMetadata } from "@/lib/og-metadata";
 import type { Metadata } from "next";
 import InquiryForm from "./_components/InquiryForm";
 import ContactMap from "./_components/ContactMap";
 import FaqAccordion from "./_components/FaqAccordion";
+
+const ogAlt = `Contact ${SITE_CONFIG.name} — Real Estate Agent in Cebu`;
 
 export const metadata: Metadata = {
   title: "Contact Amelia Lawsin — Licensed Real Estate Agent in Cebu",
@@ -14,6 +17,14 @@ export const metadata: Metadata = {
     description:
       "Free consultation via Messenger, SMS, Viber or email. Licensed agent in Cebu, Philippines.",
     type: "website",
+    images: ogImageMetadata("/contact", ogAlt),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Amelia Lawsin — Real Estate Agent Cebu",
+    description:
+      "Free consultation via Messenger, SMS, Viber or email. Licensed agent in Cebu, Philippines.",
+    images: ogImageMetadata("/contact", ogAlt),
   },
 };
 

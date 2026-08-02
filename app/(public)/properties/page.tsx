@@ -3,6 +3,7 @@ import {
   getPropertiesCount,
   PropertyFilters,
 } from "@/services/property.service";
+import { ogImageMetadata } from "@/lib/og-metadata";
 import { getSiteUrl } from "@/lib/site";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
@@ -106,6 +107,7 @@ export async function generateMetadata({ searchParams }: Props) {
       : "Properties | Amelia Lawsin Real Estate Agent Cebu";
 
   const description = `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`;
+  const ogAlt = "Browse Cebu properties with Amelia Lawsin";
 
   // Canonical to the unfiltered base to consolidate ranking signals across
   // the many filter permutations; filters still drive the title/description.
@@ -118,6 +120,13 @@ export async function generateMetadata({ searchParams }: Props) {
       title,
       description,
       url: "/properties",
+      images: ogImageMetadata("/properties", ogAlt),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImageMetadata("/properties", ogAlt),
     },
   };
 }

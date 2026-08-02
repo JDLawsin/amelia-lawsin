@@ -8,11 +8,14 @@ import {
   TESTIMONIALS,
 } from "@/constants";
 import { getActiveListingsCount } from "@/services/property.service";
+import { ogImageMetadata } from "@/lib/og-metadata";
 import { getSiteUrl } from "@/lib/site";
 import { breadcrumbListJsonLd, realEstateAgentJsonLd } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaPrimaryDark, ctaSecondaryDark } from "@/components/ui/cta";
+
+const ogAlt = `About ${SITE_CONFIG.name} — Licensed Real Estate Agent in Cebu`;
 
 export const metadata: Metadata = {
   title: "About Amelia Lawsin — Licensed Real Estate Agent in Cebu",
@@ -24,6 +27,14 @@ export const metadata: Metadata = {
     description:
       "10+ years helping local buyers, OFWs, and international investors find their dream property in Cebu.",
     type: "profile",
+    images: ogImageMetadata("/about", ogAlt),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Amelia Lawsin — Licensed Real Estate Agent in Cebu",
+    description:
+      "10+ years helping local buyers, OFWs, and international investors find their dream property in Cebu.",
+    images: ogImageMetadata("/about", ogAlt),
   },
 };
 
