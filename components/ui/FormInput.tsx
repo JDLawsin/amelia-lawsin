@@ -9,6 +9,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   errors?: string[];
   hint?: string;
   containerClassName?: string;
+  rightElement?: React.ReactNode;
 }
 
 const FormInput = ({
@@ -20,6 +21,7 @@ const FormInput = ({
   required,
   className,
   containerClassName,
+  rightElement,
   ...props
 }: Props) => {
   if (!id || !name) {
@@ -35,20 +37,28 @@ const FormInput = ({
       hint={hint}
       containerClassName={containerClassName}
     >
-      <Input
-        id={id}
-        name={name}
-        {...props}
-        className={clsx(
-          "h-11 rounded-xl bg-background",
-          "border border-input",
-          "shadow-apple-sm",
-          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          "transition-all",
-          errors?.length && "border-destructive focus-visible:ring-destructive",
-          className,
+      <div className="relative">
+        <Input
+          id={id}
+          name={name}
+          {...props}
+          className={clsx(
+            "h-11 rounded-xl bg-background",
+            "border border-input",
+            "shadow-apple-sm",
+            "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "transition-all",
+            errors?.length && "border-destructive focus-visible:ring-destructive",
+            rightElement && "pr-10",
+            className,
+          )}
+        />
+        {rightElement && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+            {rightElement}
+          </div>
         )}
-      />
+      </div>
     </FormField>
   );
 };

@@ -1,18 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { getSiteUrl } from "@/lib/site";
+import { ogImageMetadata } from "@/lib/og-metadata";
 import { SITE_CONFIG } from "@/constants";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+  display: "optional",
+  adjustFontFallback: true,
 });
 
 const siteUrl = getSiteUrl();
@@ -50,17 +55,31 @@ export const metadata: Metadata = {
     title: `${SITE_CONFIG.name} | Licensed Real Estate Agent in Cebu`,
     description: siteDescription,
     url: "/",
+    images: ogImageMetadata(
+      "/",
+      `${SITE_CONFIG.name} — Licensed Real Estate Agent in Cebu`,
+    ),
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_CONFIG.name} | Licensed Real Estate Agent in Cebu`,
     description: siteDescription,
+    images: ogImageMetadata(
+      "/",
+      `${SITE_CONFIG.name} — Licensed Real Estate Agent in Cebu`,
+    ),
   },
   appleWebApp: {
     capable: true,
     title: SITE_CONFIG.name,
     statusBarStyle: "default",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

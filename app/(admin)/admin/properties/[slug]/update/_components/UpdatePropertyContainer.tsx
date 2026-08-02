@@ -60,13 +60,46 @@ const UpdatePropertyContainer = ({ property }: Props) => {
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
 
-    if (data.images && data.images.length > 0) {
-      data.images.forEach((file: File) => {
-        formData.append("images", file);
-      });
+    const imageItemsForServer = data.imageItems.map((item) => ({
+      id: item.id,
+      caption: item.caption,
+      order: item.order,
+      isPrimary: item.isPrimary,
+    }));
+    formData.append("imageItems", JSON.stringify(imageItemsForServer));
+
+    const originalImageIds = property.images.map((image) => image.id);
+    const currentImageIds = data.imageItems
+      .map((item) => item.id)
+      .filter((id): id is string => Boolean(id));
+    const deletedImageIds = originalImageIds.filter(
+      (id) => !currentImageIds.includes(id),
+    );
+    if (deletedImageIds.length > 0) {
+      formData.append("deletedImageIds", JSON.stringify(deletedImageIds));
     }
 
-    const { ...rest } = data;
+    data.imageItems.forEach((item) => {
+      if (item.file) {
+        formData.append("imageFiles", item.file);
+      }
+    });
+
+      const unitsForServer = data.units.map((unit) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { floorPlanImageFile, ...rest } = unit;
+        return rest;
+      });
+    formData.append("units", JSON.stringify(unitsForServer));
+
+    data.units.forEach((unit, index) => {
+      if (unit.floorPlanImageFile) {
+        formData.append(`floorPlanFiles_${index}`, unit.floorPlanImageFile);
+      }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { imageItems, units, ...rest } = data;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
@@ -114,7 +147,7 @@ const UpdatePropertyContainer = ({ property }: Props) => {
           <AmenityStep control={control} />
           <PaymentSchemeStep control={control} />
           <LandmarkStep control={control} />
-          <MediaStep control={control} existingImages={property.images} />
+          <MediaStep control={control} />
         </Wizardry>
       </div>
     </form>

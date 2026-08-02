@@ -50,7 +50,7 @@ export default function Loading() {
         />
       </svg>
 
-      <p className="mt-5 text-xs text-fog tracking-wide">Loading…</p>
+      <p className="mt-5 text-xs text-ash tracking-wide">Loading…</p>
     </main>
   );
 }

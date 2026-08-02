@@ -26,7 +26,7 @@ const TagPills = ({ tags, activeTag }: TagPillsProps) => {
 
   return (
     <div className="flex items-center gap-2 py-3 overflow-x-auto scrollbar-none">
-      <span className="text-xs text-fog shrink-0">Filter:</span>
+      <span className="text-xs text-ash shrink-0">Filter:</span>
 
       <button
         onClick={() => handleTag(null)}

@@ -16,7 +16,7 @@ const SearchInput = ({
   placeholder = "Search...",
 }: SearchInputProps) => (
   <div className="relative flex-1">
-    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fog pointer-events-none" />
+    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash pointer-events-none" />
     <Input
       value={value}
       onChange={onChange}

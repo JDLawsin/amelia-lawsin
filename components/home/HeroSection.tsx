@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { HERO_IMAGE_SIZES } from "@/lib/image-layout";
 import { formatPrice, getPrimaryImage, getPropertyLabel } from "@/lib/utils";
 import { PropertyListItem } from "@/services/property.service";
 import { ctaPrimary, ctaSecondary } from "@/components/ui/cta";
@@ -10,12 +11,13 @@ type HeroSectionProps = {
 
 const HeroSection = ({ latestListing }: HeroSectionProps) => {
   const imageUrl = latestListing ? getPrimaryImage(latestListing.images) : null;
+  const imageAlt = latestListing?.title ?? "Latest listing";
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
       <div className="flex flex-col items-center justify-center border-r border-wire">
         <div className="flex flex-col gap-5 w-full max-w-7xl px-6 py-16 md:py-20">
-          <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em]">
+          <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
             Licensed Real Estate Agent · Cebu
           </p>
 
@@ -45,11 +47,11 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
         {imageUrl ? (
           <Image
             src={imageUrl}
-            alt={latestListing?.title ?? "Latest listing"}
+            alt={imageAlt}
             fill
-            sizes="(max-width: 1024px) 50vw, 40vw"
-            loading="eager"
-            decoding="async"
+            sizes={HERO_IMAGE_SIZES}
+            priority
+            fetchPriority="high"
             className="object-cover"
           />
         ) : (
@@ -77,7 +79,7 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
               {formatPrice(latestListing)}
             </p>
             {latestListing.city && (
-              <p className="text-xs text-fog mt-1">{latestListing.city}</p>
+              <p className="text-xs text-ash mt-1">{latestListing.city}</p>
             )}
           </Link>
         )}

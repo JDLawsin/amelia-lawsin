@@ -1,8 +1,11 @@
 import { SITE_CONFIG } from "@/constants";
+import { ogImageMetadata } from "@/lib/og-metadata";
 import type { Metadata } from "next";
 import InquiryForm from "./_components/InquiryForm";
 import ContactMap from "./_components/ContactMap";
 import FaqAccordion from "./_components/FaqAccordion";
+
+const ogAlt = `Contact ${SITE_CONFIG.name} — Real Estate Agent in Cebu`;
 
 export const metadata: Metadata = {
   title: "Contact Amelia Lawsin — Licensed Real Estate Agent in Cebu",
@@ -14,11 +17,19 @@ export const metadata: Metadata = {
     description:
       "Free consultation via Messenger, SMS, Viber or email. Licensed agent in Cebu, Philippines.",
     type: "website",
+    images: ogImageMetadata("/contact", ogAlt),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Amelia Lawsin — Real Estate Agent Cebu",
+    description:
+      "Free consultation via Messenger, SMS, Viber or email. Licensed agent in Cebu, Philippines.",
+    images: ogImageMetadata("/contact", ogAlt),
   },
 };
 
 const SectionLabel = ({ children }: { children: string }) => (
-  <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-5">
+  <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-5">
     {children}
   </p>
 );
@@ -154,7 +165,7 @@ const ContactPage = () => (
   <main className="bg-white">
     <section className="border-b border-wire">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 text-center">
-        <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-4">
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-4">
           Get in touch
         </p>
         <h1 className="text-4xl md:text-5xl font-serif font-medium text-ink tracking-tight leading-tight mb-4">
@@ -171,7 +182,7 @@ const ContactPage = () => (
 
     <section className="bg-cloud border-b border-wire">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-6 text-center">
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-6 text-center">
           Quickest ways to reach me
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-wire rounded-2xl overflow-hidden">
@@ -303,7 +314,7 @@ const ContactPage = () => (
 
     <section className="bg-cloud border-b border-wire">
       <div className="max-w-7xl mx-auto px-6 py-14">
-        <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em] mb-2 text-center">
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-2 text-center">
           Frequently asked questions
         </p>
         <h2 className="text-2xl font-serif font-medium text-ink text-center mb-10 tracking-tight">

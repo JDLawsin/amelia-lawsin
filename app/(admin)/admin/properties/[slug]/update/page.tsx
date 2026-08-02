@@ -1,4 +1,4 @@
-import { getAdminPropertyById } from "@/services/property.admin.service";
+import { getAdminPropertyBySlug } from "@/services/property.admin.service";
 import UpdatePropertyContainer from "./_components/UpdatePropertyContainer";
 import { notFound } from "next/navigation";
 
@@ -8,7 +8,7 @@ type Props = {
 
 const UpdatePropertyPage = async ({ params }: Props) => {
   const { slug } = await params;
-  const property = await getAdminPropertyById(slug);
+  const property = await getAdminPropertyBySlug(slug);
 
   if (!property) notFound();
 

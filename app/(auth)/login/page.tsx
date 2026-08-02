@@ -6,7 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Sign in — Amelia Lawsin Real Estate Agent",
   description:
-    "Sign in or create an account to browse listings and connect with Amelia.",
+    "Sign in to your account to browse listings and connect with Amelia.",
 };
 
 const LoginPage = async () => {

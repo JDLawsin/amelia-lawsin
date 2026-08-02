@@ -45,7 +45,7 @@ const ViberIcon = () => (
 );
 
 const Footer = () => (
-  <footer className="bg-ink text-white">
+  <footer className="bg-ink text-white shrink-0 min-h-72 md:min-h-60">
     <div className="max-w-7xl mx-auto py-12 px-6 2xl:px-0">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 flex flex-col gap-4">
@@ -84,7 +84,7 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">Properties</h4>
+          <p className="text-sm font-semibold text-white">Properties</p>
           <nav className="flex flex-col gap-2">
             {PROPERTY_LINKS.map((link) => (
               <Link
@@ -99,7 +99,7 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">Agent</h4>
+          <p className="text-sm font-semibold text-white">Agent</p>
           <nav className="flex flex-col gap-2">
             {COMPANY_LINKS.map((link) => (
               <Link
@@ -114,7 +114,7 @@ const Footer = () => (
         </div>
 
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-semibold text-white">Contact</h4>
+          <p className="text-sm font-semibold text-white">Contact</p>
           <div className="flex flex-col gap-2">
             <a
               href={`tel:${SITE_CONFIG.phone}`}
@@ -146,11 +146,11 @@ const Footer = () => (
 
     <div className="border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 2xl:px-0 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span className="text-xs text-white/30">
+        <span className="text-xs text-white/50">
           © {new Date().getFullYear()} {SITE_CONFIG.name} · Licensed Real Estate
           Agent · PRC Lic. No. {SITE_CONFIG.prcLicenseNo}
         </span>
-        <span className="text-xs text-white/30">Built with ♥ in Cebu</span>
+        <span className="text-xs text-white/50">Built with ♥ in Cebu</span>
       </div>
     </div>
   </footer>

@@ -83,16 +83,18 @@ const RowActions = ({ property }: { property: PropertyAdminListItem }) => {
         </TooltipContent>
       </Tooltip>
       <>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon-sm" asChild>
-              <Link href={`/admin/properties/${property.id}/update`}>
-                <Pencil className="w-3.5 h-3.5" />
-              </Link>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Edit</TooltipContent>
-        </Tooltip>
+        {property.slug ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon-sm" asChild>
+                <Link href={`/admin/properties/${property.slug}/update`}>
+                  <Pencil className="w-3.5 h-3.5" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Edit</TooltipContent>
+          </Tooltip>
+        ) : null}
 
         <AlertDialog>
           <Tooltip>

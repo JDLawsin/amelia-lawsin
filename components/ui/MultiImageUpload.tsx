@@ -6,6 +6,7 @@ import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import clsx from "clsx";
 import { ALLOWED_TYPES, MAX_FILES } from "@/constants";
+import { compressImage } from "@/lib/image/compressImage";
 import { FieldError } from "react-hook-form";
 import Image from "next/image";
 
@@ -29,19 +30,24 @@ const MultiImageUpload = ({
   const rootError = !isArrayError ? errors?.message : null;
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      // 1. Prevent duplicates by comparing name and size
-      const newFiles = acceptedFiles.filter((file) => {
+    async (acceptedFiles: File[]) => {
+      // 1. Compress images client-side before upload
+      const compressedFiles = await Promise.all(
+        acceptedFiles.map((file) => compressImage(file)),
+      );
+
+      // 2. Prevent duplicates by comparing name and size
+      const newFiles = compressedFiles.filter((file) => {
         return !value.some(
           (existing) =>
             existing.name === file.name && existing.size === file.size,
         );
       });
 
-      // 2. Merge existing files with new unique files
+      // 3. Merge existing files with new unique files
       const updatedFiles = [...value, ...newFiles];
 
-      // 3. Update React Hook Form
+      // 4. Update React Hook Form
       onValueChange(updatedFiles);
     },
     [value, onValueChange],
@@ -94,7 +100,7 @@ const MultiImageUpload = ({
               >
                 <div
                   className={clsx(
-                    "relative group rounded-xl overflow-hidden border transition-all",
+                    "relative group rounded-xl overflow-hidden border aspect-square transition-all",
                     fileError
                       ? "border-destructive ring-1 ring-destructive"
                       : "border-wire",
@@ -139,14 +145,16 @@ const PreviewImage = ({ file }: { file: File | string }) => {
 
   if (!url)
     return (
-      <div className="w-full aspect-square bg-muted rounded-xl animate-pulse" />
+      <div className="w-full h-full aspect-square bg-muted rounded-xl animate-pulse" />
     );
 
   return (
     <Image
       src={url}
       alt="preview"
-      className="w-full aspect-square object-cover rounded-xl border"
+      fill
+      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+      className="object-cover"
     />
   );
 };

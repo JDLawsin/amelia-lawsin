@@ -34,17 +34,60 @@ export const formatUnitPrice = (unit: Unit): string => {
   return `₱${unit.price.toLocaleString()}`;
 };
 
+type PropertyImageLike = { isPrimary: boolean; url: string };
+
 export const getPrimaryImage = (
-  images: PropertyListItem["images"],
+  images: PropertyImageLike[],
 ): string | null => {
   const primary = images.find((img) => img.isPrimary);
   return primary?.url ?? images[0]?.url ?? null;
+};
+
+export const orderBySlugList = <T extends { slug: string }>(
+  items: T[],
+  slugs: string[],
+): T[] => {
+  const map = new Map(items.map((item) => [item.slug, item]));
+  return slugs
+    .map((slug) => map.get(slug))
+    .filter((item): item is T => item !== undefined);
 };
 
 export const estimateReadTime = (excerpt: string): string => {
   const words = excerpt.trim().split(/\s+/).length;
   const minutes = Math.max(1, Math.ceil(words / 200));
   return `${minutes} min read`;
+};
+
+type TipTapNode = {
+  type?: string;
+  content?: unknown[];
+  text?: string;
+};
+
+export const extractTextFromTipTap = (content: unknown): string => {
+  if (!content || typeof content !== "object") return "";
+
+  const node = content as TipTapNode;
+
+  if (typeof node.text === "string") return node.text;
+
+  if (Array.isArray(node.content)) {
+    return node.content
+      .map(extractTextFromTipTap)
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  return "";
+};
+
+export const estimateReadTimeFromContent = (
+  content: unknown,
+  fallbackExcerpt = "",
+): string => {
+  const text = extractTextFromTipTap(content) || fallbackExcerpt;
+  return estimateReadTime(text);
 };
 
 export const formatDate = (date: Date | null): string => {
@@ -98,6 +141,31 @@ export const getPropertyLabel = (property: PropertyListItem): string => {
   if (property.barangay) parts.push(property.barangay);
   else if (property.city) parts.push(property.city);
   return parts.filter(Boolean).join(" · ");
+};
+
+export const sanitizeNextPath = (raw: unknown): string => {
+  if (typeof raw !== "string" || !raw.trim()) return "/";
+
+  const normalized = raw
+    .trim()
+    .replace(/\/+/g, "/")
+    .replace(/\/$/, "") || "/";
+
+  const unsafePatterns = [
+    /^[^/]/,
+    /\.\./,
+    /^\/\//,
+    /^https?:/i,
+    /^javascript:/i,
+    /^data:/i,
+    /^vbscript:/i,
+  ];
+
+  if (unsafePatterns.some((pattern) => pattern.test(normalized))) {
+    return "/";
+  }
+
+  return normalized;
 };
 
 export const getEnvironmentVariables = () => {

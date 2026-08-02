@@ -4,7 +4,20 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getBlogBySlug, getRelatedBlogs } from "@/services/blog.service";
 import { SITE_CONFIG } from "@/constants";
-import { estimateReadTime, formatDate } from "@/lib/utils";
+import {
+  DEFAULT_SITE_DESCRIPTION,
+  ensureMetaDescription,
+} from "@/lib/metadata-helpers";
+import { getSiteUrl } from "@/lib/site";
+import { blogPostingJsonLd, breadcrumbListJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
+import { estimateReadTimeFromContent, formatDate } from "@/lib/utils";
+import { preloadLcpImage } from "@/lib/preload-lcp-image";
+import {
+  BLOG_HERO_IMAGE_SIZES,
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+} from "@/lib/image-layout";
 import ShareButtons from "./_components/ShareButtons";
 import TableOfContents from "./_components/TableOfContents";
 import BlogContent from "./_components/BlogContent";
@@ -20,11 +33,19 @@ export const generateMetadata = async ({
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
 
-  if (!blog) return { title: "Article not found" };
+  if (!blog) {
+    return {
+      title: "Article not found",
+      description: DEFAULT_SITE_DESCRIPTION,
+    };
+  }
 
   const title =
     blog.metaTitle ?? `${blog.title} | Amelia Lawsin Real Estate Blog`;
-  const description = blog.metaDescription ?? blog.excerpt;
+  const description = ensureMetaDescription(
+    blog.metaDescription ?? blog.excerpt,
+    `${blog.title} — expert Cebu real estate guides and market insights from licensed agent ${SITE_CONFIG.name}.`,
+  );
 
   return {
     // absolute title: the root layout's `%s | Amelia Lawsin` template would
@@ -42,6 +63,12 @@ export const generateMetadata = async ({
         ? [{ url: blog.coverImage, alt: blog.title }]
         : [],
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: blog.coverImage ? [blog.coverImage] : [],
+    },
   };
 };
 
@@ -54,11 +81,31 @@ const BlogDetailPage = async ({ params }: Props) => {
     { id: blog.id, tags: blog.tags },
     3,
   );
-  const readTime = estimateReadTime(blog.excerpt);
+  const readTime = estimateReadTimeFromContent(blog.content, blog.excerpt);
   const publishedDate = formatDate(blog.publishedAt);
+  const baseUrl = getSiteUrl();
+  const shareUrl = `${baseUrl}/blog/${blog.slug}`;
+
+  if (blog.coverImage) {
+    preloadLcpImage(blog.coverImage, blog.title, {
+      width: BLOG_IMAGE_WIDTH,
+      height: BLOG_IMAGE_HEIGHT,
+      sizes: BLOG_HERO_IMAGE_SIZES,
+    });
+  }
 
   return (
     <main className="bg-white min-h-screen">
+      <JsonLd
+        data={[
+          blogPostingJsonLd(baseUrl, blog),
+          breadcrumbListJsonLd(baseUrl, [
+            { name: "Home", url: "/" },
+            { name: "Blog", url: "/blog" },
+            { name: blog.title, url: `/blog/${blog.slug}` },
+          ]),
+        ]}
+      />
       <nav className="py-3 flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"
@@ -115,13 +162,17 @@ const BlogDetailPage = async ({ params }: Props) => {
                 <span className="text-wire">·</span>
                 <div className="flex items-center gap-1.5 bg-cloud border border-wire rounded-md px-2.5 py-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-fog inline-block" />
-                  <span className="text-xs text-fog">AI assisted</span>
+                  <span className="text-xs text-ash">AI assisted</span>
                 </div>
               </>
             )}
 
             <div className="ml-auto">
-              <ShareButtons title={blog.title} variant="inline" />
+              <ShareButtons
+                title={blog.title}
+                url={shareUrl}
+                variant="inline"
+              />
             </div>
           </div>
         </div>
@@ -129,16 +180,16 @@ const BlogDetailPage = async ({ params }: Props) => {
 
       {blog.coverImage && (
         <div className="max-w-7xl mx-auto px-6 pb-8">
-          <div className="relative w-full h-100 rounded-2xl overflow-hidden bg-cloud">
-            <Image
-              src={blog.coverImage}
-              alt={blog.title}
-              fill
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              className="object-cover"
-              priority
-            />
-          </div>
+          <Image
+            src={blog.coverImage}
+            alt={blog.title}
+            width={BLOG_IMAGE_WIDTH}
+            height={BLOG_IMAGE_HEIGHT}
+            sizes={BLOG_HERO_IMAGE_SIZES}
+            className="w-full h-auto rounded-2xl object-cover"
+            priority
+            fetchPriority="high"
+          />
         </div>
       )}
 
@@ -218,7 +269,11 @@ const BlogDetailPage = async ({ params }: Props) => {
                 </a>
               </div>
 
-              <ShareButtons title={blog.title} variant="sidebar" />
+              <ShareButtons
+                title={blog.title}
+                url={shareUrl}
+                variant="sidebar"
+              />
             </div>
           </div>
         </div>

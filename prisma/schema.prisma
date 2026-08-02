@@ -285,10 +285,16 @@ model Inquiry {
   source           String
   message          String
   status           InquiryStatus @default(NEW)
+  isRead           Boolean       @default(false)
+  isArchived       Boolean       @default(false)
+  notes            String?
+  respondedAt      DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
   @@index([status])
   @@index([createdAt])
+  @@index([isRead])
+  @@index([isArchived])
   @@map("inquiries")
 }

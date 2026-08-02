@@ -54,12 +54,14 @@ const PropertyImageManager = ({
             {visibleExisting.map((image) => (
               <div
                 key={image.id}
-                className="relative group rounded-xl overflow-hidden border border-wire"
+                className="relative group rounded-xl overflow-hidden border border-wire aspect-square"
               >
                 <Image
                   src={image.url}
                   alt=""
-                  className="w-full aspect-square object-cover"
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                  className="object-cover"
                 />
 
                 {image.isPrimary && (

@@ -5,6 +5,9 @@ import {
   getAllBlogTags,
   getBlogsCount,
 } from "@/services/blog.service";
+import { getSiteUrl } from "@/lib/site";
+import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import FeaturedGrid from "./_components/FeaturedGrid";
 import BlogCTAStrip from "./_components/BlogCTAStrip";
 import BlogPageSkeleton from "./_components/BlogPageSkeleton";
@@ -65,12 +68,20 @@ const BlogPage = async ({ searchParams }: Props) => {
   ]);
   const featuredBlogs = blogs.slice(0, 3);
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="bg-white min-h-screen">
+      <JsonLd
+        data={breadcrumbListJsonLd(baseUrl, [
+          { name: "Home", url: "/" },
+          { name: "Blog", url: "/blog" },
+        ])}
+      />
       <div className="bg-cloud border-b border-wire px-6 py-10">
         <div className="max-w-7xl mx-auto flex items-end justify-between">
           <div>
-            <p className="text-xs font-medium text-fog uppercase tracking-widest mb-3">
+            <p className="text-xs font-medium text-ash uppercase tracking-widest mb-3">
               Real Estate Insights
             </p>
             <h1 className="text-4xl font-serif font-medium text-ink tracking-tight leading-tight mb-3">
@@ -86,7 +97,7 @@ const BlogPage = async ({ searchParams }: Props) => {
             <p className="text-4xl font-serif font-medium text-ink">
               {totalCount}
             </p>
-            <p className="text-xs text-fog mt-1">
+            <p className="text-xs text-ash mt-1">
               {totalCount === 1 ? "article" : "articles"} published
             </p>
           </div>

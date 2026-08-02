@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { PropertyListItem } from "@/services/property.service";
 import SearchBar from "./SearchBar";
@@ -24,6 +24,7 @@ const PropertiesClient = ({
   currentPage,
 }: Props) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterKey, setFilterKey] = useState(0);
   const searchParams = useSearchParams();
 
   const view = (searchParams.get("view") ?? "grid") as "grid" | "list";
@@ -45,11 +46,17 @@ const PropertiesClient = ({
     <div className="flex flex-col pb-10 max-w-7xl mx-auto">
       <SearchBar
         isFilterOpen={isFilterOpen}
-        onFilterToggle={() => setIsFilterOpen((prev) => !prev)}
+        onFilterToggle={useCallback(() => {
+          setIsFilterOpen((prev) => {
+            const next = !prev;
+            if (next) setFilterKey((k) => k + 1);
+            return next;
+          });
+        }, [])}
         activeFilterCount={activeFilterCount}
       />
       <ChipsRow />
-      <FilterPanel isOpen={isFilterOpen} />
+      {isFilterOpen && <FilterPanel key={filterKey} isOpen={isFilterOpen} />}
       <ResultsMeta total={total} />
       <PropertyGrid properties={properties} view={view} />
       {total > pageSize && (

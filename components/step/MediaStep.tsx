@@ -1,60 +1,53 @@
-import { Controller, Control } from "react-hook-form";
+"use client";
+
+import { useState } from "react";
+import { Control, useController } from "react-hook-form";
 import SectionLabel from "@/components/ui/SectionLabel";
-import MultiImageUpload from "@/components/ui/MultiImageUpload";
+import ImageItemsEditor, {
+  ImageItem,
+} from "@/components/ui/ImageItemsEditor";
 import { FullPropertyFormValues } from "@/app/(admin)/admin/properties/_schema/property.schema";
-import PropertyImageManager from "@/app/(admin)/admin/properties/[slug]/update/_components/PropertyImageManager";
 
 interface MediaStepProps {
   control: Control<FullPropertyFormValues>;
-  existingImages?: Array<{
-    id: string;
-    url: string;
-    publicId: string;
-    isPrimary: boolean;
-    order: number;
-  }>;
 }
 
-const MediaStep = ({ control, existingImages = [] }: MediaStepProps) => {
-  const isEditMode = existingImages.length > 0;
+const MediaStep = ({ control }: MediaStepProps) => {
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
 
-  if (isEditMode) {
-    return (
-      <div className="flex flex-col gap-5">
-        <SectionLabel>Property Images</SectionLabel>
+  const {
+    field: { value, onChange },
+  } = useController({
+    control,
+    name: "imageItems",
+  });
 
-        <Controller
-          name="images"
-          control={control}
-          render={({ field, fieldState }) => (
-            <PropertyImageManager
-              existingImages={existingImages}
-              newFiles={field.value || []}
-              onNewFilesChange={field.onChange}
-              errors={fieldState.error}
-            />
-          )}
-        />
-      </div>
-    );
-  }
+  const handleChange = (items: ImageItem[]) => {
+    onChange(items);
+  };
+
+  const handleDeleteExisting = (id: string) => {
+    setDeletedImageIds((prev) => [...prev, id]);
+  };
 
   return (
     <div className="flex flex-col gap-5">
       <SectionLabel>Property Images</SectionLabel>
 
-      <Controller
-        name="images"
-        control={control}
-        render={({ field, fieldState }) => (
-          <MultiImageUpload
-            value={field.value || []}
-            onValueChange={field.onChange}
-            errors={fieldState.error}
-            maxFiles={10}
-          />
-        )}
+      <ImageItemsEditor
+        items={(value as ImageItem[]) ?? []}
+        onChange={handleChange}
+        onDeleteExisting={handleDeleteExisting}
+        maxFiles={10}
       />
+
+      {deletedImageIds.length > 0 && (
+        <input
+          type="hidden"
+          name="deletedImageIds"
+          value={JSON.stringify(deletedImageIds)}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import ImageLightbox from "@/components/ui/ImageLightbox";
+import {
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+  BLOG_INLINE_IMAGE_SIZES,
+} from "@/lib/image-layout";
 
 type TipTapMark = {
   type: "bold" | "italic" | "underline" | "link" | "code";
@@ -170,13 +176,28 @@ const RenderNode = ({ node }: { node: TipTapNode }) => {
     case "image":
       return node.attrs?.src ? (
         <figure className="my-6">
-          <Image
+          <ImageLightbox
             src={node.attrs.src}
             alt={node.attrs.alt ?? ""}
-            className="w-full rounded-xl border border-wire"
-          />
+            title={node.attrs.title}
+          >
+            <button
+              type="button"
+              className="group w-full overflow-hidden rounded-xl border border-wire cursor-pointer p-0 bg-transparent"
+              aria-label="View larger image"
+            >
+              <Image
+                src={node.attrs.src}
+                alt={node.attrs.alt ?? ""}
+                width={BLOG_IMAGE_WIDTH}
+                height={BLOG_IMAGE_HEIGHT}
+                sizes={BLOG_INLINE_IMAGE_SIZES}
+                className="w-full h-auto rounded-xl transition-transform duration-300 group-hover:scale-105"
+              />
+            </button>
+          </ImageLightbox>
           {node.attrs.title && (
-            <figcaption className="text-xs text-fog text-center mt-2">
+            <figcaption className="text-xs text-ash text-center mt-2">
               {node.attrs.title}
             </figcaption>
           )}
@@ -196,7 +217,7 @@ const BlogContent = ({ content }: BlogContentProps) => {
   const doc = content as TipTapDoc;
 
   if (!doc?.content?.length) {
-    return <p className="text-sm text-fog italic">No content available.</p>;
+    return <p className="text-sm text-ash italic">No content available.</p>;
   }
 
   return (

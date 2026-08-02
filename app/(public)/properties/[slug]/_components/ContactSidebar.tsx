@@ -2,7 +2,7 @@
 
 // app/(public)/properties/[slug]/_components/ContactSidebar.tsx
 
-import { useState, useSyncExternalStore, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
+import { useCurrentUrl } from "@/lib/hooks/useCurrentUrl";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
 import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
 
@@ -111,7 +112,7 @@ const ContactSidebar = ({ property }: Props) => {
           </div>
         )}
 
-        <p className="text-[10px] text-fog text-center mt-3 leading-relaxed">
+        <p className="text-xs text-ash text-center mt-3 leading-relaxed">
           Free consultation · No commitment required
         </p>
       </div>
@@ -135,15 +136,10 @@ const ContactSidebar = ({ property }: Props) => {
 
 const ShareButtons = ({ title }: { title: string }) => {
   const [copied, setCopied] = useState(false);
-
-  const shareUrl = useSyncExternalStore(
-    () => () => {},
-    () => (typeof window !== "undefined" ? window.location.href : ""),
-    () => "",
-  );
+  const shareUrl = useCurrentUrl();
 
   const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(shareUrl || window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -185,7 +181,7 @@ const ShareButtons = ({ title }: { title: string }) => {
 };
 
 const inputStyles = clsx(
-  "w-full h-10 px-3 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-fog focus:outline-none focus:border-ink transition-colors",
+  "w-full h-10 px-3 text-sm text-ink border border-wire rounded-xl bg-cloud placeholder:text-ash focus:outline-none focus:border-ink transition-colors",
 );
 
 const InquiryModal = ({
@@ -397,7 +393,7 @@ const InquiryModal = ({
               {isPending ? "Sending..." : "Send inquiry"}
             </button>
 
-            <p className="text-[10px] text-fog text-center">
+            <p className="text-xs text-ash text-center">
               Your details are only shared with Amelia Lawsin
             </p>
           </form>
