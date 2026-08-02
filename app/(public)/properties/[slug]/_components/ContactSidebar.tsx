@@ -10,7 +10,6 @@ import clsx from "clsx";
 import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
-import { useCurrentUrl } from "@/lib/hooks/useCurrentUrl";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
 import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
 
@@ -31,9 +30,10 @@ type Props = {
     | "isInHouseFinancing"
     | "isRentToOwn"
   >;
+  shareUrl: string;
 };
 
-const ContactSidebar = ({ property }: Props) => {
+const ContactSidebar = ({ property, shareUrl }: Props) => {
   const [inquiryOpen, setInquiryOpen] = useState(false);
 
   const price = formatPrice(property as PropertyDetail);
@@ -117,7 +117,7 @@ const ContactSidebar = ({ property }: Props) => {
         </p>
       </div>
 
-      <ShareButtons title={property.title} />
+      <ShareButtons title={property.title} url={shareUrl} />
 
       {inquiryOpen && (
         <InquiryModal
@@ -134,17 +134,16 @@ const ContactSidebar = ({ property }: Props) => {
   );
 };
 
-const ShareButtons = ({ title }: { title: string }) => {
+const ShareButtons = ({ title, url }: { title: string; url: string }) => {
   const [copied, setCopied] = useState(false);
-  const shareUrl = useCurrentUrl();
 
   const copyLink = () => {
-    navigator.clipboard.writeText(shareUrl || window.location.href);
+    navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
   return (
     <div className="bg-cloud rounded-2xl p-4">
@@ -170,7 +169,7 @@ const ShareButtons = ({ title }: { title: string }) => {
           {copied ? "Copied!" : "Copy link"}
         </button>
         <a
-          href={`viber://forward?text=${encodeURIComponent(title + " " + shareUrl)}`}
+          href={`viber://forward?text=${encodeURIComponent(`${title} ${url}`)}`}
           className="flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors"
         >
           Viber
