@@ -30,7 +30,7 @@ const UserFooter = () => {
   };
 
   const avatarUrl =
-    user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
+    user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
 
   return (
     <SidebarMenu>
@@ -40,13 +40,15 @@ const UserFooter = () => {
           tooltip="Account"
         >
           <Avatar className="h-6 w-6 shrink-0">
-            <AvatarImage
-              src={avatarUrl}
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
+            {avatarUrl ? (
+              <AvatarImage
+                src={avatarUrl}
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            ) : null}
             <AvatarFallback className="bg-white/15 text-white text-[10px]">
               {user?.user_metadata?.full_name?.[0] || user?.email?.[0] || "U"}
             </AvatarFallback>

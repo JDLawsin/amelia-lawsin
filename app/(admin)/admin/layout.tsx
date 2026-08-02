@@ -6,6 +6,7 @@ import TopBar from "./_components/Topbar";
 import { getUser } from "@/services/auth.service";
 import AuthProvider from "@/providers/AuthProvider";
 import { getRole } from "@/services/profile.service";
+import { getUnreadInquiryCount } from "@/services/inquiry.admin.service";
 
 type Props = {
   children: ReactNode;
@@ -14,13 +15,14 @@ type Props = {
 const AdminLayout = async ({ children }: Props) => {
   const user = await getUser();
   const profile = user ? await getRole(user.id) : null;
+  const unreadInquiryCount = await getUnreadInquiryCount();
 
   return (
     <AuthProvider initialUser={user} userRole={profile?.role || null}>
       <TooltipProvider delayDuration={0}>
         <SidebarProvider>
           <div className="flex min-h-screen w-full">
-            <DashboardSidebar />
+            <DashboardSidebar unreadInquiryCount={unreadInquiryCount} />
             <div className="flex flex-col flex-1 min-w-0">
               <TopBar />
               <main className="flex-1 bg-cloud p-5">{children}</main>

@@ -1,4 +1,8 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
+import { sanitizeNextPath } from "@/lib/utils";
+import { getRole } from "@/services/profile.service";
+import { Role } from "@/app/generated/prisma/browser";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
@@ -8,18 +12,46 @@ export const GET = async (request: Request) => {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
 
-  if (code) {
-    const supabase = await createSupabaseServerClient();
+  if (!code) {
+    log.warn("OAuth callback received without a code");
 
-    // Exchange the auth code for a session
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (!error) {
-      // Redirect to the intended path or fallback to homepage
-      return NextResponse.redirect(`${origin}/admin${next}`);
-    }
+    return NextResponse.redirect(
+      `${origin}/auth/auth-code-error${
+        next ? `?next=${encodeURIComponent(next)}` : ""
+      }`,
+    );
   }
 
-  // Redirect to error page if code is missing or exchange fails
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  const supabase = await createSupabaseServerClient();
+
+  // Exchange the auth code for a session
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+  if (error) {
+    log.withError(error).error("OAuth code exchange failed");
+
+    return NextResponse.redirect(
+      `${origin}/auth/auth-code-error${
+        next ? `?next=${encodeURIComponent(next)}` : ""
+      }`,
+    );
+  }
+
+  // Determine the user's role so we can redirect safely
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const profile = user ? await getRole(user.id) : null;
+  const isAdmin = profile?.role === Role.ADMIN;
+
+  const safeNext = sanitizeNextPath(next);
+  const baseUrl = `${origin}${safeNext}`;
+
+  if (isAdmin) {
+    return NextResponse.redirect(safeNext === "/" ? `${origin}/admin` : baseUrl);
+  }
+
+  return NextResponse.redirect(
+    safeNext.startsWith("/admin") ? `${origin}/` : baseUrl,
+  );
 };

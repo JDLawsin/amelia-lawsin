@@ -3,6 +3,10 @@ import {
   getPropertiesCount,
   PropertyFilters,
 } from "@/services/property.service";
+import { ogImageMetadata } from "@/lib/og-metadata";
+import { getSiteUrl } from "@/lib/site";
+import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import { Suspense } from "react";
 import PropertiesLoadingFallback from "./_components/PropertiesLoadingFallback";
 import PropertiesClient from "./_components/PropertiesClient";
@@ -37,8 +41,16 @@ const PropertiesPage = async ({ searchParams }: Props) => {
     getPropertiesCount(filters),
   ]);
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="min-h-screen bg-background">
+      <JsonLd
+        data={breadcrumbListJsonLd(baseUrl, [
+          { name: "Home", url: "/" },
+          { name: "Properties", url: "/properties" },
+        ])}
+      />
       <div className="bg-cloud border-b border-wire px-6 py-5">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs text-ash mb-1">
@@ -95,6 +107,7 @@ export async function generateMetadata({ searchParams }: Props) {
       : "Properties | Amelia Lawsin Real Estate Agent Cebu";
 
   const description = `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`;
+  const ogAlt = "Browse Cebu properties with Amelia Lawsin";
 
   // Canonical to the unfiltered base to consolidate ranking signals across
   // the many filter permutations; filters still drive the title/description.
@@ -107,6 +120,13 @@ export async function generateMetadata({ searchParams }: Props) {
       title,
       description,
       url: "/properties",
+      images: ogImageMetadata("/properties", ogAlt),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImageMetadata("/properties", ogAlt),
     },
   };
 }

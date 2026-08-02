@@ -1,6 +1,7 @@
 import { Controller, Control, useFieldArray } from "react-hook-form";
 import FormInput from "@/components/ui/FormInput";
 import FormSelect from "@/components/ui/FormSelect";
+import FormTextArea from "@/components/ui/FormTextArea";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { Button } from "@/components/ui/shadcn/button";
 import { Plus, Trash2 } from "lucide-react";
@@ -60,7 +61,44 @@ const PaymentSchemeStep = ({ control }: Props) => {
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <Controller
+            name={`paymentSchemes.${index}.description`}
+            control={control}
+            render={({ field, fieldState }) => (
+              <FormTextArea
+                id={`paymentSchemes.${index}.description`}
+                label="Description"
+                placeholder="e.g. 20% down payment, balance payable in 5 years"
+                rows={3}
+                errors={
+                  fieldState.error ? [fieldState.error.message!] : undefined
+                }
+                {...field}
+                value={field.value ?? ""}
+                className="mt-4"
+              />
+            )}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <Controller
+              name={`paymentSchemes.${index}.downPayment`}
+              control={control}
+              render={({ field, fieldState }) => (
+                <FormInput
+                  id={`paymentSchemes.${index}.downPayment`}
+                  type="number"
+                  label="Down Payment"
+                  placeholder="e.g. 20"
+                  errors={
+                    fieldState.error ? [fieldState.error.message!] : undefined
+                  }
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              )}
+            />
+
             <Controller
               name={`paymentSchemes.${index}.monthlyAmount`}
               control={control}
@@ -95,6 +133,26 @@ const PaymentSchemeStep = ({ control }: Props) => {
               )}
             />
           </div>
+
+          <Controller
+            name={`paymentSchemes.${index}.interestRate`}
+            control={control}
+            render={({ field, fieldState }) => (
+              <FormInput
+                id={`paymentSchemes.${index}.interestRate`}
+                type="number"
+                step="0.01"
+                label="Interest Rate (%)"
+                placeholder="e.g. 6.5"
+                errors={
+                  fieldState.error ? [fieldState.error.message!] : undefined
+                }
+                {...field}
+                value={field.value ?? ""}
+                containerClassName="mt-4 md:w-1/3"
+              />
+            )}
+          />
         </div>
       ))}
 

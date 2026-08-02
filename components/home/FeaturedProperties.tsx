@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PropertyListItem } from "@/services/property.service";
-import PropertyCard from "../../app/(public)/properties/_components/PropertyCard";
+import PropertyCard from "@/app/(public)/properties/_components/PropertyCard";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaSecondary } from "@/components/ui/cta";
 
@@ -24,7 +24,7 @@ const FeaturedProperties = ({ properties }: Props) => {
             <PropertyCard
               key={property.id}
               property={property}
-              loading={i === 0 ? "eager" : undefined}
+              priority={i === 0}
               className="shadow-apple-lg"
             />
           ))}

@@ -1,20 +1,25 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { FormState } from "@/actions/property.action";
 import { Nullable } from "@/types";
 import toast from "react-hot-toast";
 
-type UseFormActionEffectOptions = {
-  getRedirectPath?: (state: FormState) => string | null | undefined;
-  onSuccess?: (state: FormState) => void;
-  onError?: (state: FormState) => void;
+type BaseFormState = {
+  success: boolean;
+  message?: string;
+  errors?: Record<string, unknown>;
+};
+
+type UseFormActionEffectOptions<TState extends BaseFormState> = {
+  getRedirectPath?: (state: TState) => string | null | undefined;
+  onSuccess?: (state: TState) => void;
+  onError?: (state: TState) => void;
   disableToast?: boolean;
   toastFieldErrors?: boolean;
 };
 
-export const useFormActionEffect = (
-  state: Nullable<FormState>,
-  options: UseFormActionEffectOptions = {},
+export const useFormActionEffect = <TState extends BaseFormState>(
+  state: Nullable<TState>,
+  options: UseFormActionEffectOptions<TState> = {},
 ) => {
   const router = useRouter();
   const {
@@ -25,7 +30,7 @@ export const useFormActionEffect = (
     toastFieldErrors = false,
   } = options;
 
-  const prevStateRef = useRef<Nullable<FormState>>(null);
+  const prevStateRef = useRef<Nullable<TState>>(null);
 
   useEffect(() => {
     if (!state || state === prevStateRef.current) return;

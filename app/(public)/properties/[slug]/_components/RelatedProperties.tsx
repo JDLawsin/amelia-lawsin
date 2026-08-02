@@ -42,7 +42,7 @@ const RelatedProperties = ({ properties }: RelatedPropertiesProps) => {
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[9px] text-fog opacity-40">
+                  <span className="text-[9px] text-ash">
                     No photo
                   </span>
                 </div>
@@ -74,14 +74,14 @@ const RelatedProperties = ({ properties }: RelatedPropertiesProps) => {
               {(property.bedrooms != null || property.floorArea != null) && (
                 <div className="flex items-center gap-2 mt-2 pt-2 border-t border-wire">
                   {property.bedrooms != null && (
-                    <span className="text-[10px] text-fog">
+                    <span className="text-xs text-ash">
                       {property.bedrooms === 0
                         ? "Studio"
                         : `${property.bedrooms} bed`}
                     </span>
                   )}
                   {property.floorArea != null && (
-                    <span className="text-[10px] text-fog">
+                    <span className="text-xs text-ash">
                       · {property.floorArea}sqm
                     </span>
                   )}

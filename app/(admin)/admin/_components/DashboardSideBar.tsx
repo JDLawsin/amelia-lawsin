@@ -20,11 +20,11 @@ import {
   LayoutDashboardIcon,
   Mail,
   PenTool,
-  Settings,
   House,
 } from "lucide-react";
 import clsx from "clsx";
 import UserFooter from "./UserFooter";
+import { Badge } from "@/components/ui/shadcn/badge";
 
 const SIDE_BAR = [
   {
@@ -32,7 +32,7 @@ const SIDE_BAR = [
     menus: [
       {
         title: "Dashboard",
-        url: "/admin/dashboard",
+        url: "/admin",
         icon: LayoutDashboardIcon,
       },
     ],
@@ -48,13 +48,13 @@ const SIDE_BAR = [
     groupName: "Inbox",
     menus: [{ title: "Inquiries", url: "/admin/inquiries", icon: Mail }],
   },
-  {
-    groupName: "System",
-    menus: [{ title: "Settings", url: "/admin/settings", icon: Settings }],
-  },
 ];
 
-const DashboardSidebar = () => {
+type Props = {
+  unreadInquiryCount?: number;
+};
+
+const DashboardSidebar = ({ unreadInquiryCount = 0 }: Props) => {
   const pathname = usePathname();
 
   return (
@@ -79,9 +79,11 @@ const DashboardSidebar = () => {
               <SidebarMenu>
                 {group.menus.map((menu) => {
                   const isActive =
-                    menu.url === "/admin/dashboard"
+                    menu.url === "/admin"
                       ? pathname === menu.url
                       : pathname.startsWith(menu.url);
+                  const showBadge =
+                    menu.title === "Inquiries" && unreadInquiryCount > 0;
 
                   return (
                     <SidebarMenuItem key={menu.title}>
@@ -96,9 +98,19 @@ const DashboardSidebar = () => {
                             : "text-white/50 hover:bg-white/8 hover:text-white",
                         )}
                       >
-                        <Link href={menu.url}>
-                          <menu.icon className="shrink-0" />
-                          <span>{menu.title}</span>
+                        <Link href={menu.url} className="justify-between">
+                          <div className="flex items-center gap-2">
+                            <menu.icon className="shrink-0" />
+                            <span>{menu.title}</span>
+                          </div>
+                          {showBadge && (
+                            <Badge
+                              variant="default"
+                              className="h-4 min-w-4 px-1 text-[10px] bg-white text-ink group-data-[collapsible=icon]:hidden"
+                            >
+                              {unreadInquiryCount}
+                            </Badge>
+                          )}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

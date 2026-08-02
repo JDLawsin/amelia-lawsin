@@ -44,34 +44,40 @@ const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
 
   if (view === "list") {
     return (
-      <div className="px-6 flex flex-col gap-2">
-        {properties.map((property, i) => (
-          <PropertyListRow
-            key={property.id}
-            property={property}
-            loading={i === 0 ? "eager" : undefined}
-          />
-        ))}
-      </div>
+      <>
+        <h2 className="sr-only">Property listings</h2>
+        <div className="px-6 flex flex-col gap-2">
+          {properties.map((property, i) => (
+            <PropertyListRow
+              key={property.id}
+              property={property}
+              loading={i === 0 ? "eager" : undefined}
+            />
+          ))}
+        </div>
+      </>
     );
   }
 
   return (
-    <div
-      className={clsx(
-        "px-6 grid gap-3 overflow-hidden",
-        "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-      )}
-    >
-      {properties.map((property, i) => (
-        <div key={property.id} className="bg-white h-full">
-          <PropertyCard
-            property={property}
-            loading={i === 0 ? "eager" : undefined}
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      <h2 className="sr-only">Property listings</h2>
+      <div
+        className={clsx(
+          "px-6 grid gap-3 overflow-hidden",
+          "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+        )}
+      >
+        {properties.map((property, i) => (
+          <div key={property.id} className="bg-white h-full">
+            <PropertyCard
+              property={property}
+              loading={i === 0 ? "eager" : undefined}
+            />
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 

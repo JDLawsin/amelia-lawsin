@@ -22,7 +22,7 @@ const StatsBar = ({ activeListings }: Props) => {
             <p className="text-4xl font-serif font-medium text-ink tracking-tight leading-none mb-1.5">
               {stat.value}
             </p>
-            <p className="text-xs text-fog">{stat.label}</p>
+            <p className="text-xs text-ash">{stat.label}</p>
           </div>
         ))}
       </div>

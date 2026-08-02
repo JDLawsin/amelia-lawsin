@@ -24,7 +24,7 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
 
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t border-wire bg-cloud/50">
-      <p className="text-xs text-fog">
+      <p className="text-xs text-ash">
         Showing{" "}
         <span className="font-medium text-ink">
           {from}–{to}
@@ -39,9 +39,10 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
             size="icon-sm"
             onClick={() => goTo(page - 1)}
             disabled={page <= 1}
+            aria-label="Previous page"
             className="h-7 w-7 text-ash"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4" aria-hidden="true" />
           </Button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -55,7 +56,7 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
             }, [])
             .map((p, i) =>
               p === "..." ? (
-                <span key={`ellipsis-${i}`} className="text-xs text-fog px-1">
+                <span key={`ellipsis-${i}`} className="text-xs text-ash px-1">
                   …
                 </span>
               ) : (
@@ -64,6 +65,8 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
                   variant={page === p ? "default" : "ghost"}
                   size="icon-sm"
                   onClick={() => goTo(p as number)}
+                  aria-label={`Go to page ${p}`}
+                  aria-current={page === p ? "page" : undefined}
                   className={
                     page === p
                       ? "h-7 w-7 bg-ink text-white hover:bg-ink/90"
@@ -80,9 +83,10 @@ const Pagination = ({ page, pageSize, total, label = "items" }: Props) => {
             size="icon-sm"
             onClick={() => goTo(page + 1)}
             disabled={page >= totalPages}
+            aria-label="Next page"
             className="h-7 w-7 text-ash"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>
       )}

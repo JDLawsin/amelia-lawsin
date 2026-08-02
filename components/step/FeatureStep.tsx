@@ -1,5 +1,6 @@
 import { Controller, Control } from "react-hook-form";
 import FormCheckbox from "@/components/ui/FormCheckbox";
+import FormInput from "@/components/ui/FormInput";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { FullPropertyFormValues } from "@/app/(admin)/admin/properties/_schema/property.schema";
 
@@ -95,7 +96,37 @@ const FeatureStep = ({ control }: Props) => (
           />
         )}
       />
+
+      <Controller
+        name="hasDock"
+        control={control}
+        render={({ field }) => (
+          <FormCheckbox
+            id="hasDock"
+            name="hasDock"
+            label="Has Dock"
+            checked={Boolean(field.value)}
+            onCheckedChange={field.onChange}
+          />
+        )}
+      />
     </div>
+
+    <Controller
+      name="beachFrontage"
+      control={control}
+      render={({ field, fieldState }) => (
+        <FormInput
+          id="beachFrontage"
+          label="Beach Frontage (meters)"
+          type="number"
+          placeholder="e.g. 20"
+          errors={fieldState.error ? [fieldState.error.message!] : undefined}
+          {...field}
+          value={field.value ?? ""}
+        />
+      )}
+    />
   </div>
 );
 

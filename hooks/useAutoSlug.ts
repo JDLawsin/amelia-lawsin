@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { defaultSlugify } from "@/lib/slugify";
 import type {
   Path,
   PathValue,
@@ -10,15 +11,6 @@ type SlugifyOptions = {
   transform?: (value: string) => string;
   shouldValidate?: boolean;
   onlyIfEmpty?: boolean;
-};
-
-export const defaultSlugify = (value: string): string => {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "") // Remove special chars
-    .replace(/[\s_-]+/g, "-") // Replace spaces/underscores with hyphens
-    .replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
 };
 
 export const useAutoSlug = <TFormData extends Record<string, unknown>>(

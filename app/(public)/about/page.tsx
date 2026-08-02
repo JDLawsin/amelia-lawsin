@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
@@ -7,8 +8,14 @@ import {
   TESTIMONIALS,
 } from "@/constants";
 import { getActiveListingsCount } from "@/services/property.service";
+import { ogImageMetadata } from "@/lib/og-metadata";
+import { getSiteUrl } from "@/lib/site";
+import { breadcrumbListJsonLd, realEstateAgentJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/ui/JsonLd";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaPrimaryDark, ctaSecondaryDark } from "@/components/ui/cta";
+
+const ogAlt = `About ${SITE_CONFIG.name} — Licensed Real Estate Agent in Cebu`;
 
 export const metadata: Metadata = {
   title: "About Amelia Lawsin — Licensed Real Estate Agent in Cebu",
@@ -20,6 +27,14 @@ export const metadata: Metadata = {
     description:
       "10+ years helping local buyers, OFWs, and international investors find their dream property in Cebu.",
     type: "profile",
+    images: ogImageMetadata("/about", ogAlt),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Amelia Lawsin — Licensed Real Estate Agent in Cebu",
+    description:
+      "10+ years helping local buyers, OFWs, and international investors find their dream property in Cebu.",
+    images: ogImageMetadata("/about", ogAlt),
   },
 };
 
@@ -145,24 +160,27 @@ const AboutPage = async () => {
     { value: STATIC_STATS.clientRating, label: "Client rating" },
   ];
 
+  const baseUrl = getSiteUrl();
+
   return (
     <main className="bg-white">
-      <section className="relative h-130 md:h-145 bg-cloud overflow-hidden flex items-end">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs text-fog opacity-50">
-            Professional photo of Amelia Lawsin
-          </span>
-        </div>
-
-        {/* Uncomment when you have a real photo:
+      <JsonLd
+        data={[
+          realEstateAgentJsonLd(baseUrl),
+          breadcrumbListJsonLd(baseUrl, [
+            { name: "Home", url: "/" },
+            { name: "About", url: "/about" },
+          ]),
+        ]}
+      />
+      <section className="relative h-130 md:h-175 bg-cloud overflow-hidden flex items-end">
         <Image
-          src="/images/amelia-hero.jpg"
+          src="/amelia.webp"
           alt="Amelia Lawsin — Licensed Real Estate Agent in Cebu"
           fill
-          className="object-cover object-top"
+          className="object-cover md:object-contain"
           priority
         />
-        */}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/10 to-transparent" />
 
@@ -187,7 +205,7 @@ const AboutPage = async () => {
               <p className="text-4xl font-serif font-medium text-ink tracking-tight leading-none mb-1.5">
                 {stat.value}
               </p>
-              <p className="text-xs text-fog">{stat.label}</p>
+              <p className="text-xs text-ash">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -211,7 +229,7 @@ const AboutPage = async () => {
       <section className="border-b border-wire">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-wire">
           <div className="px-6 lg:px-12 py-14 flex flex-col justify-center gap-5">
-            <p className="text-[10px] font-medium text-fog uppercase tracking-[0.15em]">
+            <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
               My story
             </p>
             <h2 className="text-2xl font-serif font-medium text-ink tracking-tight leading-snug">
@@ -235,18 +253,13 @@ const AboutPage = async () => {
           </div>
 
           <div className="flex flex-col">
-            <div className="relative flex-1 min-h-60 bg-cloud flex items-center justify-center">
-              <span className="text-xs text-fog opacity-50">
-                Photo — Amelia at a property
-              </span>
-              {/* Uncomment when you have a real photo:
+            <div className="relative flex-1 min-h-70 md:min-h-90 bg-cloud">
               <Image
-                src="/images/amelia-story.jpg"
+                src="/amelia2.webp"
                 alt="Amelia Lawsin at a property showing in Cebu"
                 fill
                 className="object-cover"
               />
-              */}
             </div>
             <div className="bg-ink px-8 py-7">
               <p className="text-sm font-serif font-medium text-white/90 leading-relaxed italic mb-3">
@@ -272,7 +285,7 @@ const AboutPage = async () => {
                   {cred.title}
                 </p>
                 <p className="text-xs text-ash mb-1">{cred.detail}</p>
-                <p className="text-[10px] text-fog leading-relaxed">
+                <p className="text-[10px] text-ash leading-relaxed">
                   {cred.note}
                 </p>
               </div>
@@ -325,7 +338,7 @@ const AboutPage = async () => {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-ink">{t.name}</p>
-                    <p className="text-[10px] text-fog">{t.location}</p>
+                    <p className="text-[10px] text-ash">{t.location}</p>
                   </div>
                 </div>
               </div>
@@ -341,7 +354,7 @@ const AboutPage = async () => {
             <br className="hidden md:block" />
             property together.
           </h2>
-          <p className="text-sm text-white/45 mb-10">
+          <p className="text-sm text-white/50 mb-10">
             Free consultation · No commitment required
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
