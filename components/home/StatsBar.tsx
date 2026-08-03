@@ -19,7 +19,7 @@ const StatsBar = ({ activeListings }: Props) => {
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-wire">
         {stats.map((stat) => (
           <div key={stat.label} className="px-8 py-7">
-            <p className="text-4xl font-serif font-medium text-ink tracking-tight leading-none mb-1.5">
+            <p className="text-4xl font-serif font-medium text-ink tracking-tight leading-none mb-1.5 min-h-11">
               {stat.value}
             </p>
             <p className="text-xs text-ash">{stat.label}</p>
