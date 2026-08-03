@@ -20,8 +20,14 @@ import {
   HERO_IMAGE_HEIGHT,
   HERO_IMAGE_SIZES,
   HERO_IMAGE_WIDTH,
+  PROPERTY_CARD_IMAGE_HEIGHT,
+  PROPERTY_CARD_IMAGE_SIZES,
+  PROPERTY_CARD_IMAGE_WIDTH,
 } from "@/lib/image-layout";
-import { preloadLcpImage } from "@/lib/preload-lcp-image";
+import {
+  LcpPreloadLink,
+  preloadLcpImage,
+} from "@/lib/preload-lcp-image";
 import { getPrimaryImage } from "@/lib/utils";
 
 const TestimonialsSection = dynamic(
@@ -68,21 +74,38 @@ export const Home = async () => {
       getLatestBlogs(),
     ]);
 
+  // Mobile LCP = first featured card (hero is `hidden md:flex` and must not
+  // steal the high-priority network slot). Desktop LCP = hero image.
+  const mobileLcpProperty = featuredProperties[0];
+  const mobileLcpImage = mobileLcpProperty
+    ? getPrimaryImage(mobileLcpProperty.images)
+    : null;
+  if (mobileLcpImage) {
+    preloadLcpImage(mobileLcpImage, mobileLcpProperty.title, {
+      width: PROPERTY_CARD_IMAGE_WIDTH,
+      height: PROPERTY_CARD_IMAGE_HEIGHT,
+      sizes: PROPERTY_CARD_IMAGE_SIZES,
+    });
+  }
+
   const heroImage = latestListing
     ? getPrimaryImage(latestListing.images)
     : null;
-  if (heroImage) {
-    preloadLcpImage(heroImage, latestListing?.title ?? "Latest listing", {
-      width: HERO_IMAGE_WIDTH,
-      height: HERO_IMAGE_HEIGHT,
-      sizes: HERO_IMAGE_SIZES,
-    });
-  }
 
   const baseUrl = getSiteUrl();
 
   return (
     <main className="bg-white">
+      {heroImage && (
+        <LcpPreloadLink
+          src={heroImage}
+          alt={latestListing?.title ?? "Latest listing"}
+          width={HERO_IMAGE_WIDTH}
+          height={HERO_IMAGE_HEIGHT}
+          sizes={HERO_IMAGE_SIZES}
+          media="(min-width: 768px)"
+        />
+      )}
       <JsonLd data={organizationJsonLd(baseUrl)} />
       <HeroSection latestListing={latestListing} />
       <StatsBar activeListings={activeListingsCount} />

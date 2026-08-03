@@ -1,8 +1,11 @@
 import type { NextConfig } from "next";
 
-/** Default Next.js html-limited bots + HeadlessChrome (Lighthouse / Unlighthouse). */
-const HTML_LIMITED_BOTS =
-  /HeadlessChrome|[\w-]+-Google|Google-[\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight/i;
+/**
+ * Disable streaming metadata so `<meta name="description">` is always in `<head>`.
+ * Lighthouse/Unlighthouse navigate with a mobile Chrome UA (not HeadlessChrome), so
+ * bot-only regexes miss audits and SEO scores cap at 92. See LH-017.
+ */
+const HTML_LIMITED_BOTS = /.*/;
 
 const nextConfig: NextConfig = {
   htmlLimitedBots: HTML_LIMITED_BOTS,
