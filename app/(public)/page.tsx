@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import FeaturedProperties from "@/components/home/FeaturedProperties";
 import HeroSection from "@/components/home/HeroSection";
 import StatsBar from "@/components/home/StatsBar";
 import WhyChooseSection from "@/components/home/WhyChooseSection";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import BlogPreviewSection from "@/components/home/BlogPreviewSection";
+import FinalCTASection from "@/components/home/FinalCTASection";
 import {
   getActiveListingsCount,
   getFeaturedProperties,
@@ -29,16 +31,6 @@ import {
   preloadLcpImage,
 } from "@/lib/preload-lcp-image";
 import { getPrimaryImage } from "@/lib/utils";
-
-const TestimonialsSection = dynamic(
-  () => import("@/components/home/TestimonialsSection"),
-);
-const BlogPreviewSection = dynamic(
-  () => import("@/components/home/BlogPreviewSection"),
-);
-const FinalCTASection = dynamic(
-  () => import("@/components/home/FinalCTASection"),
-);
 
 const title = `${SITE_CONFIG.name} — Licensed Real Estate Agent in ${SITE_CONFIG.location}`;
 const description = `Find condos, house & lot, townhouses, and pre-selling properties in ${SITE_CONFIG.location} with ${SITE_CONFIG.name}. Get expert guidance on Pag-IBIG, bank, and in-house financing — trusted by local buyers, OFWs, and investors.`;

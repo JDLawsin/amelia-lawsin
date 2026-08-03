@@ -22,9 +22,11 @@ const PublicLayout = async ({ children }: Props) => {
       <PublicTooltipProvider>
         <FavoritesProvider>
           <CompareProvider>
-            <div className="flex min-h-screen flex-col">
+            <div className="flex min-h-dvh flex-col">
               <Navbar />
-              <div className="flex-1">{children}</div>
+              {/* Reserve enough main height so the footer stays below the fold
+                  on first paint while images/sections settle (CLS). */}
+              <div className="flex-1 min-h-[70dvh]">{children}</div>
               <Footer />
             </div>
             <ToolsFabLoader />
