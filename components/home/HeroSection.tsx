@@ -50,8 +50,10 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             alt={imageAlt}
             fill
             sizes={HERO_IMAGE_SIZES}
-            priority
-            fetchPriority="high"
+            // Desktop LCP is preloaded via media-scoped <LcpPreloadLink /> in
+            // page.tsx. Keep this lazy so mobile (`hidden md:flex`) does not
+            // download a non-LCP image and steal the featured-card priority slot.
+            loading="lazy"
             className="object-cover"
           />
         ) : (

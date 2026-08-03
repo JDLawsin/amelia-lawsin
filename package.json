@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
-    "lighthouse": "unlighthouse --site http://localhost:3000"
+    "lighthouse": "unlighthouse --site http://localhost:3010 --no-cache",
+    "lighthouse:prod-local": "unlighthouse --site http://localhost:3010 --no-cache",
+    "lighthouse:preview": "unlighthouse --site https://amelia-lawsin-git-features-jdlawsins-projects.vercel.app --no-cache"
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
