@@ -15,13 +15,13 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
-      <div className="flex flex-col items-center justify-center border-r border-wire">
+      <div className="flex flex-col items-center justify-center border-r border-wire md:min-h-105">
         <div className="flex flex-col gap-5 w-full max-w-7xl px-6 py-16 md:py-20">
           <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
             Licensed Real Estate Agent · Cebu
           </p>
 
-          <h1 className="text-4xl xl:text-5xl font-serif font-medium text-ink tracking-tight leading-tight">
+          <h1 className="text-4xl xl:text-5xl font-serif font-medium text-ink tracking-tight leading-tight min-h-22 xl:min-h-26">
             Find Your Dream <br className="hidden md:block" />
             Property in Cebu
           </h1>

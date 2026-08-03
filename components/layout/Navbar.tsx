@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/shadcn/button";
 import { cn } from "@/lib/utils";
+import { Menu } from "lucide-react";
 import Logo from "../ui/Logo";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -27,30 +28,6 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
-
-const HamburgerIcon = ({
-  className,
-  ...props
-}: React.SVGAttributes<SVGElement>) => (
-  <svg
-    aria-hidden="true"
-    className={cn("pointer-events-none", className)}
-    fill="none"
-    height={16}
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-    width={16}
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path d="M4 12L20 12" />
-    <path d="M4 12H20" />
-    <path d="M4 12H20" />
-  </svg>
-);
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -122,7 +99,7 @@ export const Navbar = () => {
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(true)}
           >
-            <HamburgerIcon />
+            <Menu className="size-4" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -138,5 +115,4 @@ export const Navbar = () => {
   );
 };
 
-export { HamburgerIcon };
 export default Navbar;

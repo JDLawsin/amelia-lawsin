@@ -9,7 +9,8 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
+  // Match Playfair: skip late swaps that reflow body copy and push the footer.
+  display: "optional",
   adjustFontFallback: true,
 });
 
