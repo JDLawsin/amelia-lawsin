@@ -45,3 +45,5 @@ next-env.d.ts
 /.kilo
 /.unlighthouse
 /.tmp-lh
+.tmp-lh-home.json
+unlighthouse.config.ts

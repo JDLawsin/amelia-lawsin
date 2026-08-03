@@ -49,7 +49,8 @@ const PropertyCard = ({
               fill
               sizes={PROPERTY_CARD_IMAGE_SIZES}
               priority={priority}
-              loading={priority ? undefined : loading}
+              fetchPriority={priority ? "high" : undefined}
+              loading={priority ? "eager" : loading}
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
