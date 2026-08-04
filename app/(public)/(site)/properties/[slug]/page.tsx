@@ -176,7 +176,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
           ]),
         ]}
       />
-      <nav className="py-3 flex items-center gap-2 max-w-7xl mx-auto">
+      <nav className="px-6 py-3 flex items-center gap-2 max-w-7xl mx-auto">
         <Link
           href="/"
           className="text-xs text-ash hover:text-ink transition-colors"
