@@ -34,3 +34,8 @@ export const HERO_IMAGE_HEIGHT = 900;
 /** 3:2 — property detail gallery primary cell */
 export const PROPERTY_GALLERY_PRIMARY_WIDTH = 1200;
 export const PROPERTY_GALLERY_PRIMARY_HEIGHT = 800;
+
+/** Full-width about hero (amelia.webp — 1080×1168 source) */
+export const ABOUT_HERO_IMAGE_SIZES = "(max-width: 768px) 100vw, 768px";
+export const ABOUT_HERO_IMAGE_WIDTH = 768;
+export const ABOUT_HERO_IMAGE_HEIGHT = 831;
