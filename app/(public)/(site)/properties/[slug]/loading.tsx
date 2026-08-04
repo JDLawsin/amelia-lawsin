@@ -6,7 +6,7 @@ export default function PropertyDetailLoading() {
       aria-live="polite"
       aria-label="Loading property details"
     >
-      <div className="max-w-7xl mx-auto py-3 flex items-center gap-2">
+      <div className="px-6 max-w-7xl mx-auto py-3 flex items-center gap-2">
         <div className="h-3 w-10 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
         <span className="text-xs text-wire">/</span>
         <div className="h-3 w-16 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
@@ -14,13 +14,20 @@ export default function PropertyDetailLoading() {
         <div className="h-3 w-32 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
       </div>
 
-      <div className="px-6 max-w-7xl mx-auto mb-6">
-        <div className="w-full h-96 bg-cloud rounded-2xl animate-pulse motion-reduce:animate-none" />
+      <div className="px-6 max-w-7xl mx-auto w-full">
+        <div className="relative grid grid-cols-3 grid-rows-2 gap-0.5 aspect-[16/9] w-full">
+          <div className="col-span-2 row-span-2 bg-cloud rounded-l-2xl animate-pulse motion-reduce:animate-none" />
+          <div className="bg-cloud rounded-tr-2xl animate-pulse motion-reduce:animate-none" />
+          <div className="bg-cloud rounded-br-2xl animate-pulse motion-reduce:animate-none" />
+        </div>
       </div>
 
-      <div className="px-6 pt-5 pb-3 max-w-7xl mx-auto">
-        <div className="h-6 w-3/4 bg-cloud rounded animate-pulse motion-reduce:animate-none mb-2" />
-        <div className="h-3 w-1/3 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
+      <div className="px-6 pt-5 pb-3 max-w-7xl mx-auto flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <div className="h-6 w-3/4 bg-cloud rounded animate-pulse motion-reduce:animate-none mb-2" />
+          <div className="h-3 w-1/3 bg-cloud rounded animate-pulse motion-reduce:animate-none" />
+        </div>
+        <div className="h-11 w-24 bg-cloud rounded-xl animate-pulse motion-reduce:animate-none shrink-0" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 px-6 max-w-7xl mx-auto">

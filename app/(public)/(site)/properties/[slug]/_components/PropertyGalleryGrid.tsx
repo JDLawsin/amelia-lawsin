@@ -22,7 +22,10 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
   const hasMore = images.length > 3;
 
   return (
-    <div className="relative grid grid-cols-3 grid-rows-2 gap-0.5 aspect-[16/9] px-6 max-w-7xl mx-auto w-full">
+    <div
+      data-property-gallery
+      className="relative grid grid-cols-3 grid-rows-2 gap-0.5 aspect-[16/9] px-6 max-w-7xl mx-auto w-full"
+    >
       <div className="col-span-2 row-span-2 relative">
         <button
           type="button"

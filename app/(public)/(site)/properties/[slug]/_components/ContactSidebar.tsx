@@ -2,39 +2,21 @@
 
 // app/(public)/properties/[slug]/_components/ContactSidebar.tsx
 
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useState,
+  useTransition,
+  type FormEvent,
+} from "react";
 import { X } from "lucide-react";
 import clsx from "clsx";
 import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
-import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
+import type { ContactSidebarProps } from "./ContactSidebarShell";
 
-type Props = {
-  property: Pick<
-    PropertyDetail,
-    | "title"
-    | "slug"
-    | "type"
-    | "price"
-    | "priceLabel"
-    | "status"
-    | "city"
-    | "barangay"
-    | "floorLevel"
-    | "isPagibigAccredited"
-    | "isBankFinancingReady"
-    | "isInHouseFinancing"
-    | "isRentToOwn"
-  >;
-  shareUrl: string;
-};
-
-const ContactSidebar = ({ property, shareUrl }: Props) => {
+const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
   const [inquiryOpen, setInquiryOpen] = useState(false);
 
   const price = formatPrice(property as PropertyDetail);
@@ -204,31 +186,16 @@ const InquiryModal = ({
   const [isPending, startTransition] = useTransition();
   const [serverState, setServerState] = useState<InquiryState>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors: clientErrors },
-  } = useForm<InquiryInput>({
-    resolver: zodResolver(InquirySchema),
-    defaultValues: {
-      source: "Property listing",
-      propertyTitle,
-      propertySlug,
-      propertyPrice,
-      propertyLocation,
-      propertyStatus,
-      propertyType,
-      honeypot: "",
-    },
-  });
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
 
-  const onSubmit = (data: InquiryInput) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        formData.append(key, value);
-      }
-    });
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
 
     startTransition(async () => {
       const result = await submitInquiry(null, formData);
@@ -288,19 +255,18 @@ const InquiryModal = ({
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-            <input type="hidden" {...register("source")} />
-            <input type="hidden" {...register("propertyTitle")} />
-            <input type="hidden" {...register("propertySlug")} />
-            <input type="hidden" {...register("propertyPrice")} />
-            <input type="hidden" {...register("propertyLocation")} />
-            <input type="hidden" {...register("propertyStatus")} />
-            <input type="hidden" {...register("propertyType")} />
+          <form onSubmit={onSubmit} className="flex flex-col gap-3">
+            <input type="hidden" name="source" value="Property listing" readOnly />
+            <input type="hidden" name="propertyTitle" value={propertyTitle} readOnly />
+            <input type="hidden" name="propertySlug" value={propertySlug} readOnly />
+            <input type="hidden" name="propertyPrice" value={propertyPrice} readOnly />
+            <input type="hidden" name="propertyLocation" value={propertyLocation} readOnly />
+            <input type="hidden" name="propertyStatus" value={propertyStatus} readOnly />
+            <input type="hidden" name="propertyType" value={propertyType} readOnly />
 
-            {/* Honeypot */}
             <input
               type="text"
-              {...register("honeypot")}
+              name="honeypot"
               tabIndex={-1}
               autoComplete="off"
               className="absolute opacity-0 -z-10"
@@ -320,68 +286,68 @@ const InquiryModal = ({
             <div>
               <input
                 type="text"
-                {...register("name")}
+                name="name"
+                required
+                minLength={2}
+                maxLength={100}
                 placeholder="Your full name"
                 className={clsx(inputStyles, {
-                  "border-red-300 focus:border-red-400": clientErrors.name || serverErrors.name,
+                  "border-red-300 focus:border-red-400": serverErrors.name,
                 })}
               />
-              {(clientErrors.name || serverErrors.name) && (
-                <p className="text-xs text-red-500 mt-1">
-                  {clientErrors.name?.message || serverErrors.name?.[0]}
-                </p>
+              {serverErrors.name && (
+                <p className="text-xs text-red-500 mt-1">{serverErrors.name[0]}</p>
               )}
             </div>
 
             <div>
               <input
                 type="email"
-                {...register("email")}
+                name="email"
+                required
                 placeholder="Email address"
                 className={clsx(inputStyles, {
-                  "border-red-300 focus:border-red-400": clientErrors.email || serverErrors.email,
+                  "border-red-300 focus:border-red-400": serverErrors.email,
                 })}
               />
-              {(clientErrors.email || serverErrors.email) && (
-                <p className="text-xs text-red-500 mt-1">
-                  {clientErrors.email?.message || serverErrors.email?.[0]}
-                </p>
+              {serverErrors.email && (
+                <p className="text-xs text-red-500 mt-1">{serverErrors.email[0]}</p>
               )}
             </div>
 
             <div>
               <input
                 type="tel"
-                {...register("phone")}
+                name="phone"
+                maxLength={50}
                 placeholder="Phone / WhatsApp (optional)"
                 className={clsx(inputStyles, {
-                  "border-red-300 focus:border-red-400": clientErrors.phone || serverErrors.phone,
+                  "border-red-300 focus:border-red-400": serverErrors.phone,
                 })}
               />
-              {(clientErrors.phone || serverErrors.phone) && (
-                <p className="text-xs text-red-500 mt-1">
-                  {clientErrors.phone?.message || serverErrors.phone?.[0]}
-                </p>
+              {serverErrors.phone && (
+                <p className="text-xs text-red-500 mt-1">{serverErrors.phone[0]}</p>
               )}
             </div>
 
             <div>
               <textarea
-                {...register("message")}
+                name="message"
+                required
+                minLength={10}
+                maxLength={2000}
                 placeholder="Your message"
                 rows={3}
                 className={clsx(
                   inputStyles,
                   "py-2.5 h-auto resize-none",
                   {
-                    "border-red-300 focus:border-red-400": clientErrors.message || serverErrors.message,
+                    "border-red-300 focus:border-red-400": serverErrors.message,
                   },
                 )}
               />
-              {(clientErrors.message || serverErrors.message) && (
-                <p className="text-xs text-red-500 mt-1">
-                  {clientErrors.message?.message || serverErrors.message?.[0]}
-                </p>
+              {serverErrors.message && (
+                <p className="text-xs text-red-500 mt-1">{serverErrors.message[0]}</p>
               )}
             </div>
 
