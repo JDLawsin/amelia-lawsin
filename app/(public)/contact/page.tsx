@@ -1,20 +1,9 @@
-import dynamic from "next/dynamic";
 import { SITE_CONFIG } from "@/constants";
 import { ogImageMetadata } from "@/lib/og-metadata";
 import type { Metadata } from "next";
 import ContactMap from "./_components/ContactMap";
-import InquiryFormShell from "./_components/InquiryFormShell";
-import FaqAccordionShell from "./_components/FaqAccordionShell";
-
-const InquiryForm = dynamic(() => import("./_components/InquiryForm"), {
-  ssr: false,
-  loading: () => <InquiryFormShell />,
-});
-
-const FaqAccordion = dynamic(() => import("./_components/FaqAccordion"), {
-  ssr: false,
-  loading: () => <FaqAccordionShell />,
-});
+import InquiryFormLoader from "./_components/InquiryFormLoader";
+import FaqAccordionLoader from "./_components/FaqAccordionLoader";
 
 const ogAlt = `Contact ${SITE_CONFIG.name} — Real Estate Agent in Cebu`;
 
@@ -256,7 +245,7 @@ const ContactPage = () => (
           <p className="text-sm text-ash leading-relaxed mb-8">
             Fill in the form and Amelia will get back to you within 24 hours.
           </p>
-          <InquiryForm />
+          <InquiryFormLoader />
         </div>
 
         <div className="px-6 lg:px-12 py-12 flex flex-col gap-8">
@@ -332,7 +321,7 @@ const ContactPage = () => (
           Common questions answered
         </h2>
         <div className="max-w-2xl mx-auto">
-          <FaqAccordion />
+          <FaqAccordionLoader />
         </div>
       </div>
     </section>
