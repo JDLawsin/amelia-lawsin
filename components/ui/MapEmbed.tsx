@@ -11,6 +11,8 @@ type MapEmbedProps = {
   iframeHeight: number;
   containerClassName: string;
   fallbackLabel: string;
+  /** Defer iframe load until the user opts in — avoids third-party cookies on load. */
+  clickToLoad?: boolean;
 };
 
 const MapEmbed = ({
@@ -20,7 +22,9 @@ const MapEmbed = ({
   iframeHeight,
   containerClassName,
   fallbackLabel,
+  clickToLoad = false,
 }: MapEmbedProps) => {
+  const [activated, setActivated] = useState(!clickToLoad);
   const [loaded, setLoaded] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
 
@@ -29,17 +33,66 @@ const MapEmbed = ({
     const timer = setTimeout(() => {
       setLoaded(false);
       setShowFallback(false);
+      if (clickToLoad) {
+        setActivated(false);
+      }
     }, 0);
     return () => clearTimeout(timer);
-  }, [src]);
+  }, [clickToLoad, src]);
 
   // Fall back to the link-only preview only if the iframe genuinely fails to
   // load within the timeout window.
   useEffect(() => {
-    if (loaded || showFallback) return;
+    if (!activated || loaded || showFallback) return;
     const timer = setTimeout(() => setShowFallback(true), MAP_LOAD_TIMEOUT_MS);
     return () => clearTimeout(timer);
-  }, [loaded, showFallback, src]);
+  }, [activated, loaded, showFallback, src]);
+
+  if (clickToLoad && !activated) {
+    return (
+      <div
+        className={`relative overflow-hidden border border-wire bg-cloud ${containerClassName}`}
+      >
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+          <div className="w-10 h-10 rounded-xl bg-white border border-wire flex items-center justify-center mb-3">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1d1d1f"
+              strokeWidth="1.5"
+              aria-hidden="true"
+            >
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-ink mb-1 line-clamp-2">
+            {fallbackLabel}
+          </p>
+          <p className="text-xs text-ash mb-4">
+            Interactive map loads only when you choose to view it.
+          </p>
+          <button
+            type="button"
+            onClick={() => setActivated(true)}
+            className="inline-flex items-center text-xs font-medium px-4 py-2 rounded-lg bg-ink text-white hover:bg-ink/90 transition-colors"
+          >
+            Load map
+          </button>
+        </div>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-3 right-3 bg-white text-ink text-xs font-medium px-3 py-1.5 rounded-lg border border-wire shadow-apple-sm hover:shadow-apple transition-shadow"
+        >
+          Open in Maps →
+        </a>
+      </div>
+    );
+  }
 
   if (!loaded && showFallback) {
     return (
