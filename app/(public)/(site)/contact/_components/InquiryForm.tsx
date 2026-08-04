@@ -10,6 +10,7 @@ import {
   PROPERTY_TYPES,
   textareaStyles,
 } from "./inquiry-form.constants";
+import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
 
 const SuccessState = ({
   message,
@@ -246,9 +247,7 @@ const InquiryForm = () => {
           {isPending ? "Sending..." : "Send inquiry"}
         </button>
 
-        <p className="text-xs text-ash text-center">
-          Your details are only shared with Amelia Lawsin
-        </p>
+        <InquiryPrivacyNotice />
       </form>
 
       {showSuccess && state?.success && (

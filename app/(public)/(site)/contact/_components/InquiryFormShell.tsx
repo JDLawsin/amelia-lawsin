@@ -4,6 +4,7 @@ import {
   PROPERTY_TYPES,
   textareaStyles,
 } from "./inquiry-form.constants";
+import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
 
 /** Static inquiry form shell — renders in HTML before the client bundle loads. */
 const InquiryFormShell = () => (
@@ -114,9 +115,7 @@ const InquiryFormShell = () => (
         Send inquiry
       </button>
 
-      <p className="text-xs text-ash text-center">
-        Your details are only shared with Amelia Lawsin
-      </p>
+      <InquiryPrivacyNotice />
     </form>
   </div>
 );

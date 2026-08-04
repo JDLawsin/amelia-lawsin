@@ -557,6 +557,16 @@ const PropertyDetailPage = async ({ params }: Props) => {
             />
           </div>
 
+          <p className="text-xs text-ash leading-relaxed pt-2">
+            Listing information is subject to change without notice. Prices,
+            availability, and photos should be verified with Amelia Lawsin
+            before making any decision. See our{" "}
+            <a href="/terms-of-service" className="text-ink underline underline-offset-2 hover:text-ash">
+              Terms of Service
+            </a>
+            .
+          </p>
+
           {relatedProperties.length > 0 && (
             <>
               <Divider />

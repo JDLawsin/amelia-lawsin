@@ -102,6 +102,7 @@ export const COMPANY_LINKS = [
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
   { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms-of-service", label: "Terms of Service" },
 ];
 
 export const BEDROOM_OPTIONS = [

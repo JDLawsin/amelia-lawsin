@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { getSiteUrl } from "@/lib/site";
 import { ogImageMetadata } from "@/lib/og-metadata";
 import { SITE_CONFIG } from "@/constants";
+import AnalyticsProvider from "@/components/analytics/AnalyticsProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -94,7 +95,7 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} font-sans bg-cloud`}
       >
         <Toaster position="top-right" reverseOrder={false} />
-        {children}
+        <AnalyticsProvider>{children}</AnalyticsProvider>
       </body>
     </html>
   );
