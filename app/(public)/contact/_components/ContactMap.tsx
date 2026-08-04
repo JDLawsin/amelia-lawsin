@@ -17,6 +17,7 @@ const ContactMap = () => {
       iframeHeight={176}
       containerClassName="h-44 rounded-2xl"
       fallbackLabel={query}
+      clickToLoad
     />
   );
 };
