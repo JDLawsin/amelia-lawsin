@@ -50,9 +50,8 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             alt={imageAlt}
             fill
             sizes={HERO_IMAGE_SIZES}
-            // Desktop LCP is preloaded via media-scoped <LcpPreloadLink /> in
-            // page.tsx. Keep this lazy so mobile (`hidden md:flex`) does not
-            // download a non-LCP image and steal the featured-card priority slot.
+            // Desktop LCP preload is hoisted to page.tsx (outside Suspense).
+            // Keep lazy so mobile (`hidden md:flex`) does not download this image.
             loading="lazy"
             className="object-cover"
           />
