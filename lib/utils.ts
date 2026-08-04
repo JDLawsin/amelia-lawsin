@@ -1,4 +1,4 @@
-import { Unit } from "@/app/(public)/properties/[slug]/_components/UnitSelector";
+import { Unit } from "@/app/(public)/(site)/properties/[slug]/_components/UnitSelector";
 import { PropertyListItem } from "@/services/property.service";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";

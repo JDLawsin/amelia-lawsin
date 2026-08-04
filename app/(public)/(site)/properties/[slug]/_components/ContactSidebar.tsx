@@ -12,6 +12,7 @@ import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
 import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
+import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
 
 type Props = {
   property: Pick<
@@ -392,9 +393,7 @@ const InquiryModal = ({
               {isPending ? "Sending..." : "Send inquiry"}
             </button>
 
-            <p className="text-xs text-ash text-center">
-              Your details are only shared with Amelia Lawsin
-            </p>
+            <InquiryPrivacyNotice />
           </form>
         )}
       </div>
