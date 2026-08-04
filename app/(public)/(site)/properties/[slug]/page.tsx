@@ -29,13 +29,12 @@ import {
 } from "@/lib/structured-data";
 import JsonLd from "@/components/ui/JsonLd";
 import { formatPriceWithNote } from "@/lib/utils";
-import { FavoriteButton } from "@/components/favorites/FavoriteButton";
-import { CompareButton } from "@/components/tools/CompareButton";
-import PropertyGallery from "./_components/PropertyGallery";
 import PropertyGalleryGrid from "./_components/PropertyGalleryGrid";
-import UnitSelector from "./_components/UnitSelector";
+import PropertyGalleryLoader from "./_components/PropertyGalleryLoader";
+import UnitSelectorLoader from "./_components/UnitSelectorLoader";
 import RelatedProperties from "./_components/RelatedProperties";
-import ContactSidebar from "./_components/ContactSidebar";
+import ContactSidebarLoader from "./_components/ContactSidebarLoader";
+import PropertyActionsLoader from "./_components/PropertyActionsLoader";
 
 const PropertyMap = dynamic(() => import("./_components/PropertyMap"), {
   loading: () => (
@@ -196,9 +195,8 @@ const PropertyDetailPage = async ({ params }: Props) => {
         </span>
       </nav>
 
-      <PropertyGallery images={property.images} title={property.title}>
-        <PropertyGalleryGrid images={property.images} title={property.title} />
-      </PropertyGallery>
+      <PropertyGalleryGrid images={property.images} title={property.title} />
+      <PropertyGalleryLoader images={property.images} title={property.title} />
 
       <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 max-w-7xl mx-auto">
         <div>
@@ -216,10 +214,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
           <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
             Save Listing
           </span>
-          <div className="flex items-center gap-2 rounded-xl border border-wire bg-cloud/50 p-1.5">
-            <FavoriteButton slug={property.slug} size="md" />
-            <CompareButton slug={property.slug} size="md" />
-          </div>
+          <PropertyActionsLoader slug={property.slug} size="md" />
         </div>
       </div>
 
@@ -357,7 +352,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
                 This property has multiple unit types — select one to see specs
                 and pricing
               </p>
-              <UnitSelector
+              <UnitSelectorLoader
                 units={property.units}
                 propertyTitle={property.title}
               />
@@ -537,7 +532,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
           <div className="lg:hidden">
             <Divider />
             <SectionTitle>Interested in this property?</SectionTitle>
-            <ContactSidebar
+            <ContactSidebarLoader
               shareUrl={shareUrl}
               property={{
                 title: property.title,
@@ -578,7 +573,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
 
         <div className="hidden lg:block py-6 pl-8">
           <div className="sticky top-17">
-            <ContactSidebar
+            <ContactSidebarLoader
               shareUrl={shareUrl}
               property={{
                 title: property.title,
