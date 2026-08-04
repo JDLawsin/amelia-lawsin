@@ -6,18 +6,20 @@ const HomeLoadingSkeleton = () => (
     <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
       <div className="flex flex-col items-center justify-center border-r border-wire md:min-h-105">
         <div className="flex flex-col gap-5 w-full max-w-7xl px-6 py-16 md:py-20">
-          <div className="h-3 w-48 rounded bg-wire/50" aria-hidden="true" />
-          <div
-            className="flex flex-col gap-2 min-h-22 xl:min-h-26"
-            aria-hidden="true"
-          >
-            <div className="h-10 w-full max-w-md rounded bg-wire/50" />
-            <div className="h-10 w-full max-w-sm rounded bg-wire/50" />
-          </div>
-          <div
-            className="h-4 w-72 max-w-full rounded bg-wire/40"
-            aria-hidden="true"
-          />
+          <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
+            Licensed Real Estate Agent · Cebu
+          </p>
+
+          <h1 className="text-4xl xl:text-5xl font-serif font-medium text-ink tracking-tight leading-tight min-h-22 xl:min-h-26">
+            Find Your Dream <br className="hidden md:block" />
+            Property in Cebu
+          </h1>
+
+          <p className="text-sm text-ash leading-relaxed">
+            Trusted by local buyers, OFWs, and international investors{" "}
+            <br className="hidden md:block" />
+            across the Philippines
+          </p>
           <div className="flex flex-wrap gap-3" aria-hidden="true">
             <div className="h-10 w-36 rounded-full bg-wire/50" />
             <div className="h-10 w-32 rounded-full bg-wire/50" />
