@@ -62,7 +62,7 @@
     "eslint": "10.6.0",
     "eslint-config-next": "16.2.10",
     "postcss": "^8.5.8",
-    "prisma": "^7.5.0",
+    "prisma": "^7.9.1",
     "typescript": "^5",
     "unlighthouse": "^0.18.0"
   },
