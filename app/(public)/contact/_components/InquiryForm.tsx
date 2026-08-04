@@ -1,30 +1,15 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRef, useState, useTransition, type FormEvent } from "react";
 import clsx from "clsx";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
-import { InquirySchema, type InquiryInput } from "@/app/_schemas/inquiry.schema";
-
-const PROPERTY_TYPES = [
-  "Condo",
-  "House & Lot",
-  "Lot Only",
-  "Townhouse",
-  "Commercial",
-  "Beach / Vacation Property",
-  "Not sure yet",
-];
-
-const inputStyles = clsx(
-  "h-10 px-3 rounded-xl text-sm text-ink",
-  "bg-cloud border border-wire",
-  "placeholder:text-ash",
-  "focus:outline-none focus:border-ink transition-colors",
-);
-
-const labelStyles = "text-xs text-ash";
+import {
+  errorInputStyles,
+  inputStyles,
+  labelStyles,
+  PROPERTY_TYPES,
+  textareaStyles,
+} from "./inquiry-form.constants";
 
 const SuccessState = ({
   message,
@@ -67,30 +52,21 @@ const SuccessState = ({
 );
 
 const InquiryForm = () => {
+  const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [state, setState] = useState<InquiryState>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors: clientErrors },
-    reset,
-  } = useForm<InquiryInput>({
-    resolver: zodResolver(InquirySchema),
-    defaultValues: {
-      source: "Contact page",
-      honeypot: "",
-    },
-  });
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
 
-  const onSubmit = (data: InquiryInput) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        formData.append(key, value);
-      }
-    });
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
 
     startTransition(async () => {
       const result = await submitInquiry(null, formData);
@@ -104,7 +80,7 @@ const InquiryForm = () => {
   const handleReset = () => {
     setShowSuccess(false);
     setState(null);
-    reset();
+    formRef.current?.reset();
   };
 
   const serverErrors =
@@ -115,26 +91,25 @@ const InquiryForm = () => {
   return (
     <div className="relative">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        ref={formRef}
+        onSubmit={onSubmit}
         className={clsx(
           "flex flex-col gap-4 transition-all duration-300 ease-out",
           showSuccess && "opacity-0 scale-[0.98] pointer-events-none",
         )}
         aria-busy={isPending}
       >
-        <input type="hidden" {...register("source")} />
+        <input type="hidden" name="source" value="Contact page" readOnly />
 
-        {/* Honeypot field: hidden from humans, traps bots */}
         <input
           type="text"
-          {...register("honeypot")}
+          name="honeypot"
           tabIndex={-1}
           autoComplete="off"
           className="absolute opacity-0 -z-10"
           aria-hidden="true"
         />
 
-        {/* Loading overlay */}
         <div
           className={clsx(
             "absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/80 backdrop-blur-sm transition-opacity duration-300",
@@ -145,90 +120,83 @@ const InquiryForm = () => {
           <p className="text-xs font-medium text-ink">Sending inquiry...</p>
         </div>
 
-        {/* Global error message */}
         {serverMessage && (
           <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 animate-in slide-in-from-top-1 duration-200">
             <p className="text-xs text-red-600">{serverMessage}</p>
           </div>
         )}
 
-        {/* Name + Email */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className={labelStyles} htmlFor="name">
+            <label className={labelStyles} htmlFor="contact-name">
               Full name <span className="text-red-400">*</span>
             </label>
             <input
-              id="name"
-              {...register("name")}
+              id="contact-name"
+              name="name"
               type="text"
+              required
+              minLength={2}
+              maxLength={100}
               placeholder="Juan Dela Cruz"
               className={clsx(inputStyles, {
-                "border-red-300 focus:border-red-400": clientErrors.name || serverErrors.name,
+                [errorInputStyles]: serverErrors.name,
               })}
             />
-            {(clientErrors.name || serverErrors.name) && (
-              <p className="text-xs text-red-500">
-                {clientErrors.name?.message || serverErrors.name?.[0]}
-              </p>
+            {serverErrors.name && (
+              <p className="text-xs text-red-500">{serverErrors.name[0]}</p>
             )}
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className={labelStyles} htmlFor="email">
+            <label className={labelStyles} htmlFor="contact-email">
               Email address <span className="text-red-400">*</span>
             </label>
             <input
-              id="email"
-              {...register("email")}
+              id="contact-email"
+              name="email"
               type="email"
+              required
               placeholder="juan@email.com"
               className={clsx(inputStyles, {
-                "border-red-300 focus:border-red-400": clientErrors.email || serverErrors.email,
+                [errorInputStyles]: serverErrors.email,
               })}
             />
-            {(clientErrors.email || serverErrors.email) && (
-              <p className="text-xs text-red-500">
-                {clientErrors.email?.message || serverErrors.email?.[0]}
-              </p>
+            {serverErrors.email && (
+              <p className="text-xs text-red-500">{serverErrors.email[0]}</p>
             )}
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className={labelStyles} htmlFor="phone">
+          <label className={labelStyles} htmlFor="contact-phone">
             Phone / WhatsApp <span className="text-ash">(optional)</span>
           </label>
           <input
-            id="phone"
-            {...register("phone")}
+            id="contact-phone"
+            name="phone"
             type="tel"
+            maxLength={50}
             placeholder="+63 9XX XXX XXXX"
             className={clsx(inputStyles, {
-              "border-red-300 focus:border-red-400": clientErrors.phone || serverErrors.phone,
+              [errorInputStyles]: serverErrors.phone,
             })}
           />
-          {(clientErrors.phone || serverErrors.phone) && (
-            <p className="text-xs text-red-500">
-              {clientErrors.phone?.message || serverErrors.phone?.[0]}
-            </p>
+          {serverErrors.phone && (
+            <p className="text-xs text-red-500">{serverErrors.phone[0]}</p>
           )}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className={labelStyles} htmlFor="propertyType">
+          <label className={labelStyles} htmlFor="contact-propertyType">
             I&apos;m interested in
           </label>
           <select
-            id="propertyType"
-            {...register("propertyType")}
+            id="contact-propertyType"
+            name="propertyType"
             defaultValue=""
-            className={clsx(
-              inputStyles,
-              "appearance-none cursor-pointer",
-              {
-                "border-red-300 focus:border-red-400": clientErrors.propertyType || serverErrors.propertyType,
-              },
-            )}
+            className={clsx(inputStyles, "appearance-none cursor-pointer", {
+              [errorInputStyles]: serverErrors.propertyType,
+            })}
           >
             <option value="" disabled>
               Select property type...
@@ -239,37 +207,29 @@ const InquiryForm = () => {
               </option>
             ))}
           </select>
-          {(clientErrors.propertyType || serverErrors.propertyType) && (
-            <p className="text-xs text-red-500">
-              {clientErrors.propertyType?.message || serverErrors.propertyType?.[0]}
-            </p>
+          {serverErrors.propertyType && (
+            <p className="text-xs text-red-500">{serverErrors.propertyType[0]}</p>
           )}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className={labelStyles} htmlFor="message">
+          <label className={labelStyles} htmlFor="contact-message">
             Message <span className="text-red-400">*</span>
           </label>
           <textarea
-            id="message"
-            {...register("message")}
+            id="contact-message"
+            name="message"
             rows={4}
+            required
+            minLength={10}
+            maxLength={2000}
             placeholder="Hi Amelia! I'm looking for..."
-            className={clsx(
-              "px-3 py-2.5 rounded-xl text-sm text-ink",
-              "bg-cloud border border-wire",
-              "placeholder:text-ash",
-              "focus:outline-none focus:border-ink transition-colors",
-              "resize-none",
-              {
-                "border-red-300 focus:border-red-400": clientErrors.message || serverErrors.message,
-              },
-            )}
+            className={clsx(textareaStyles, {
+              [errorInputStyles]: serverErrors.message,
+            })}
           />
-          {(clientErrors.message || serverErrors.message) && (
-            <p className="text-xs text-red-500">
-              {clientErrors.message?.message || serverErrors.message?.[0]}
-            </p>
+          {serverErrors.message && (
+            <p className="text-xs text-red-500">{serverErrors.message[0]}</p>
           )}
         </div>
 
