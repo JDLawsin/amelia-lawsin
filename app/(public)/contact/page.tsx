@@ -1,9 +1,20 @@
+import dynamic from "next/dynamic";
 import { SITE_CONFIG } from "@/constants";
 import { ogImageMetadata } from "@/lib/og-metadata";
 import type { Metadata } from "next";
-import InquiryForm from "./_components/InquiryForm";
 import ContactMap from "./_components/ContactMap";
-import FaqAccordion from "./_components/FaqAccordion";
+import InquiryFormShell from "./_components/InquiryFormShell";
+import FaqAccordionShell from "./_components/FaqAccordionShell";
+
+const InquiryForm = dynamic(() => import("./_components/InquiryForm"), {
+  ssr: false,
+  loading: () => <InquiryFormShell />,
+});
+
+const FaqAccordion = dynamic(() => import("./_components/FaqAccordion"), {
+  ssr: false,
+  loading: () => <FaqAccordionShell />,
+});
 
 const ogAlt = `Contact ${SITE_CONFIG.name} — Real Estate Agent in Cebu`;
 
