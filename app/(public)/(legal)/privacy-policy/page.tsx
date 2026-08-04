@@ -21,7 +21,7 @@ const PrivacyPolicyPage = () => (
           Privacy Policy
         </h1>
         <p className="text-sm text-ash leading-relaxed max-w-md mx-auto">
-          Last updated: July 13, 2026
+          Last updated: August 5, 2026
         </p>
       </div>
     </section>
@@ -49,7 +49,10 @@ const PrivacyPolicyPage = () => (
           <li>The message you send us</li>
         </ul>
         <p className="mb-6">
-          We do not use analytics, advertising, or other tracking tools on this site.
+          When you browse without submitting a form, we do not collect personal
+          information that identifies you. Saved favorites and compare lists are
+          stored only in your browser&apos;s local storage and are not sent to
+          us unless you submit an inquiry.
         </p>
 
         <h2 className="text-lg font-medium text-ink mb-3">3. How we use your information</h2>
@@ -78,11 +81,33 @@ const PrivacyPolicyPage = () => (
           are handled according to the provider’s own security and privacy practices.
         </p>
 
-        <h2 className="text-lg font-medium text-ink mb-3">6. Cookies and tracking</h2>
+        <h2 className="text-lg font-medium text-ink mb-3">6. Cookies, local storage, and analytics</h2>
+        <p className="mb-3">
+          This website does not use advertising cookies. The following may apply
+          when you visit:
+        </p>
+        <ul className="list-disc pl-5 mb-3 space-y-1">
+          <li>
+            <strong className="text-ink font-medium">Local storage</strong> —
+            favorites and compare lists are saved in your browser only and stay
+            on your device until you clear them.
+          </li>
+          <li>
+            <strong className="text-ink font-medium">Strictly necessary cookies</strong> —
+            limited session or security cookies may be set so the site functions
+            correctly (for example, on admin pages not visible to the public).
+          </li>
+          <li>
+            <strong className="text-ink font-medium">Analytics (when enabled)</strong> —
+            we may use Google Analytics to understand how visitors use the site
+            (pages viewed, general traffic). This helps us improve the website.
+            Analytics data is aggregated and does not include the contents of your
+            inquiry messages. You can opt out via your browser&apos;s &ldquo;Do Not
+            Track&rdquo; setting or a browser extension that blocks analytics scripts.
+          </li>
+        </ul>
         <p className="mb-6">
-          This website does not use tracking or advertising cookies. Only cookies and
-          local storage strictly necessary for the site to function may be used by
-          your browser.
+          We do not sell your browsing or inquiry data to advertisers.
         </p>
 
         <h2 className="text-lg font-medium text-ink mb-3">7. Your rights</h2>

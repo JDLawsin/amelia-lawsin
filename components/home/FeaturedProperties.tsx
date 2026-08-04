@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PropertyListItem } from "@/services/property.service";
-import PropertyCard from "@/app/(public)/properties/_components/PropertyCard";
+import PropertyCard from "@/app/(public)/(site)/properties/_components/PropertyCard";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaSecondary } from "@/components/ui/cta";
 
