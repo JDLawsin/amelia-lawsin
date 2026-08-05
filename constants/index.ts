@@ -239,6 +239,12 @@ export const PROPERTY_VISIBILITY_VARIANTS: Record<
 
 export const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 export const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+/** react-dropzone Accept map — MIME keys, not extensions */
+export const DROPZONE_ACCEPT = {
+  "image/jpeg": [],
+  "image/png": [],
+  "image/webp": [],
+} as const;
 export const MAX_FILES = 10;
 
 export const INQUIRY_STATUS_LABELS: Record<

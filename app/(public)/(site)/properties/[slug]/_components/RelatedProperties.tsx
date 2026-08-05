@@ -3,8 +3,9 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import clsx from "clsx";
 import { PropertyListItem } from "@/services/property.service";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getPrimaryImage } from "@/lib/utils";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
+import { PROPERTY_CARD_IMAGE_WIDTH } from "@/lib/image-layout";
 
 type RelatedPropertiesProps = {
   properties: PropertyListItem[];
@@ -16,11 +17,10 @@ const RelatedProperties = ({ properties }: RelatedPropertiesProps) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {properties.map((property) => {
-        const imageUrl =
-          property.images.find((i: { isPrimary: boolean }) => i.isPrimary)
-            ?.url ??
-          property.images[0]?.url ??
-          null;
+        const imageUrl = getPrimaryImage(property.images, {
+          width: PROPERTY_CARD_IMAGE_WIDTH,
+          quality: "auto",
+        });
         const location = [property.barangay, property.city]
           .filter(Boolean)
           .join(", ");

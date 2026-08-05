@@ -1,5 +1,9 @@
 import { Unit } from "@/app/(public)/(site)/properties/[slug]/_components/UnitSelector";
 import { PropertyListItem } from "@/services/property.service";
+import {
+  cloudinaryDeliveryUrl,
+  type CloudinaryDeliveryQuality,
+} from "@/lib/cloudinary-url";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -36,11 +40,18 @@ export const formatUnitPrice = (unit: Unit): string => {
 
 type PropertyImageLike = { isPrimary: boolean; url: string };
 
+type PrimaryImageOptions = {
+  width: number;
+  quality?: CloudinaryDeliveryQuality;
+};
+
 export const getPrimaryImage = (
   images: PropertyImageLike[],
+  options: PrimaryImageOptions,
 ): string | null => {
   const primary = images.find((img) => img.isPrimary);
-  return primary?.url ?? images[0]?.url ?? null;
+  const url = primary?.url ?? images[0]?.url ?? null;
+  return cloudinaryDeliveryUrl(url, options);
 };
 
 export const orderBySlugList = <T extends { slug: string }>(

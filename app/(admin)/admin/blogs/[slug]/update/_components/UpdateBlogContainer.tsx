@@ -91,6 +91,7 @@ const UpdateBlogContainer = ({ blog, allTags }: Props) => {
         isPending={isPending}
         existingCoverUrl={blog.coverImage}
         blogId={blog.id}
+        actionSuccess={state?.success === true}
       />
     </div>
   );

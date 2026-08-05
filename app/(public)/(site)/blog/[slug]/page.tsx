@@ -17,7 +17,9 @@ import {
   BLOG_HERO_IMAGE_SIZES,
   BLOG_IMAGE_HEIGHT,
   BLOG_IMAGE_WIDTH,
+  OG_IMAGE_WIDTH,
 } from "@/lib/image-layout";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
 import ShareButtons from "./_components/ShareButtons";
 import TableOfContents from "./_components/TableOfContents";
 import BlogContent from "./_components/BlogContent";
@@ -60,14 +62,30 @@ export const generateMetadata = async ({
       publishedTime: blog.publishedAt?.toISOString(),
       authors: [SITE_CONFIG.name],
       images: blog.coverImage
-        ? [{ url: blog.coverImage, alt: blog.title }]
+        ? [
+            {
+              url:
+                cloudinaryDeliveryUrl(blog.coverImage, {
+                  width: OG_IMAGE_WIDTH,
+                  quality: "auto:best",
+                }) ?? blog.coverImage,
+              alt: blog.title,
+            },
+          ]
         : [],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: blog.coverImage ? [blog.coverImage] : [],
+      images: blog.coverImage
+        ? [
+            cloudinaryDeliveryUrl(blog.coverImage, {
+              width: OG_IMAGE_WIDTH,
+              quality: "auto:best",
+            }) ?? blog.coverImage,
+          ]
+        : [],
     },
   };
 };
@@ -86,8 +104,13 @@ const BlogDetailPage = async ({ params }: Props) => {
   const baseUrl = getSiteUrl();
   const shareUrl = `${baseUrl}/blog/${blog.slug}`;
 
-  if (blog.coverImage) {
-    preloadLcpImage(blog.coverImage, blog.title, {
+  const coverSrc = cloudinaryDeliveryUrl(blog.coverImage, {
+    width: BLOG_IMAGE_WIDTH,
+    quality: "auto:best",
+  });
+
+  if (coverSrc) {
+    preloadLcpImage(coverSrc, blog.title, {
       width: BLOG_IMAGE_WIDTH,
       height: BLOG_IMAGE_HEIGHT,
       sizes: BLOG_HERO_IMAGE_SIZES,
@@ -178,10 +201,10 @@ const BlogDetailPage = async ({ params }: Props) => {
         </div>
       </header>
 
-      {blog.coverImage && (
+      {coverSrc && (
         <div className="max-w-7xl mx-auto px-6 pb-8">
           <Image
-            src={blog.coverImage}
+            src={coverSrc}
             alt={blog.title}
             width={BLOG_IMAGE_WIDTH}
             height={BLOG_IMAGE_HEIGHT}

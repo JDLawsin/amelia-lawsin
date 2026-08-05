@@ -7,6 +7,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+/** Quality-first upload transforms — limit huge originals, prefer fidelity */
+const UPLOAD_IMAGE_TRANSFORM = [
+  { width: 2048, height: 2048, crop: "limit" },
+  { quality: "auto:best", fetch_format: "auto" },
+];
+
 export const uploadImages = async (files: File[], propertyId: string) => {
   if (!files || files.length === 0) return [];
 
@@ -34,10 +40,7 @@ export const uploadImages = async (files: File[], propertyId: string) => {
             {
               folder: `properties/${propertyId}`,
               resource_type: "image",
-              transformation: [
-                { width: 1920, height: 1080, crop: "limit" },
-                { quality: "auto:good", fetch_format: "auto" },
-              ],
+              transformation: UPLOAD_IMAGE_TRANSFORM,
             },
             (error, result) => {
               if (error) reject(error);
@@ -83,10 +86,7 @@ export const uploadCoverImage = async (
         {
           folder: `blogs/${blogId}`,
           resource_type: "image",
-          transformation: [
-            { width: 1920, height: 1080, crop: "limit" },
-            { quality: "auto:good", fetch_format: "auto" },
-          ],
+          transformation: UPLOAD_IMAGE_TRANSFORM,
         },
         (error, result) => {
           if (error) reject(error);
@@ -125,10 +125,7 @@ export const uploadSingleImage = async (
         {
           folder,
           resource_type: "image",
-          transformation: [
-            { width: 1920, height: 1080, crop: "limit" },
-            { quality: "auto:good", fetch_format: "auto" },
-          ],
+          transformation: UPLOAD_IMAGE_TRANSFORM,
         },
         (error, result) => {
           if (error) reject(error);

@@ -4,10 +4,12 @@ import dynamic from "next/dynamic";
 import { ensureMetaDescription } from "@/lib/metadata-helpers";
 import { preloadLcpImage } from "@/lib/preload-lcp-image";
 import {
+  OG_IMAGE_WIDTH,
   PROPERTY_GALLERY_PRIMARY_HEIGHT,
   PROPERTY_GALLERY_PRIMARY_SIZES,
   PROPERTY_GALLERY_PRIMARY_WIDTH,
 } from "@/lib/image-layout";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
 import { MapPin } from "lucide-react";
 import clsx from "clsx";
 import type { Metadata } from "next";
@@ -97,8 +99,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     `${property.title} — ${TYPE_LABELS[property.type] ?? "Property"} ${STATUS_LABELS[property.status] ?? "listing"} in ${property.city ?? "Cebu"}. Inquire with Amelia Lawsin for viewings and financing.`,
   );
 
-  const ogImages = primaryImage?.url
-    ? [{ url: primaryImage.url, alt: property.title }]
+  const ogImageUrl = cloudinaryDeliveryUrl(primaryImage?.url, {
+    width: OG_IMAGE_WIDTH,
+    quality: "auto:best",
+  });
+
+  const ogImages = ogImageUrl
+    ? [{ url: ogImageUrl, alt: property.title }]
     : ogImageMetadata(
         `/properties/${slug}`,
         `${property.title} — Cebu property listing`,
@@ -155,8 +162,12 @@ const PropertyDetailPage = async ({ params }: Props) => {
 
   const primaryImage =
     property.images.find((i) => i.isPrimary) ?? property.images[0];
-  if (primaryImage?.url) {
-    preloadLcpImage(primaryImage.url, property.title, {
+  const primaryDeliveryUrl = cloudinaryDeliveryUrl(primaryImage?.url, {
+    width: PROPERTY_GALLERY_PRIMARY_WIDTH,
+    quality: "auto:best",
+  });
+  if (primaryDeliveryUrl) {
+    preloadLcpImage(primaryDeliveryUrl, property.title, {
       width: PROPERTY_GALLERY_PRIMARY_WIDTH,
       height: PROPERTY_GALLERY_PRIMARY_HEIGHT,
       sizes: PROPERTY_GALLERY_PRIMARY_SIZES,

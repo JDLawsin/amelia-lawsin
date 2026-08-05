@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { X } from "lucide-react";
 import { Dialog } from "radix-ui";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
+import { LIGHTBOX_IMAGE_WIDTH } from "@/lib/image-layout";
 
 type Props = {
   src: string;
@@ -12,6 +14,12 @@ type Props = {
 };
 
 const ImageLightbox = ({ src, alt = "", title, children }: Props) => {
+  const deliverySrc =
+    cloudinaryDeliveryUrl(src, {
+      width: LIGHTBOX_IMAGE_WIDTH,
+      quality: "auto:best",
+    }) ?? src;
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
@@ -32,7 +40,7 @@ const ImageLightbox = ({ src, alt = "", title, children }: Props) => {
 
           <div className="relative w-full max-w-5xl h-[80vh]">
             <Image
-              src={src}
+              src={deliverySrc}
               alt={alt || title || "Blog image"}
               fill
               className="object-contain"

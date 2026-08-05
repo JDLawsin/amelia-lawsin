@@ -7,6 +7,7 @@ import { PropertyListItem } from "@/services/property.service";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
 import { cn, formatPrice, getPrimaryImage } from "@/lib/utils";
 import { useFavorites } from "@/providers/FavoritesProvider";
+import { PROPERTY_GALLERY_THUMB_WIDTH } from "@/lib/image-layout";
 
 type Props = {
   property: PropertyListItem;
@@ -15,7 +16,10 @@ type Props = {
 export const FavoritePropertyRow = ({ property }: Props) => {
   const { removeFavorite } = useFavorites();
 
-  const imageUrl = getPrimaryImage(property.images);
+  const imageUrl = getPrimaryImage(property.images, {
+    width: PROPERTY_GALLERY_THUMB_WIDTH,
+    quality: "auto",
+  });
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
     .filter(Boolean)

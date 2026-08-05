@@ -27,6 +27,7 @@ import PaymentSchemeStep from "@/components/step/PaymentSchemeStep";
 import LandmarkStep from "@/components/step/LandmarkStep";
 import MediaStep from "@/components/step/MediaStep";
 import { useAutoSlug } from "@/hooks/useAutoSlug";
+import { useFormDraft } from "@/hooks/useFormDraft";
 import { mapPropertyToForm } from "@/lib/mapper";
 import { getPropertyRedirectPath } from "@/lib/property-redirect";
 import { PropertyAdminDetail } from "@/services/property.admin.service";
@@ -70,6 +71,21 @@ const UpdatePropertyContainer = ({ property }: Props) => {
   } = form;
 
   useAutoSlug(watch, setValue, "title", "slug");
+
+  const { clearDraft } = useFormDraft({
+    storageKey: `admin:property-update:${property.id}`,
+    form,
+    enabled: !property.deletedAt,
+    meta: { step: currentStep },
+    onRestoreMeta: (meta) => {
+      if (
+        typeof meta.step === "string" &&
+        (PROPERTY_TABS as readonly string[]).includes(meta.step)
+      ) {
+        setCurrentStep(meta.step as (typeof PROPERTY_TABS)[number]);
+      }
+    },
+  });
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -133,6 +149,7 @@ const UpdatePropertyContainer = ({ property }: Props) => {
 
   useFormActionEffect(state, {
     getRedirectPath: getPropertyRedirectPath,
+    onSuccess: () => clearDraft(),
   });
 
   if (property.deletedAt) {

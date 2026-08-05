@@ -32,8 +32,17 @@ export const HERO_IMAGE_WIDTH = 1200;
 export const HERO_IMAGE_HEIGHT = 900;
 
 /** 3:2 — property detail gallery primary cell */
-export const PROPERTY_GALLERY_PRIMARY_WIDTH = 1200;
+export const PROPERTY_GALLERY_PRIMARY_WIDTH = 1600;
 export const PROPERTY_GALLERY_PRIMARY_HEIGHT = 800;
+
+/** Gallery strip thumbs */
+export const PROPERTY_GALLERY_THUMB_WIDTH = 400;
+
+/** Full-screen lightbox / full-bleed */
+export const LIGHTBOX_IMAGE_WIDTH = 1920;
+
+/** Open Graph / social share */
+export const OG_IMAGE_WIDTH = 1200;
 
 /** Full-width about hero (amelia.webp — 1080×1168 source) */
 export const ABOUT_HERO_IMAGE_SIZES = "(max-width: 768px) 100vw, 768px";

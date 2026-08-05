@@ -21,6 +21,7 @@ import { useCompare } from "@/providers/CompareProvider";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { useCompareProperties } from "@/lib/hooks/useCompareProperties";
 import { cn, formatPrice, getPrimaryImage } from "@/lib/utils";
+import { PROPERTY_CARD_IMAGE_WIDTH } from "@/lib/image-layout";
 
 type Props = {
   open: boolean;
@@ -77,7 +78,10 @@ const getCompareRows = (
     id: "field-photo",
     label: "Photo",
     render: (property) => {
-      const imageUrl = getPrimaryImage(property.images);
+      const imageUrl = getPrimaryImage(property.images, {
+        width: PROPERTY_CARD_IMAGE_WIDTH,
+        quality: "auto",
+      });
       return (
         <div className="relative w-full h-28 rounded-lg overflow-hidden bg-cloud">
           {imageUrl ? (

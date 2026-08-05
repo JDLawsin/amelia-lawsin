@@ -1,10 +1,11 @@
 "use client";
 
-import { startTransition } from "react";
+import { startTransition, useEffect } from "react";
 import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BlogFormSchema, BlogFormValues, BlogTagInput } from "../_schema/blog.schema";
 import { useAutoSlug } from "@/hooks/useAutoSlug";
+import { useFormDraft } from "@/hooks/useFormDraft";
 import FormInput from "@/components/ui/FormInput";
 import FormTextArea from "@/components/ui/FormTextArea";
 import { Input } from "@/components/ui/shadcn/input";
@@ -29,6 +30,8 @@ type Props = {
   isPending: boolean;
   existingCoverUrl?: string | null;
   blogId?: string;
+  /** When true, clears the session draft (set after a successful save) */
+  actionSuccess?: boolean;
 };
 
 const BlogForm = ({
@@ -39,6 +42,7 @@ const BlogForm = ({
   isPending,
   existingCoverUrl,
   blogId,
+  actionSuccess,
 }: Props) => {
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(BlogFormSchema) as Resolver<BlogFormValues>,
@@ -49,6 +53,22 @@ const BlogForm = ({
   const { handleSubmit, watch, setValue, control } = form;
 
   useAutoSlug(watch, setValue, "title", "slug");
+
+  const draftKey =
+    mode === "create"
+      ? "admin:blog-create"
+      : `admin:blog-update:${blogId ?? "unknown"}`;
+
+  const { clearDraft } = useFormDraft({
+    storageKey: draftKey,
+    form,
+  });
+
+  useEffect(() => {
+    if (actionSuccess) {
+      clearDraft();
+    }
+  }, [actionSuccess, clearDraft]);
 
   const onSubmit = handleSubmit((data) => {
     const formData = new FormData();

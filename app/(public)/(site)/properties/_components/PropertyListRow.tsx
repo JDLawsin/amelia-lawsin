@@ -9,6 +9,7 @@ import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { CompareButton } from "@/components/tools/CompareButton";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
 import { getPrimaryImage } from "@/lib/utils";
+import { PROPERTY_CARD_IMAGE_WIDTH } from "@/lib/image-layout";
 
 type PropertyListRowProps = {
   property: PropertyListItem;
@@ -28,7 +29,10 @@ const PropertyListRow = ({
   property,
   loading = "lazy",
 }: PropertyListRowProps) => {
-  const imageUrl = getPrimaryImage(property.images);
+  const imageUrl = getPrimaryImage(property.images, {
+    width: PROPERTY_CARD_IMAGE_WIDTH,
+    quality: "auto",
+  });
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
     .filter(Boolean)

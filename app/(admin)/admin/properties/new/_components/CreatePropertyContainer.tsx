@@ -24,7 +24,10 @@ import PaymentSchemeStep from "@/components/step/PaymentSchemeStep";
 import LandmarkStep from "@/components/step/LandmarkStep";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
 import { useAutoSlug } from "@/hooks/useAutoSlug";
+import { useFormDraft } from "@/hooks/useFormDraft";
 import { getPropertyRedirectPath } from "@/lib/property-redirect";
+
+const DRAFT_KEY = "admin:property-create";
 
 const CreatePropertyContainer = () => {
   const [currentStep, setCurrentStep] = useState(PROPERTY_TABS[0]);
@@ -50,6 +53,10 @@ const CreatePropertyContainer = () => {
       address: "",
       city: "",
       imageItems: [],
+      units: [],
+      amenities: [],
+      paymentSchemes: [],
+      landmarks: [],
     },
     mode: "onTouched",
   });
@@ -64,6 +71,20 @@ const CreatePropertyContainer = () => {
   } = form;
 
   useAutoSlug(watch, setValue, "title", "slug");
+
+  const { clearDraft } = useFormDraft({
+    storageKey: DRAFT_KEY,
+    form,
+    meta: { step: currentStep },
+    onRestoreMeta: (meta) => {
+      if (
+        typeof meta.step === "string" &&
+        (PROPERTY_TABS as readonly string[]).includes(meta.step)
+      ) {
+        setCurrentStep(meta.step as (typeof PROPERTY_TABS)[number]);
+      }
+    },
+  });
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -117,6 +138,7 @@ const CreatePropertyContainer = () => {
 
   useFormActionEffect(state, {
     getRedirectPath: getPropertyRedirectPath,
+    onSuccess: () => clearDraft(),
   });
 
   return (

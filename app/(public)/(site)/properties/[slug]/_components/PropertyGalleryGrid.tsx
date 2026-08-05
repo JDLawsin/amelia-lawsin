@@ -2,8 +2,11 @@ import Image from "next/image";
 import clsx from "clsx";
 import {
   PROPERTY_GALLERY_PRIMARY_SIZES,
+  PROPERTY_GALLERY_PRIMARY_WIDTH,
   PROPERTY_GALLERY_THUMB_SIZES,
+  PROPERTY_GALLERY_THUMB_WIDTH,
 } from "@/lib/image-layout";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
 
 export type GalleryImage = {
   url: string;
@@ -21,6 +24,11 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
   const rest = images.filter((i) => i !== primary).slice(0, 2);
   const hasMore = images.length > 3;
 
+  const primarySrc = cloudinaryDeliveryUrl(primary?.url, {
+    width: PROPERTY_GALLERY_PRIMARY_WIDTH,
+    quality: "auto:best",
+  });
+
   return (
     <div
       data-property-gallery
@@ -33,9 +41,9 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
           className="relative w-full h-full bg-cloud rounded-l-2xl overflow-hidden cursor-pointer group text-left p-0 border-0"
           aria-label={`View photo 1 of ${images.length}`}
         >
-          {primary ? (
+          {primarySrc ? (
             <Image
-              src={primary.url}
+              src={primarySrc}
               alt={title}
               fill
               sizes={PROPERTY_GALLERY_PRIMARY_SIZES}
@@ -69,7 +77,12 @@ const PropertyGalleryGrid = ({ images, title }: Props) => {
           aria-label={`View photo ${i + 2} of ${images.length}`}
         >
           <Image
-            src={img.url}
+            src={
+              cloudinaryDeliveryUrl(img.url, {
+                width: PROPERTY_GALLERY_THUMB_WIDTH,
+                quality: "auto",
+              }) ?? img.url
+            }
             alt={`${title} photo ${i + 2}`}
             fill
             sizes={PROPERTY_GALLERY_THUMB_SIZES}

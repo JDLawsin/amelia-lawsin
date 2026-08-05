@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { HERO_IMAGE_SIZES } from "@/lib/image-layout";
+import { HERO_IMAGE_SIZES, HERO_IMAGE_WIDTH } from "@/lib/image-layout";
 import { formatPrice, getPrimaryImage, getPropertyLabel } from "@/lib/utils";
 import { PropertyListItem } from "@/services/property.service";
 import { ctaPrimary, ctaSecondary } from "@/components/ui/cta";
@@ -10,7 +10,12 @@ type HeroSectionProps = {
 };
 
 const HeroSection = ({ latestListing }: HeroSectionProps) => {
-  const imageUrl = latestListing ? getPrimaryImage(latestListing.images) : null;
+  const imageUrl = latestListing
+    ? getPrimaryImage(latestListing.images, {
+        width: HERO_IMAGE_WIDTH,
+        quality: "auto:best",
+      })
+    : null;
   const imageAlt = latestListing?.title ?? "Latest listing";
 
   return (

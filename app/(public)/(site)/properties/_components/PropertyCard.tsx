@@ -1,6 +1,7 @@
 import { cn, formatPrice, getPrimaryImage } from "@/lib/utils";
 import {
   PROPERTY_CARD_IMAGE_SIZES,
+  PROPERTY_CARD_IMAGE_WIDTH,
 } from "@/lib/image-layout";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,7 +24,10 @@ const PropertyCard = ({
   loading = "lazy",
   priority = false,
 }: Props) => {
-  const imageUrl = getPrimaryImage(property.images);
+  const imageUrl = getPrimaryImage(property.images, {
+    width: PROPERTY_CARD_IMAGE_WIDTH,
+    quality: "auto",
+  });
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
     .filter(Boolean)
