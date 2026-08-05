@@ -1,12 +1,10 @@
-"use client";
-
-import { BlogPreviewItem, BlogTag } from "@/services/blog.service";
-import { Suspense } from "react";
-import TagPills from "./TagPills";
+import { BlogPreviewItem } from "@/services/blog.service";
 import BlogCard from "@/components/ui/BlogCard";
-import Pagination from "@/components/ui/Pagination";
+import TagPills from "./TagPills";
+import BlogPagination from "./BlogPagination";
+import type { BlogTag } from "@/services/blog.service";
 
-type BlogClientProps = {
+type Props = {
   blogs: BlogPreviewItem[];
   total: number;
   pageSize: number;
@@ -15,18 +13,17 @@ type BlogClientProps = {
   activeTag?: string;
 };
 
-const BlogClient = ({
+/** Server-rendered blog listing — tag filters and pagination use plain links. */
+const BlogArticleList = ({
   blogs,
   total,
   pageSize,
   currentPage,
   tags,
   activeTag,
-}: BlogClientProps) => (
+}: Props) => (
   <div>
-    <Suspense>
-      <TagPills tags={tags} activeTag={activeTag} />
-    </Suspense>
+    <TagPills tags={tags} activeTag={activeTag} />
 
     <div className="pt-8">
       <h2 className="text-xs font-medium text-ash uppercase tracking-widest mb-5">
@@ -43,6 +40,7 @@ const BlogClient = ({
               fill="none"
               stroke="#86868b"
               strokeWidth="1.5"
+              aria-hidden="true"
             >
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -53,11 +51,11 @@ const BlogClient = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {blogs.map((blog, i) => (
+          {blogs.map((blog, index) => (
             <BlogCard
               key={blog.id}
               blog={blog}
-              loading={i < 3 ? "eager" : undefined}
+              loading={index < 3 ? "eager" : undefined}
             />
           ))}
         </div>
@@ -66,17 +64,16 @@ const BlogClient = ({
 
     {total > pageSize && (
       <div className="mt-8 -mx-6 px-6">
-        <Suspense>
-          <Pagination
-            page={currentPage}
-            pageSize={pageSize}
-            total={total}
-            label="articles"
-          />
-        </Suspense>
+        <BlogPagination
+          page={currentPage}
+          pageSize={pageSize}
+          total={total}
+          activeTag={activeTag}
+          label="articles"
+        />
       </div>
     )}
   </div>
 );
 
-export default BlogClient;
+export default BlogArticleList;

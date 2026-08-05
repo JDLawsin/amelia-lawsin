@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import {
   getAllBlogs,
@@ -7,11 +6,15 @@ import {
 } from "@/services/blog.service";
 import { getSiteUrl } from "@/lib/site";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import { LcpPreloadLink } from "@/lib/preload-lcp-image";
+import {
+  BLOG_IMAGE_HEIGHT,
+  BLOG_IMAGE_WIDTH,
+} from "@/lib/image-layout";
 import JsonLd from "@/components/ui/JsonLd";
 import FeaturedGrid from "./_components/FeaturedGrid";
 import BlogCTAStrip from "./_components/BlogCTAStrip";
-import BlogPageSkeleton from "./_components/BlogPageSkeleton";
-import BlogClient from "./_components/BlogClient";
+import BlogArticleList from "./_components/BlogArticleList";
 
 const PAGE_SIZE = 6;
 
@@ -67,17 +70,30 @@ const BlogPage = async ({ searchParams }: Props) => {
     getAllBlogTags(),
   ]);
   const featuredBlogs = blogs.slice(0, 3);
+  const lcpCover = !params.tag ? featuredBlogs[0]?.coverImage : undefined;
 
   const baseUrl = getSiteUrl();
 
   return (
     <main className="bg-white min-h-screen">
+      {lcpCover && (
+        <LcpPreloadLink
+          src={lcpCover}
+          alt={featuredBlogs[0]?.title ?? "Latest blog article"}
+          width={BLOG_IMAGE_WIDTH}
+          height={BLOG_IMAGE_HEIGHT}
+          sizes="(max-width: 768px) 100vw, 800px"
+          media="(min-width: 768px)"
+        />
+      )}
+
       <JsonLd
         data={breadcrumbListJsonLd(baseUrl, [
           { name: "Home", url: "/" },
           { name: "Blog", url: "/blog" },
         ])}
       />
+
       <div className="bg-cloud border-b border-wire px-6 py-10">
         <div className="max-w-7xl mx-auto flex items-end justify-between">
           <div>
@@ -106,28 +122,20 @@ const BlogPage = async ({ searchParams }: Props) => {
 
       {!params.tag && featuredBlogs.length > 0 && (
         <div className="px-6 pt-8 pb-0 max-w-7xl mx-auto">
-          <Suspense
-            fallback={
-              <div className="h-70 bg-cloud rounded-2xl animate-pulse" />
-            }
-          >
-            <FeaturedGrid blogs={featuredBlogs} />
-          </Suspense>
+          <FeaturedGrid blogs={featuredBlogs} />
           <div className="mt-8" />
         </div>
       )}
 
       <div className="max-w-7xl mx-auto px-6">
-        <Suspense fallback={<BlogPageSkeleton />}>
-          <BlogClient
-            blogs={blogs}
-            total={totalCount}
-            pageSize={PAGE_SIZE}
-            currentPage={currentPage}
-            tags={tags}
-            activeTag={params.tag}
-          />
-        </Suspense>
+        <BlogArticleList
+          blogs={blogs}
+          total={totalCount}
+          pageSize={PAGE_SIZE}
+          currentPage={currentPage}
+          tags={tags}
+          activeTag={params.tag}
+        />
       </div>
 
       <div className="px-6 py-12 max-w-7xl mx-auto">
