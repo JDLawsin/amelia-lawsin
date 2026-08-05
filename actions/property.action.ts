@@ -18,6 +18,22 @@ import {
 export const toggleFeaturedAction = withAdminAuth(
   async (id: string, isFeatured: boolean): Promise<ActionResult> => {
     try {
+      const property = await prisma.property.findUnique({
+        where: { id },
+        select: { deletedAt: true },
+      });
+
+      if (!property) {
+        return { success: false, message: "Property not found." };
+      }
+
+      if (property.deletedAt) {
+        return {
+          success: false,
+          message: "Restore this property from trash first.",
+        };
+      }
+
       await prisma.property.update({
         where: { id },
         data: { isFeatured: !isFeatured },
@@ -40,19 +56,117 @@ export const toggleFeaturedAction = withAdminAuth(
   },
 );
 
+export const togglePublishPropertyAction = withAdminAuth(
+  async (id: string): Promise<ActionResult> => {
+    if (!id) {
+      return { success: false, message: "Property ID is required." };
+    }
+
+    try {
+      const property = await prisma.property.findUnique({
+        where: { id },
+        select: { isPublished: true, slug: true, deletedAt: true },
+      });
+
+      if (!property) {
+        return { success: false, message: "Property not found." };
+      }
+
+      if (property.deletedAt) {
+        return {
+          success: false,
+          message: "Restore this property from trash first.",
+        };
+      }
+
+      const nextPublished = !property.isPublished;
+
+      await prisma.property.update({
+        where: { id },
+        data: {
+          isPublished: nextPublished,
+          // Featured only matters when published; clear it when unpublishing
+          ...(nextPublished ? {} : { isFeatured: false }),
+        },
+      });
+
+      revalidatePath("/admin/properties");
+      revalidatePath("/properties");
+      revalidatePath(`/properties/${property.slug}`);
+      revalidatePath("/");
+
+      return {
+        success: true,
+        message: nextPublished
+          ? "Property published."
+          : "Property unpublished.",
+      };
+    } catch (error) {
+      console.error("Toggle publish property error:", error);
+      return {
+        success: false,
+        message: "Failed to update publish status. Please try again.",
+      };
+    }
+  },
+);
+
 export const deletePropertyAction = withAdminAuth(
   async (id: string): Promise<ActionResult> => {
     try {
       await prisma.property.update({
         where: { id },
-        data: { deletedAt: new Date() },
+        data: { deletedAt: new Date(), isFeatured: false },
       });
       revalidatePath("/admin/properties");
       revalidatePath("/properties");
+      revalidatePath("/");
 
-      return { success: true, message: "Property deleted" };
+      return {
+        success: true,
+        message: "Property moved to trash. You can restore it later.",
+      };
     } catch {
       return { success: false, message: "Failed to delete. Please try again." };
+    }
+  },
+);
+
+export const restorePropertyAction = withAdminAuth(
+  async (id: string): Promise<ActionResult> => {
+    if (!id) {
+      return { success: false, message: "Property ID is required." };
+    }
+
+    try {
+      const property = await prisma.property.findUnique({
+        where: { id },
+        select: { id: true, deletedAt: true },
+      });
+
+      if (!property) {
+        return { success: false, message: "Property not found." };
+      }
+
+      if (!property.deletedAt) {
+        return { success: false, message: "Property is not in trash." };
+      }
+
+      await prisma.property.update({
+        where: { id },
+        data: { deletedAt: null },
+      });
+
+      revalidatePath("/admin/properties");
+      revalidatePath("/properties");
+
+      return { success: true, message: "Property restored." };
+    } catch (error) {
+      console.error("Restore property error:", error);
+      return {
+        success: false,
+        message: "Failed to restore property. Please try again.",
+      };
     }
   },
 );
@@ -62,6 +176,7 @@ export type FormState =
       success: true;
       message: string;
       slug: string;
+      isPublished: boolean;
       errors?: never;
     }
   | {
@@ -69,6 +184,7 @@ export type FormState =
       message: string;
       errors?: FieldErrors;
       slug?: never;
+      isPublished?: never;
     }
   | null;
 
@@ -275,6 +391,7 @@ export const createPropertyAction = withAdminAuth(
         },
         select: {
           slug: true,
+          isPublished: true,
         },
       });
 
@@ -284,6 +401,7 @@ export const createPropertyAction = withAdminAuth(
       return {
         success: true,
         slug: property.slug,
+        isPublished: property.isPublished,
         message: `Property created successfully with ${imagesWithFiles.length} images!`,
       };
     } catch (error) {
@@ -328,6 +446,22 @@ export const updatePropertyAction = withAdminAuth(
 
     try {
       const propertyId = formData.get("id") as string;
+
+      const existing = await prisma.property.findUnique({
+        where: { id: propertyId },
+        select: { deletedAt: true },
+      });
+
+      if (!existing) {
+        return { success: false, message: "Property not found." };
+      }
+
+      if (existing.deletedAt) {
+        return {
+          success: false,
+          message: "Restore this property from trash before editing.",
+        };
+      }
 
       const deletedImageIdsRaw = formData.get("deletedImageIds");
       const imageFiles = (formData.getAll("imageFiles") as File[]).filter(
@@ -482,7 +616,7 @@ export const updatePropertyAction = withAdminAuth(
       }));
 
       // Update property and recreate relations
-      await prisma.property.update({
+      const property = await prisma.property.update({
         where: { id: propertyId },
         data: {
           ...mapPropertyData(data),
@@ -520,6 +654,7 @@ export const updatePropertyAction = withAdminAuth(
             })),
           },
         },
+        select: { slug: true, isPublished: true },
       });
 
       // Delete replaced floor-plan Cloudinary assets
@@ -544,12 +679,13 @@ export const updatePropertyAction = withAdminAuth(
       await ensurePrimaryImage(propertyId);
 
       revalidatePath("/properties");
-      revalidatePath(`/properties/${data.slug}`);
+      revalidatePath(`/properties/${property.slug}`);
       revalidatePath("/admin/properties");
 
       return {
         success: true,
-        slug: data.slug,
+        slug: property.slug,
+        isPublished: property.isPublished,
         message: `Property updated successfully!`,
       };
     } catch (error) {

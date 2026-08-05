@@ -1,16 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  Eye,
-  MailOpen,
-  Mail,
-  Archive,
-  ArchiveRestore,
-  CheckCircle,
-  Trash2,
-} from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   AlertDialog,
@@ -21,8 +13,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/shadcn/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/shadcn/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -37,8 +35,41 @@ import {
 } from "@/actions/inquiry.action";
 import { toast } from "react-hot-toast";
 
+type ActionItemProps = {
+  tooltip: string;
+  disabled?: boolean;
+  variant?: "default" | "destructive";
+  onSelect?: () => void;
+  children: ReactNode;
+  asChild?: boolean;
+};
+
+const ActionItem = ({
+  tooltip,
+  disabled,
+  variant,
+  onSelect,
+  children,
+  asChild,
+}: ActionItemProps) => (
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <DropdownMenuItem
+        asChild={asChild}
+        disabled={disabled}
+        variant={variant}
+        onSelect={onSelect}
+      >
+        {children}
+      </DropdownMenuItem>
+    </TooltipTrigger>
+    <TooltipContent side="left">{tooltip}</TooltipContent>
+  </Tooltip>
+);
+
 const RowActions = ({ inquiry }: { inquiry: InquiryAdminListItem }) => {
   const [pending, startTransition] = useTransition();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const handleMarkRead = () =>
     startTransition(async () => {
@@ -88,97 +119,77 @@ const RowActions = ({ inquiry }: { inquiry: InquiryAdminListItem }) => {
     });
 
   return (
-    <div className="flex items-center justify-end gap-1">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon-sm" asChild>
-            <Link href={`/admin/inquiries/${inquiry.id}`}>
-              <Eye className="w-3.5 h-3.5" />
-            </Link>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>View</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
+    <div className="flex justify-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="icon-sm"
-            onClick={handleMarkRead}
             disabled={pending}
-            className="text-fog hover:text-ink hover:bg-cloud"
+            className="text-fog hover:text-ink"
           >
-            {inquiry.isRead ? (
-              <MailOpen className="w-3.5 h-3.5" />
-            ) : (
-              <Mail className="w-3.5 h-3.5" />
-            )}
+            <MoreVertical className="w-4 h-4" />
+            <span className="sr-only">Actions</span>
           </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          {inquiry.isRead ? "Mark as unread" : "Mark as read"}
-        </TooltipContent>
-      </Tooltip>
+        </DropdownMenuTrigger>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleMarkResponded}
+        <DropdownMenuContent align="end" className="min-w-44">
+          <ActionItem tooltip="Open inquiry details" asChild>
+            <Link href={`/admin/inquiries/${inquiry.id}`}>View</Link>
+          </ActionItem>
+
+          <ActionItem
+            tooltip={
+              inquiry.isRead
+                ? "Mark this inquiry as unread"
+                : "Mark this inquiry as read"
+            }
+            onSelect={handleMarkRead}
+            disabled={pending}
+          >
+            {inquiry.isRead ? "Mark as unread" : "Mark as read"}
+          </ActionItem>
+
+          <ActionItem
+            tooltip="Mark that you've replied to this inquiry"
+            onSelect={handleMarkResponded}
             disabled={pending || inquiry.status === "CONTACTED"}
-            className="text-fog hover:text-emerald-600 hover:bg-emerald-50"
           >
-            <CheckCircle className="w-3.5 h-3.5" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Mark as responded</TooltipContent>
-      </Tooltip>
+            Mark as responded
+          </ActionItem>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleArchive}
+          <ActionItem
+            tooltip={
+              inquiry.isArchived
+                ? "Move back to active inquiries"
+                : "Hide from the active list"
+            }
+            onSelect={handleArchive}
             disabled={pending}
-            className="text-fog hover:text-amber-600 hover:bg-amber-50"
           >
-            {inquiry.isArchived ? (
-              <ArchiveRestore className="w-3.5 h-3.5" />
-            ) : (
-              <Archive className="w-3.5 h-3.5" />
-            )}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          {inquiry.isArchived ? "Unarchive" : "Archive"}
-        </TooltipContent>
-      </Tooltip>
+            {inquiry.isArchived ? "Unarchive" : "Archive"}
+          </ActionItem>
 
-      <AlertDialog>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                disabled={pending}
-                className="text-fog hover:text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </Button>
-            </AlertDialogTrigger>
-          </TooltipTrigger>
-          <TooltipContent>Delete</TooltipContent>
-        </Tooltip>
+          <DropdownMenuSeparator />
+
+          <ActionItem
+            tooltip="Permanently delete this inquiry"
+            variant="destructive"
+            disabled={pending}
+            onSelect={() => setDeleteOpen(true)}
+          >
+            Delete
+          </ActionItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this inquiry?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove the inquiry from{" "}
-              {inquiry.name}. It cannot be undone.
+              This will permanently remove the inquiry from {inquiry.name}. It
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

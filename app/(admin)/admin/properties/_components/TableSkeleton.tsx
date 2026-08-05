@@ -8,7 +8,14 @@ import {
 } from "@/components/ui/shadcn/table";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
-const COLUMNS = ["Property", "Type", "Status", "Price", "Actions"];
+const COLUMNS = [
+  "Property",
+  "Type",
+  "Visibility",
+  "Status",
+  "Price",
+  "Actions",
+];
 
 export default function TableSkeleton() {
   return (
@@ -32,6 +39,9 @@ export default function TableSkeleton() {
               <TableRow key={i}>
                 <TableCell>
                   <Skeleton className="h-12 w-full" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-6 w-20" />
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-6 w-20" />

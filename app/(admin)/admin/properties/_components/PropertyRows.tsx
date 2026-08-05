@@ -4,7 +4,13 @@ import Image from "next/image";
 import clsx from "clsx";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { TableCell, TableRow } from "@/components/ui/shadcn/table";
-import { STATUS_LABELS, STATUS_VARIANT, TYPE_LABELS } from "@/constants";
+import {
+  PROPERTY_VISIBILITY_LABELS,
+  PROPERTY_VISIBILITY_STYLES,
+  STATUS_LABELS,
+  STATUS_VARIANT,
+  TYPE_LABELS,
+} from "@/constants";
 import { PropertyAdminListItem } from "@/services/property.admin.service";
 import RowActions from "./RowActions";
 
@@ -20,6 +26,11 @@ const PropertyRows = ({
         .filter(Boolean)
         .join(", ");
       const isDeleted = !!property.deletedAt;
+      const visibility = isDeleted
+        ? "deleted"
+        : property.isPublished
+          ? "published"
+          : "draft";
 
       return (
         <TableRow
@@ -55,9 +66,6 @@ const PropertyRows = ({
                     {location}
                   </p>
                 )}
-                {isDeleted && (
-                  <p className="text-[10px] text-destructive mt-0.5">Deleted</p>
-                )}
               </div>
             </div>
           </TableCell>
@@ -69,6 +77,14 @@ const PropertyRows = ({
           </TableCell>
 
           <TableCell>
+            <Badge
+              className={PROPERTY_VISIBILITY_STYLES[visibility]}
+            >
+              {PROPERTY_VISIBILITY_LABELS[visibility]}
+            </Badge>
+          </TableCell>
+
+          <TableCell className="hidden sm:table-cell">
             <Badge variant={STATUS_VARIANT[property.status] ?? "outline"}>
               {STATUS_LABELS[property.status]}
             </Badge>

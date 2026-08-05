@@ -75,6 +75,7 @@ model Property {
   type                  PropertyType
   status                PropertyStatus
   listingType           ListingType             @default(BRAND_NEW)
+  isPublished           Boolean                 @default(false)
   isFeatured            Boolean                 @default(false)
   address               String
   city                  String                  @default("Cebu City")
@@ -114,6 +115,7 @@ model Property {
 
   @@index([city])
   @@index([type, status])
+  @@index([isPublished])
   @@index([isFeatured])
   @@index([deletedAt])
 

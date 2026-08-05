@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 import clsx from "clsx";
 
 type Props = {
-  title: string;
+  title: ReactNode;
   subtitle?: string | ReactNode;
   actionLabel?: string;
   actionHref?: string;
@@ -25,14 +25,18 @@ const PageHeader = ({
   className = "",
 }: Props) => {
   return (
-    <div className={clsx("flex items-center justify-between", className)}>
-      <div>
-        <h1 className="text-lg font-medium text-ink">{title}</h1>
+    <div className={clsx("flex items-center justify-between gap-4", className)}>
+      <div className="min-w-0">
+        <h1 className="text-lg font-medium text-ink flex flex-wrap items-center gap-2">
+          {title}
+        </h1>
 
-        {subtitle && <p className="text-xs text-ash mt-0.5">{subtitle}</p>}
+        {subtitle && (
+          <div className="text-xs text-ash mt-0.5">{subtitle}</div>
+        )}
       </div>
 
-      <div>
+      <div className="shrink-0">
         {action ? (
           action
         ) : actionHref ? (

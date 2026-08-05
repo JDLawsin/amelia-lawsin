@@ -11,6 +11,7 @@ export const mapPropertyData = (data: FullPropertyFormValues) => ({
   type: data.type as PropertyType,
   status: data.status,
   listingType: data.listingType,
+  isPublished: data.isPublished,
   isFeatured: data.isFeatured,
   address: data.address,
   city: data.city,
@@ -64,6 +65,7 @@ export const mapPropertyToForm = (property: PropertyAdminDetail) => ({
   type: property.type as PropertyType,
   status: property.status,
   listingType: property.listingType,
+  isPublished: property.isPublished,
   isFeatured: property.isFeatured,
 
   // Location

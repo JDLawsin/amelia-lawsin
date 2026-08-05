@@ -208,13 +208,26 @@ export const updateBlogAction = withAdminAuth(
 
       const existingBlog = await prisma.blog.findUnique({
         where: { id: blogId },
-        select: { id: true, slug: true, coverPublicId: true, publishedAt: true },
+        select: {
+          id: true,
+          slug: true,
+          coverPublicId: true,
+          publishedAt: true,
+          deletedAt: true,
+        },
       });
 
       if (!existingBlog) {
         return {
           success: false,
           message: "Blog post not found.",
+        };
+      }
+
+      if (existingBlog.deletedAt) {
+        return {
+          success: false,
+          message: "Restore this blog post from trash before editing.",
         };
       }
 
@@ -305,11 +318,18 @@ export const togglePublishBlogAction = withAdminAuth(
     try {
       const blog = await prisma.blog.findUnique({
         where: { id },
-        select: { isPublished: true, publishedAt: true },
+        select: { isPublished: true, publishedAt: true, deletedAt: true },
       });
 
       if (!blog) {
         return { success: false, message: "Blog post not found." };
+      }
+
+      if (blog.deletedAt) {
+        return {
+          success: false,
+          message: "Restore this blog post from trash first.",
+        };
       }
 
       const nextPublished = !blog.isPublished;

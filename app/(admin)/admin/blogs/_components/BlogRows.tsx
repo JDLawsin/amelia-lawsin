@@ -4,7 +4,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { TableCell, TableRow } from "@/components/ui/shadcn/table";
-import { BLOG_STATUS_LABELS, BLOG_STATUS_VARIANTS } from "@/constants";
+import { BLOG_STATUS_LABELS, BLOG_STATUS_STYLES } from "@/constants";
 import { BlogAdminListItem } from "@/services/blog.admin.service";
 import { formatDate } from "@/lib/utils";
 import RowActions from "./RowActions";
@@ -49,15 +49,12 @@ const BlogRows = ({ blogs }: { blogs: BlogAdminListItem[] }) => (
                     {blog.tags.map(({ tag }) => tag.name).join(", ")}
                   </p>
                 )}
-                {isDeleted && (
-                  <p className="text-[10px] text-destructive mt-0.5">Deleted</p>
-                )}
               </div>
             </div>
           </TableCell>
 
           <TableCell>
-            <Badge variant={BLOG_STATUS_VARIANTS[status] ?? "outline"}>
+            <Badge className={BLOG_STATUS_STYLES[status]}>
               {BLOG_STATUS_LABELS[status]}
             </Badge>
           </TableCell>

@@ -191,13 +191,44 @@ export const STATUS_VARIANT: Record<
 };
 
 export const BLOG_STATUS_LABELS: Record<string, string> = {
-  all: "All",
+  all: "All visibility",
   published: "Published",
   draft: "Draft",
   deleted: "Deleted",
 };
 
 export const BLOG_STATUS_VARIANTS: Record<
+  string,
+  "default" | "secondary" | "outline" | "destructive"
+> = {
+  published: "default",
+  draft: "secondary",
+  deleted: "destructive",
+};
+
+/** Color classes for blog visibility badges */
+export const BLOG_STATUS_STYLES: Record<string, string> = {
+  published: "border-transparent bg-emerald-100 text-emerald-800",
+  draft: "border-transparent bg-amber-100 text-amber-800",
+  deleted: "border-transparent bg-red-100 text-red-800",
+};
+
+/** Visibility filters shared by property admin (Draft / Published / Deleted) */
+export const PROPERTY_VISIBILITY_LABELS: Record<string, string> = {
+  all: "All visibility",
+  published: "Published",
+  draft: "Draft",
+  deleted: "Deleted",
+};
+
+/** Color classes for visibility badges (Published = green, Draft = muted, Deleted = red) */
+export const PROPERTY_VISIBILITY_STYLES: Record<string, string> = {
+  published: "border-transparent bg-emerald-100 text-emerald-800",
+  draft: "border-transparent bg-amber-100 text-amber-800",
+  deleted: "border-transparent bg-red-100 text-red-800",
+};
+
+export const PROPERTY_VISIBILITY_VARIANTS: Record<
   string,
   "default" | "secondary" | "outline" | "destructive"
 > = {

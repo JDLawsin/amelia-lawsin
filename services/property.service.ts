@@ -184,6 +184,7 @@ const buildWhereClause = (
 ): Prisma.PropertyWhereInput => {
   const where: Prisma.PropertyWhereInput = {
     deletedAt: null,
+    isPublished: true,
     status: { notIn: ["SOLD", "RENTED"] },
   };
 
@@ -260,6 +261,7 @@ export const getFeaturedProperties = async (
   return prisma.property.findMany({
     where: {
       isFeatured: true,
+      isPublished: true,
       deletedAt: null,
       status: { notIn: ["SOLD", "RENTED"] },
     },
@@ -273,6 +275,7 @@ export const getActiveListingsCount = async (): Promise<number> => {
   return prisma.property.count({
     where: {
       deletedAt: null,
+      isPublished: true,
       status: { notIn: ["SOLD", "RENTED"] },
     },
   });
@@ -311,6 +314,7 @@ export const getPropertiesBySlugs = async (
     where: {
       slug: { in: slugs },
       deletedAt: null,
+      isPublished: true,
     },
     select: propertyListSelect,
   });
@@ -327,6 +331,7 @@ export const getComparePropertiesBySlugs = async (
     where: {
       slug: { in: slugs },
       deletedAt: null,
+      isPublished: true,
     },
     select: comparePropertySelect,
   });
@@ -341,6 +346,7 @@ export const getPropertyBySlug = async (
     where: {
       slug,
       deletedAt: null,
+      isPublished: true,
     },
     select: propertyDetailSelect,
   });
@@ -353,6 +359,7 @@ export const getRelatedProperties = async (
   return prisma.property.findMany({
     where: {
       deletedAt: null,
+      isPublished: true,
       status: { notIn: ["SOLD", "RENTED"] },
       type: property.type,
       city: property.city,
@@ -368,6 +375,7 @@ export async function getLatestListing(): Promise<PropertyListItem | null> {
   return prisma.property.findFirst({
     where: {
       deletedAt: null,
+      isPublished: true,
       status: { notIn: ["SOLD", "RENTED"] },
       images: { some: {} },
     },

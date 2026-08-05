@@ -228,6 +228,7 @@ function generateProperty() {
 
     listingType: ListingType.BRAND_NEW,
 
+    isPublished: true,
     isFeatured: faker.datatype.boolean(),
 
     address: faker.location.streetAddress(),

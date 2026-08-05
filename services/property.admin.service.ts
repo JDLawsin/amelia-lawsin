@@ -13,6 +13,7 @@ const propertyAdminListSelect = {
   type: true,
   status: true,
   listingType: true,
+  isPublished: true,
   isFeatured: true,
   city: true,
   barangay: true,
@@ -37,6 +38,7 @@ const propertyAdminDetailSelect = {
   type: true,
   status: true,
   listingType: true,
+  isPublished: true,
   isFeatured: true,
   address: true,
   city: true,
@@ -148,11 +150,17 @@ export type PropertyAdminDetail = Prisma.PropertyGetPayload<{
   select: typeof propertyAdminDetailSelect;
 }>;
 
+export type PropertyAdminVisibilityFilter =
+  | "all"
+  | "published"
+  | "draft"
+  | "deleted";
+
 export type PropertyAdminFilters = {
   q?: string;
   status?: PropertyStatus;
   type?: PropertyType;
-  showDeleted?: boolean;
+  visibility?: PropertyAdminVisibilityFilter;
   page?: number;
   pageSize?: number;
 };
@@ -160,7 +168,17 @@ export type PropertyAdminFilters = {
 const buildWhere = (f: PropertyAdminFilters): Prisma.PropertyWhereInput => {
   const where: Prisma.PropertyWhereInput = {};
 
-  if (!f.showDeleted) where.deletedAt = null;
+  if (f.visibility === "deleted") {
+    where.deletedAt = { not: null };
+  } else {
+    where.deletedAt = null;
+
+    if (f.visibility === "published") {
+      where.isPublished = true;
+    } else if (f.visibility === "draft") {
+      where.isPublished = false;
+    }
+  }
 
   if (f.q) {
     where.OR = [

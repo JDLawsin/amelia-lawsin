@@ -24,6 +24,7 @@ import PaymentSchemeStep from "@/components/step/PaymentSchemeStep";
 import LandmarkStep from "@/components/step/LandmarkStep";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
 import { useAutoSlug } from "@/hooks/useAutoSlug";
+import { getPropertyRedirectPath } from "@/lib/property-redirect";
 
 const CreatePropertyContainer = () => {
   const [currentStep, setCurrentStep] = useState(PROPERTY_TABS[0]);
@@ -39,6 +40,7 @@ const CreatePropertyContainer = () => {
     ) as Resolver<FullPropertyFormValues>,
     defaultValues: {
       listingType: "BRAND_NEW",
+      isPublished: false,
       isFeatured: false,
       status: "FOR_SALE",
       title: "",
@@ -114,8 +116,7 @@ const CreatePropertyContainer = () => {
   });
 
   useFormActionEffect(state, {
-    getRedirectPath: (state) =>
-      state?.slug ? `/properties/${state.slug}` : null,
+    getRedirectPath: getPropertyRedirectPath,
   });
 
   return (

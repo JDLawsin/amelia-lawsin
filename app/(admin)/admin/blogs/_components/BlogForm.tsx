@@ -206,10 +206,11 @@ const BlogForm = ({
                     htmlFor="isPublished"
                     className="text-sm font-medium text-ink"
                   >
-                    Published
+                    Publish post
                   </label>
                   <p className="text-xs text-ash">
-                    Make this post visible on the public blog.
+                    Published posts appear on the public blog. Leave unchecked
+                    to save as a draft.
                   </p>
                 </div>
               </div>

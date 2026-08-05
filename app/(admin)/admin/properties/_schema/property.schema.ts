@@ -56,6 +56,7 @@ export const BasicsSchema = z.object({
       error: "Please select a valid listing type",
     })
     .default("BRAND_NEW"),
+  isPublished: booleanField,
   isFeatured: booleanField,
 });
 
@@ -180,6 +181,7 @@ export const STEP_FIELD_NAMES = {
     "type",
     "status",
     "listingType",
+    "isPublished",
     "isFeatured",
   ] as const,
   Location: ["address", "city", "barangay", "latitude", "longitude"] as const,

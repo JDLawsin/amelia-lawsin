@@ -7,7 +7,11 @@ import {
   PROPERTY_TABS,
   STEP_FIELD_NAMES,
 } from "../../../_schema/property.schema";
-import { FormState, updatePropertyAction } from "@/actions/property.action";
+import {
+  FormState,
+  restorePropertyAction,
+  updatePropertyAction,
+} from "@/actions/property.action";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormActionEffect } from "@/hooks/useFormActionEffect";
@@ -24,7 +28,17 @@ import LandmarkStep from "@/components/step/LandmarkStep";
 import MediaStep from "@/components/step/MediaStep";
 import { useAutoSlug } from "@/hooks/useAutoSlug";
 import { mapPropertyToForm } from "@/lib/mapper";
+import { getPropertyRedirectPath } from "@/lib/property-redirect";
 import { PropertyAdminDetail } from "@/services/property.admin.service";
+import PageHeader from "@/components/ui/PageHeader";
+import DeletedRestorePanel from "@/components/ui/DeletedRestorePanel";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/shadcn/badge";
+import {
+  PROPERTY_VISIBILITY_LABELS,
+  PROPERTY_VISIBILITY_STYLES,
+} from "@/constants";
 
 type Props = {
   property: PropertyAdminDetail;
@@ -118,39 +132,82 @@ const UpdatePropertyContainer = ({ property }: Props) => {
   });
 
   useFormActionEffect(state, {
-    getRedirectPath: (state) =>
-      state?.slug ? `/properties/${state.slug}` : null,
+    getRedirectPath: getPropertyRedirectPath,
   });
 
+  if (property.deletedAt) {
+    return (
+      <DeletedRestorePanel
+        title={property.title}
+        subtitle="Edit property"
+        badgeLabel={PROPERTY_VISIBILITY_LABELS.deleted}
+        badgeClassName={PROPERTY_VISIBILITY_STYLES.deleted}
+        description="This listing is in trash and can't be edited. Restore it to continue updating details, publishing, or featuring it."
+        backHref="/admin/properties?visibility=deleted"
+        backLabel="Back to trash"
+        onRestore={() => restorePropertyAction(property.id)}
+      />
+    );
+  }
+
+  const visibility = property.isPublished ? "published" : "draft";
+
   return (
-    <form onSubmit={onSubmit}>
-      <div className="bg-white border border-wire rounded-2xl p-6">
-        <Wizardry<FullPropertyFormValues>
-          tabs={PROPERTY_TABS}
-          value={currentStep}
-          onValueChange={(val) =>
-            setCurrentStep(val as keyof typeof STEP_FIELD_NAMES)
-          }
-          stepFieldNames={STEP_FIELD_NAMES}
-          control={control}
-          errors={rhfErrors}
-          trigger={trigger}
-          isPending={isPending}
-          submitLabel="Update Property"
-        >
-          <BasicStep control={control} />
-          <LocationStep control={control} />
-          <SpecStep control={control} />
-          <FeatureStep control={control} />
-          <DeveloperStep control={control} />
-          <UnitStep control={control} />
-          <AmenityStep control={control} />
-          <PaymentSchemeStep control={control} />
-          <LandmarkStep control={control} />
-          <MediaStep control={control} />
-        </Wizardry>
-      </div>
-    </form>
+    <div className="flex flex-col gap-5">
+      <PageHeader
+        title={
+          <>
+            <span className="truncate">{property.title}</span>
+            <Badge className={PROPERTY_VISIBILITY_STYLES[visibility]}>
+              {PROPERTY_VISIBILITY_LABELS[visibility]}
+            </Badge>
+          </>
+        }
+        subtitle="Edit property"
+        action={
+          property.isPublished ? (
+            <Link
+              href={`/properties/${property.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 h-9 px-4 border border-wire bg-white text-ink text-sm font-medium rounded-xl hover:bg-cloud transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              View public
+            </Link>
+          ) : undefined
+        }
+      />
+
+      <form onSubmit={onSubmit}>
+        <div className="bg-white border border-wire rounded-2xl p-6">
+          <Wizardry<FullPropertyFormValues>
+            tabs={PROPERTY_TABS}
+            value={currentStep}
+            onValueChange={(val) =>
+              setCurrentStep(val as keyof typeof STEP_FIELD_NAMES)
+            }
+            stepFieldNames={STEP_FIELD_NAMES}
+            control={control}
+            errors={rhfErrors}
+            trigger={trigger}
+            isPending={isPending}
+            submitLabel="Update Property"
+          >
+            <BasicStep control={control} />
+            <LocationStep control={control} />
+            <SpecStep control={control} />
+            <FeatureStep control={control} />
+            <DeveloperStep control={control} />
+            <UnitStep control={control} />
+            <AmenityStep control={control} />
+            <PaymentSchemeStep control={control} />
+            <LandmarkStep control={control} />
+            <MediaStep control={control} />
+          </Wizardry>
+        </div>
+      </form>
+    </div>
   );
 };
 
