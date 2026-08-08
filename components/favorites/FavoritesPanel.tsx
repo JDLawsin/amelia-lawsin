@@ -64,13 +64,6 @@ export const FavoritesPanel = ({ open, onClose }: Props) => {
 
   useEffect(() => {
     if (!open) return;
-    setProperties((prev) =>
-      prev.filter((property) => favorites.includes(property.slug)),
-    );
-  }, [favorites, open]);
-
-  useEffect(() => {
-    if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
