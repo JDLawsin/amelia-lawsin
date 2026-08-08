@@ -1,6 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import {
+  useMemo,
+  useState,
+  useTransition,
+  type MouseEvent,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -11,6 +16,8 @@ import {
   ArchiveRestore,
   Trash2,
   ArrowLeft,
+  Phone,
+  MessageCircle,
 } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/components/ui/shadcn/button";
@@ -46,6 +53,14 @@ import {
   deleteInquiryAction,
   updateInquiryNotesAction,
 } from "@/actions/inquiry.action";
+import {
+  buildInquiryMailto,
+  buildInquiryTelUrl,
+  buildInquiryWhatsAppUrl,
+  contactChannelNote,
+  normalizePhoneForWhatsApp,
+  type ContactChannel,
+} from "@/lib/inquiry-contact";
 import { toast } from "react-hot-toast";
 
 const MAX_NOTES_LENGTH = 5000;
@@ -59,8 +74,22 @@ const InquiryDetail = ({ inquiry }: Props) => {
   const [pending, startTransition] = useTransition();
   const [notes, setNotes] = useState(inquiry.notes ?? "");
   const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [respondPromptOpen, setRespondPromptOpen] = useState(false);
+  const [lastContactChannel, setLastContactChannel] =
+    useState<ContactChannel | null>(null);
 
   const status = inquiry.isArchived ? "archived" : inquiry.status;
+
+  const mailtoHref = useMemo(() => buildInquiryMailto(inquiry), [inquiry]);
+  const whatsappHref = useMemo(
+    () => buildInquiryWhatsAppUrl(inquiry),
+    [inquiry],
+  );
+  const telHref = useMemo(
+    () => buildInquiryTelUrl(inquiry.phone),
+    [inquiry.phone],
+  );
+  const hasWhatsApp = Boolean(normalizePhoneForWhatsApp(inquiry.phone));
 
   const runAction = async (action: () => Promise<{ success: boolean; message: string }>) => {
     startTransition(async () => {
@@ -101,6 +130,38 @@ const InquiryDetail = ({ inquiry }: Props) => {
   const handleCancelNotes = () => {
     setNotes(inquiry.notes ?? "");
     setIsEditingNotes(false);
+  };
+
+  const openContactChannel = (channel: ContactChannel) => {
+    setLastContactChannel(channel);
+    if (inquiry.status !== "CONTACTED") {
+      setRespondPromptOpen(true);
+    }
+  };
+
+  const handleConfirmRespondedFromContact = (
+    event: MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    startTransition(async () => {
+      const respondResult = await markInquiryAsRespondedAction(inquiry.id);
+      if (!respondResult.success) {
+        toast.error(respondResult.message);
+        setRespondPromptOpen(false);
+        return;
+      }
+
+      if (!notes.trim() && lastContactChannel) {
+        const stub = contactChannelNote(lastContactChannel);
+        const notesResult = await updateInquiryNotesAction(inquiry.id, stub);
+        if (notesResult.success) {
+          setNotes(stub);
+        }
+      }
+
+      toast.success(respondResult.message);
+      setRespondPromptOpen(false);
+    });
   };
 
   return (
@@ -293,12 +354,51 @@ const InquiryDetail = ({ inquiry }: Props) => {
                 Contact info
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-3">
+            <CardContent className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" asChild>
+                  <a
+                    href={mailtoHref}
+                    onClick={() => openContactChannel("Email")}
+                  >
+                    <Mail className="w-4 h-4 mr-1.5" />
+                    Email
+                  </a>
+                </Button>
+
+                {hasWhatsApp && whatsappHref ? (
+                  <Button variant="outline" size="sm" asChild>
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => openContactChannel("WhatsApp")}
+                    >
+                      <MessageCircle className="w-4 h-4 mr-1.5" />
+                      WhatsApp
+                    </a>
+                  </Button>
+                ) : null}
+
+                {telHref ? (
+                  <Button variant="outline" size="sm" asChild>
+                    <a
+                      href={telHref}
+                      onClick={() => openContactChannel("Call")}
+                    >
+                      <Phone className="w-4 h-4 mr-1.5" />
+                      Call
+                    </a>
+                  </Button>
+                ) : null}
+              </div>
+
               <div>
                 <p className="text-xs text-ash">Email</p>
                 <a
-                  href={`mailto:${inquiry.email}`}
+                  href={mailtoHref}
                   className="text-sm text-ink hover:underline"
+                  onClick={() => openContactChannel("Email")}
                 >
                   {inquiry.email}
                 </a>
@@ -307,8 +407,9 @@ const InquiryDetail = ({ inquiry }: Props) => {
                 <div>
                   <p className="text-xs text-ash">Phone</p>
                   <a
-                    href={`tel:${inquiry.phone}`}
+                    href={telHref ?? `tel:${inquiry.phone}`}
                     className="text-sm text-ink hover:underline"
+                    onClick={() => openContactChannel("Call")}
                   >
                     {inquiry.phone}
                   </a>
@@ -409,6 +510,33 @@ const InquiryDetail = ({ inquiry }: Props) => {
           </Card>
         </div>
       </div>
+
+      <AlertDialog open={respondPromptOpen} onOpenChange={setRespondPromptOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mark this inquiry as responded?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {lastContactChannel
+                ? `You opened ${lastContactChannel}. Mark this lead as contacted so it leaves the New queue.`
+                : "Mark this lead as contacted so it leaves the New queue."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="ghost" size="sm" disabled={pending}>
+                Not yet
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmRespondedFromContact}
+              disabled={pending || inquiry.status === "CONTACTED"}
+              className="bg-ink text-white hover:bg-ink/90"
+            >
+              Mark responded
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
