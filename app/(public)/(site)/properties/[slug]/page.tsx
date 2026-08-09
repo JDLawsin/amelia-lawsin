@@ -51,8 +51,15 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const RESERVED_PROPERTY_SLUGS = new Set(["opengraph-image", "twitter-image"]);
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+
+  if (RESERVED_PROPERTY_SLUGS.has(slug)) {
+    return {};
+  }
+
   const property = await getPropertyBySlug(slug);
 
   if (!property) {
@@ -140,6 +147,10 @@ const Divider = () => <div className="my-5" />;
 
 const PropertyDetailPage = async ({ params }: Props) => {
   const { slug } = await params;
+
+  if (RESERVED_PROPERTY_SLUGS.has(slug)) {
+    notFound();
+  }
 
   const property = await getPropertyBySlug(slug);
   if (!property) notFound();
