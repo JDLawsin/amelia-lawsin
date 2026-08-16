@@ -15,6 +15,7 @@ import JsonLd from "@/components/ui/JsonLd";
 import FeaturedGrid from "./_components/FeaturedGrid";
 import BlogCTAStrip from "./_components/BlogCTAStrip";
 import BlogArticleList from "./_components/BlogArticleList";
+import Link from "next/link";
 
 const PAGE_SIZE = 6;
 
@@ -121,6 +122,21 @@ const BlogPage = async ({ searchParams }: Props) => {
               Expert advice on buying, financing, and investing in Cebu real
               estate — for locals, OFWs, and international buyers.
             </p>
+            <Link
+              href="/feed.xml"
+              className="inline-flex md:hidden items-center gap-1.5 text-xs text-ash hover:text-ink transition-colors mt-4"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82 4 16.64 5 15.64 6.18 15.64M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z" />
+              </svg>
+              Subscribe via RSS
+            </Link>
           </div>
           <div className="hidden md:block text-right">
             <p className="text-4xl font-serif font-medium text-ink">
@@ -129,6 +145,21 @@ const BlogPage = async ({ searchParams }: Props) => {
             <p className="text-xs text-ash mt-1">
               {totalCount === 1 ? "article" : "articles"} published
             </p>
+            <Link
+              href="/feed.xml"
+              className="inline-flex items-center gap-1.5 text-xs text-ash hover:text-ink transition-colors mt-3"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82 4 16.64 5 15.64 6.18 15.64M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z" />
+              </svg>
+              RSS feed
+            </Link>
           </div>
         </div>
       </div>
