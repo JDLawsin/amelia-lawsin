@@ -309,35 +309,37 @@ export const getPropertiesCount = async (
 export const getPropertiesBySlugs = async (
   slugs: string[],
 ): Promise<PropertyListItem[]> => {
-  if (slugs.length === 0) return [];
+  const capped = slugs.slice(0, 10);
+  if (capped.length === 0) return [];
 
   const properties = await prisma.property.findMany({
     where: {
-      slug: { in: slugs },
+      slug: { in: capped },
       deletedAt: null,
       isPublished: true,
     },
     select: propertyListSelect,
   });
 
-  return orderBySlugList(properties, slugs);
+  return orderBySlugList(properties, capped);
 };
 
 export const getComparePropertiesBySlugs = async (
   slugs: string[],
 ): Promise<ComparePropertyItem[]> => {
-  if (slugs.length === 0) return [];
+  const capped = slugs.slice(0, 10);
+  if (capped.length === 0) return [];
 
   const properties = await prisma.property.findMany({
     where: {
-      slug: { in: slugs },
+      slug: { in: capped },
       deletedAt: null,
       isPublished: true,
     },
     select: comparePropertySelect,
   });
 
-  return orderBySlugList(properties, slugs);
+  return orderBySlugList(properties, capped);
 };
 
 export const getPropertyBySlug = async (

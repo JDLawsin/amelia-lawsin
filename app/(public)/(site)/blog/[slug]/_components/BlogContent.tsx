@@ -6,6 +6,7 @@ import {
   BLOG_IMAGE_WIDTH,
   BLOG_INLINE_IMAGE_SIZES,
 } from "@/lib/image-layout";
+import { isSafeHref } from "@/lib/safe-href";
 
 type TipTapMark = {
   type: "bold" | "italic" | "underline" | "link" | "code";
@@ -68,17 +69,30 @@ const InlineText = ({ node }: { node: TipTapNode }) => {
           </code>
         );
         break;
-      case "link":
-        content = (
+      case "link": {
+        const href = mark.attrs?.href ?? "";
+        if (!isSafeHref(href)) break;
+        const isInternal = href.startsWith("/") || href.startsWith("#");
+        content = isInternal ? (
           <Link
-            href={mark.attrs?.href ?? "#"}
+            href={href}
             target={mark.attrs?.target ?? "_self"}
             className="text-ink underline underline-offset-2 hover:text-ash transition-colors"
           >
             {content}
           </Link>
+        ) : (
+          <a
+            href={href}
+            target={mark.attrs?.target ?? "_blank"}
+            rel="noopener noreferrer"
+            className="text-ink underline underline-offset-2 hover:text-ash transition-colors"
+          >
+            {content}
+          </a>
         );
         break;
+      }
     }
   });
 

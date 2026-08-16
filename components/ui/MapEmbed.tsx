@@ -142,6 +142,7 @@ const MapEmbed = ({
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         title={title}
+        sandbox="allow-scripts allow-same-origin"
         onLoad={() => setLoaded(true)}
       />
       <a

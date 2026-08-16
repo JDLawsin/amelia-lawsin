@@ -63,15 +63,9 @@ const useDebouncedQueryParam = (
       committedRef.current &&
       trimmedLocal === committedRef.current
     ) {
-      // #region agent log
-      fetch('http://127.0.0.1:7297/ingest/91344423-1bbd-4415-8571-602252fcdf8a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cb2751'},body:JSON.stringify({sessionId:'cb2751',location:'useDebouncedQueryParam.ts:sync-guard',message:'sync skipped empty url flicker',data:{urlTrimmed,committed:committedRef.current,trimmedLocal},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
       return;
     }
 
-    // #region agent log
-    fetch('http://127.0.0.1:7297/ingest/91344423-1bbd-4415-8571-602252fcdf8a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cb2751'},body:JSON.stringify({sessionId:'cb2751',location:'useDebouncedQueryParam.ts:sync-overwrite',message:'sync overwrites local from url',data:{from:trimmedLocal,to:urlTrimmed,committed:committedRef.current,debounced:debouncedValue.trim()},timestamp:Date.now(),hypothesisId:'A,E'})}).catch(()=>{});
-    // #endregion
     committedRef.current = urlTrimmed;
     setLocalValue(urlValue);
   }, [urlValue, trimmedLocal, debouncedValue]);
@@ -80,9 +74,6 @@ const useDebouncedQueryParam = (
     const next = debouncedValue.trim();
     if (next === trimmedUrl) return;
 
-    // #region agent log
-    fetch('http://127.0.0.1:7297/ingest/91344423-1bbd-4415-8571-602252fcdf8a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cb2751'},body:JSON.stringify({sessionId:'cb2751',location:'useDebouncedQueryParam.ts:commit',message:'committing debounced value to url',data:{next,trimmedUrl,local:trimmedLocal},timestamp:Date.now(),hypothesisId:'D'})}).catch(()=>{});
-    // #endregion
     committedRef.current = next;
 
     if (next) {

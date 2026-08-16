@@ -2,7 +2,7 @@
 
 import { Loader2, Search } from "lucide-react";
 import clsx from "clsx";
-import { useCallback, useEffect, useId, type KeyboardEvent } from "react";
+import { useCallback, useId, type KeyboardEvent } from "react";
 import useDebouncedQueryParam from "@/hooks/useDebouncedQueryParam";
 import { Input } from "@/components/ui/shadcn/input";
 
@@ -12,15 +12,6 @@ type Props = {
 
 const BlogSearchBar = ({ initialQuery }: Props) => {
   const inputId = useId();
-
-  // #region agent log
-  useEffect(() => {
-    fetch('http://127.0.0.1:7297/ingest/91344423-1bbd-4415-8571-602252fcdf8a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cb2751'},body:JSON.stringify({sessionId:'cb2751',location:'BlogSearchBar.tsx:mount',message:'BlogSearchBar mounted',data:{initialQuery:initialQuery??''},timestamp:Date.now(),hypothesisId:'B,C'})}).catch(()=>{});
-    return () => {
-      fetch('http://127.0.0.1:7297/ingest/91344423-1bbd-4415-8571-602252fcdf8a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cb2751'},body:JSON.stringify({sessionId:'cb2751',location:'BlogSearchBar.tsx:unmount',message:'BlogSearchBar unmounted',data:{initialQuery:initialQuery??''},timestamp:Date.now(),hypothesisId:'B,C'})}).catch(()=>{});
-    };
-  }, [initialQuery]);
-  // #endregion
 
   const { value, setValue, isPending, clear, hasValue } =
     useDebouncedQueryParam("q", { initialValue: initialQuery });
@@ -57,11 +48,7 @@ const BlogSearchBar = ({ initialQuery }: Props) => {
           type="search"
           value={value}
           onChange={(event) => {
-            const next = event.target.value;
-            // #region agent log
-            fetch('http://127.0.0.1:7297/ingest/91344423-1bbd-4415-8571-602252fcdf8a',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cb2751'},body:JSON.stringify({sessionId:'cb2751',location:'BlogSearchBar.tsx:onChange',message:'user typed',data:{prev:value,next},timestamp:Date.now(),hypothesisId:'A,B,D,E'})}).catch(()=>{});
-            // #endregion
-            setValue(next);
+            setValue(event.target.value);
           }}
           onKeyDown={handleKeyDown}
           placeholder="Search articles by topic or keyword…"
