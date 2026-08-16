@@ -104,8 +104,8 @@ type BookingEmailData = {
   phone?: string | null;
   scheduledAt: Date;
   propertyTitle?: string | null;
-  propertySlug?: string | null;
   propertyLocation?: string | null;
+  propertyUrl?: string;
   notes?: string | null;
   source: string;
 };
@@ -117,15 +117,11 @@ export function renderBookingNotificationEmail(data: BookingEmailData) {
     phone,
     scheduledAt,
     propertyTitle,
-    propertySlug,
     propertyLocation,
+    propertyUrl,
     notes,
     source,
   } = data;
-
-  const propertyUrl = propertySlug
-    ? `${process.env.NEXT_PUBLIC_SITE_URL || "https://localhost:3000"}/properties/${propertySlug}`
-    : undefined;
 
   const propertyCard = propertyTitle
     ? `
@@ -139,7 +135,7 @@ export function renderBookingNotificationEmail(data: BookingEmailData) {
   ${propertyLocation ? `<p style="margin:0 0 12px; font-size:13px; color:${COLORS.ash};">${escapeHtml(propertyLocation)}</p>` : ""}
   ${
     propertyUrl
-      ? `<p style="margin:0;"><a href="${propertyUrl}" target="_blank" style="${styleObjectToString(buttonStyles)}">View listing</a></p>`
+      ? `<p style="margin:0;"><a href="${escapeHtml(propertyUrl)}" target="_blank" style="${styleObjectToString(buttonStyles)}">View listing</a></p>`
       : ""
   }
 </div>

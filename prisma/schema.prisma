@@ -313,7 +313,7 @@ model Booking {
   name             String
   email            String
   phone            String?
-  scheduledAt      DateTime      @unique
+  scheduledAt      DateTime // unique among CONFIRMED rows only (SQL partial unique index)
   propertyTitle    String?
   propertySlug     String?
   propertyLocation String?
@@ -326,4 +326,13 @@ model Booking {
   @@index([status])
   @@index([scheduledAt])
   @@map("bookings")
+}
+
+model FormWriteEvent {
+  id        String   @id @default(uuid())
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@map("form_write_events")
 }

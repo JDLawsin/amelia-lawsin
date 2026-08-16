@@ -150,7 +150,7 @@ export function renderNotificationEmail(data: NotificationEmailData) {
 
   const propertyButton = propertyUrl
     ? `<p style="margin:0;">
-        <a href="${propertyUrl}" target="_blank" style="${styleObjectToString(buttonStyles)}">View full listing</a>
+        <a href="${escapeHtml(propertyUrl)}" target="_blank" style="${styleObjectToString(buttonStyles)}">View full listing</a>
       </p>`
     : "";
 

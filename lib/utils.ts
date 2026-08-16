@@ -11,7 +11,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatPrice = (property: PropertyListItem): string => {
+export const formatPrice = (property: {
+  price: number | null;
+  priceLabel: string | null;
+  status: string;
+}): string => {
   if (property.priceLabel) return property.priceLabel;
   if (!property.price) return "Price on request";
   if (property.status === "FOR_RENT")

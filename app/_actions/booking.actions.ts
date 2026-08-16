@@ -6,21 +6,31 @@ import { BookingSchema } from "@/app/_schemas/booking.schema";
 import {
   BOOKING_SLOT_HOURS,
   buildScheduledAt,
+  getDateRangeBounds,
   getDayBoundsInUtc,
   getManilaParts,
   isSundayInManila,
   isValidBookingSlot,
 } from "@/lib/booking-slots";
+import { renderBookingNotificationEmail } from "@/lib/emails/booking-emails";
 import {
-  renderBookingConfirmationEmail,
-  renderBookingNotificationEmail,
-} from "@/lib/emails/booking-emails";
+  BOOKING_SUCCESS_MESSAGE,
+  enforceWriteRateLimit,
+  normalizeEmail,
+  WRITE_RATE_LIMIT_MESSAGE,
+} from "@/lib/form-abuse";
 import { prisma } from "@/lib/prisma";
+import { resolvePublishedListing } from "@/lib/published-listing";
 import { SITE_CONFIG } from "@/constants";
 
 export type BookingState =
   | { success: true; message: string }
-  | { success: false; errors: Record<string, string[]>; message?: string }
+  | {
+      success: false;
+      errors: Record<string, string[]>;
+      message?: string;
+      showContactLinks?: boolean;
+    }
   | null;
 
 const resend = process.env.RESEND_API_KEY
@@ -30,7 +40,14 @@ const resend = process.env.RESEND_API_KEY
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
 
 export async function getBookedTimeSlots(date: string): Promise<number[]> {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || isSundayInManila(date)) {
+  const { minDate, maxDate } = getDateRangeBounds();
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    isSundayInManila(date) ||
+    date < minDate ||
+    date > maxDate
+  ) {
     return BOOKING_SLOT_HOURS.slice();
   }
 
@@ -39,7 +56,7 @@ export async function getBookedTimeSlots(date: string): Promise<number[]> {
   const bookings = await prisma.booking.findMany({
     where: {
       scheduledAt: { gte: start, lte: end },
-      status: { in: ["PENDING", "CONFIRMED"] },
+      status: "CONFIRMED",
     },
     select: { scheduledAt: true },
   });
@@ -60,7 +77,7 @@ export async function submitBooking(
     propertySlug: entries.propertySlug || undefined,
     propertyLocation: entries.propertyLocation || undefined,
     notes: entries.notes || undefined,
-    honeypot: entries.honeypot || undefined,
+    website_url: entries.website_url || undefined,
   };
 
   const result = BookingSchema.safeParse(payload);
@@ -78,19 +95,25 @@ export async function submitBooking(
     phone,
     date,
     timeSlot,
-    propertyTitle,
-    propertySlug,
-    propertyLocation,
     notes,
     source,
-    honeypot,
+    website_url,
   } = result.data;
 
-  if (honeypot && honeypot.length > 0) {
+  if (website_url && website_url.length > 0) {
     return {
       success: true,
-      message:
-        "Your viewing request has been received. Amelia will confirm your slot shortly.",
+      message: BOOKING_SUCCESS_MESSAGE,
+    };
+  }
+
+  const rateLimit = await enforceWriteRateLimit("booking", email);
+  if (!rateLimit.ok) {
+    return {
+      success: false,
+      errors: {},
+      message: WRITE_RATE_LIMIT_MESSAGE,
+      showContactLinks: true,
     };
   }
 
@@ -112,16 +135,34 @@ export async function submitBooking(
     };
   }
 
+  const listing = await resolvePublishedListing(result.data.propertySlug);
+  const storedTitle = listing?.propertyTitle ?? null;
+  const storedSlug = listing?.propertySlug ?? null;
+  const storedLocation = listing?.propertyLocation ?? null;
+
+  const confirmed = await prisma.booking.findFirst({
+    where: { scheduledAt, status: "CONFIRMED" },
+    select: { id: true },
+  });
+
+  if (confirmed) {
+    return {
+      success: false,
+      message: "That time slot was just booked. Please choose another.",
+      errors: { timeSlot: ["That time slot was just booked."] },
+    };
+  }
+
   try {
     const booking = await prisma.booking.create({
       data: {
         name,
-        email,
+        email: normalizeEmail(email),
         phone: phone || null,
         scheduledAt,
-        propertyTitle: propertyTitle || null,
-        propertySlug: propertySlug || null,
-        propertyLocation: propertyLocation || null,
+        propertyTitle: storedTitle,
+        propertySlug: storedSlug,
+        propertyLocation: storedLocation,
         notes: notes || null,
         source,
       },
@@ -133,29 +174,19 @@ export async function submitBooking(
           from: `Amelia Lawsin <${FROM_EMAIL}>`,
           to: SITE_CONFIG.email,
           replyTo: email,
-          subject: propertyTitle
-            ? `Viewing request: ${propertyTitle}`
+          subject: storedTitle
+            ? `Viewing request: ${storedTitle}`
             : "New viewing request from your website",
           html: renderBookingNotificationEmail({
             name,
             email,
             phone,
             scheduledAt: booking.scheduledAt,
-            propertyTitle,
-            propertySlug,
-            propertyLocation,
+            propertyTitle: storedTitle,
+            propertyLocation: storedLocation,
+            propertyUrl: listing?.propertyUrl,
             notes,
             source,
-          }),
-        });
-
-        await resend.emails.send({
-          from: `Amelia Lawsin <${FROM_EMAIL}>`,
-          to: email,
-          subject: "Your viewing request has been received",
-          html: renderBookingConfirmationEmail({
-            name,
-            scheduledAt: booking.scheduledAt,
           }),
         });
       } catch (emailError) {
@@ -165,8 +196,7 @@ export async function submitBooking(
 
     return {
       success: true,
-      message:
-        "Your viewing request has been received. Amelia will confirm your slot shortly.",
+      message: BOOKING_SUCCESS_MESSAGE,
     };
   } catch (error) {
     if (
@@ -186,6 +216,7 @@ export async function submitBooking(
       message:
         "Something went wrong while scheduling your viewing. Please try again or contact Amelia directly.",
       errors: {},
+      showContactLinks: true,
     };
   }
 }

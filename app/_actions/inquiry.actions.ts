@@ -3,15 +3,26 @@
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 import { InquirySchema } from "@/app/_schemas/inquiry.schema";
+import { renderNotificationEmail } from "@/lib/emails/inquiry-emails";
 import {
-  renderNotificationEmail,
-  renderConfirmationEmail,
-} from "@/lib/emails/inquiry-emails";
+  enforceWriteRateLimit,
+  hasRecentListingInquiry,
+  INQUIRY_ALREADY_ON_FILE_MESSAGE,
+  INQUIRY_SUCCESS_MESSAGE,
+  normalizeEmail,
+  WRITE_RATE_LIMIT_MESSAGE,
+} from "@/lib/form-abuse";
+import { resolvePublishedListing } from "@/lib/published-listing";
 import { SITE_CONFIG } from "@/constants";
 
 export type InquiryState =
-  | { success: true; message: string }
-  | { success: false; errors: Record<string, string[]>; message?: string }
+  | { success: true; message: string; alreadyOnFile?: boolean }
+  | {
+      success: false;
+      errors: Record<string, string[]>;
+      message?: string;
+      showContactLinks?: boolean;
+    }
   | null;
 
 const resend = process.env.RESEND_API_KEY
@@ -26,7 +37,6 @@ export async function submitInquiry(
 ): Promise<InquiryState> {
   const entries = Object.fromEntries(formData.entries());
 
-  // Normalize optional empty strings to undefined for validation.
   const payload = {
     ...entries,
     phone: entries.phone || undefined,
@@ -36,7 +46,7 @@ export async function submitInquiry(
     propertyPrice: entries.propertyPrice || undefined,
     propertyLocation: entries.propertyLocation || undefined,
     propertyStatus: entries.propertyStatus || undefined,
-    honeypot: entries.honeypot || undefined,
+    website_url: entries.website_url || undefined,
   };
 
   const result = InquirySchema.safeParse(payload);
@@ -53,82 +63,90 @@ export async function submitInquiry(
     email,
     phone,
     propertyType,
-    propertyTitle,
-    propertySlug,
-    propertyPrice,
-    propertyLocation,
-    propertyStatus,
     source,
     message,
-    honeypot,
+    website_url,
   } = result.data;
 
-  // Honeypot: if the hidden field is filled, treat as spam silently.
-  if (honeypot && honeypot.length > 0) {
-    // Return fake success so bots cannot probe the form.
+  if (website_url && website_url.length > 0) {
     return {
       success: true,
-      message: "Thank you. Amelia will get back to you shortly.",
+      message: INQUIRY_SUCCESS_MESSAGE,
     };
   }
+
+  const rateLimit = await enforceWriteRateLimit("inquiry", email);
+  if (!rateLimit.ok) {
+    return {
+      success: false,
+      errors: {},
+      message: WRITE_RATE_LIMIT_MESSAGE,
+      showContactLinks: true,
+    };
+  }
+
+  const slugProvided = Boolean(result.data.propertySlug?.trim());
+  const listing = await resolvePublishedListing(result.data.propertySlug);
+
+  if (listing && (await hasRecentListingInquiry(email, listing.propertySlug))) {
+    return {
+      success: true,
+      alreadyOnFile: true,
+      message: INQUIRY_ALREADY_ON_FILE_MESSAGE,
+    };
+  }
+
+  const storedType =
+    listing?.propertyType ?? (slugProvided ? null : propertyType || null);
+  const storedTitle = listing?.propertyTitle ?? null;
+  const storedSlug = listing?.propertySlug ?? null;
+  const storedPrice = listing?.propertyPrice ?? null;
+  const storedLocation = listing?.propertyLocation ?? null;
+  const storedStatus = listing?.propertyStatus ?? null;
 
   try {
     const inquiry = await prisma.inquiry.create({
       data: {
         name,
-        email,
+        email: normalizeEmail(email),
         phone: phone || null,
-        propertyType: propertyType || null,
-        propertyTitle: propertyTitle || null,
-        propertySlug: propertySlug || null,
-        propertyPrice: propertyPrice || null,
-        propertyLocation: propertyLocation || null,
-        propertyStatus: propertyStatus || null,
+        propertyType: storedType,
+        propertyTitle: storedTitle,
+        propertySlug: storedSlug,
+        propertyPrice: storedPrice,
+        propertyLocation: storedLocation,
+        propertyStatus: storedStatus,
         source,
         message,
       },
     });
 
-    const propertyUrl = propertySlug
-      ? `${process.env.NEXT_PUBLIC_SITE_URL || "https://localhost:3000"}/properties/${propertySlug}`
-      : undefined;
-
     if (resend && FROM_EMAIL) {
       try {
-        // Notify Amelia
         await resend.emails.send({
           from: `Amelia Lawsin <${FROM_EMAIL}>`,
           to: SITE_CONFIG.email,
           replyTo: email,
-          subject: propertyTitle
-            ? `New inquiry: ${propertyTitle}`
+          subject: storedTitle
+            ? `New inquiry: ${storedTitle}`
             : "New inquiry from your website",
           html: renderNotificationEmail({
             name,
             email,
             phone,
-            propertyType,
-            propertyTitle,
-            propertySlug,
-            propertyPrice,
-            propertyLocation,
-            propertyStatus,
-            propertyUrl,
+            propertyType: storedType,
+            propertyTitle: storedTitle,
+            propertySlug: storedSlug,
+            propertyPrice: storedPrice,
+            propertyLocation: storedLocation,
+            propertyStatus: storedStatus,
+            propertyUrl: listing?.propertyUrl,
             source,
             message,
             createdAt: inquiry.createdAt,
           }),
         });
-
-        // Auto-reply to the user
-        await resend.emails.send({
-          from: `Amelia Lawsin <${FROM_EMAIL}>`,
-          to: email,
-          subject: "We've received your inquiry — Amelia will reply soon",
-          html: renderConfirmationEmail({ name }),
-        });
       } catch (emailError) {
-        // Don't fail the submission if email fails; the inquiry is already saved.
         console.error("Failed to send inquiry emails:", emailError);
       }
     } else {
@@ -145,7 +163,7 @@ export async function submitInquiry(
 
     return {
       success: true,
-      message: "Thank you. Amelia will get back to you shortly.",
+      message: INQUIRY_SUCCESS_MESSAGE,
     };
   } catch (error) {
     console.error("Failed to submit inquiry:", error);
@@ -154,6 +172,7 @@ export async function submitInquiry(
       message:
         "Something went wrong while sending your inquiry. Please try again or contact Amelia directly.",
       errors: {},
+      showContactLinks: true,
     };
   }
 }

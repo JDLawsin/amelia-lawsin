@@ -41,7 +41,7 @@ export const BookingSchema = z.object({
     .optional()
     .or(z.literal("")),
   source: z.enum(["Contact page", "Property listing"]),
-  honeypot: z.string().optional().or(z.literal("")),
+  website_url: z.string().optional().or(z.literal("")),
 });
 
 export type BookingInput = z.infer<typeof BookingSchema>;

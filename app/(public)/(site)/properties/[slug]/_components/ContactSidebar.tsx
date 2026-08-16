@@ -17,6 +17,7 @@ import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions
 import ScheduleViewingButton from "@/components/contact/ScheduleViewingButton";
 import PropertyPrintButton from "./PropertyPrintButton";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
+import FormAltContactLinks from "@/components/contact/FormAltContactLinks";
 import type { ContactSidebarProps } from "./ContactSidebarShell";
 
 const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
@@ -241,6 +242,12 @@ const InquiryModal = ({
     serverState && !serverState.success && "message" in serverState
       ? serverState.message
       : undefined;
+  const showContactLinks =
+    serverState && !serverState.success && "showContactLinks" in serverState
+      ? Boolean(serverState.showContactLinks)
+      : false;
+  const alreadyOnFile =
+    serverState?.success === true && Boolean(serverState.alreadyOnFile);
 
   const success = serverState?.success ?? false;
 
@@ -273,10 +280,17 @@ const InquiryModal = ({
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             </div>
-            <p className="text-sm font-medium text-ink mb-1">Inquiry sent!</p>
-            <p className="text-xs text-ash">
-              Amelia will get back to you shortly.
+            <p className="text-sm font-medium text-ink mb-1">
+              {alreadyOnFile ? "We already have this inquiry" : "Inquiry sent!"}
             </p>
+            <p className="text-xs text-ash leading-relaxed">
+              {serverState && serverState.success
+                ? serverState.message
+                : "Amelia will get back to you shortly."}
+            </p>
+            {alreadyOnFile && (
+              <FormAltContactLinks className="text-xs text-ash mt-3" />
+            )}
             <button
               onClick={onClose}
               className="mt-4 text-xs text-ash hover:text-ink transition-colors"
@@ -285,7 +299,7 @@ const InquiryModal = ({
             </button>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="flex flex-col gap-3">
+          <form onSubmit={onSubmit} className="relative flex flex-col gap-3">
             <input type="hidden" name="source" value="Property listing" readOnly />
             <input type="hidden" name="propertyTitle" value={propertyTitle} readOnly />
             <input type="hidden" name="propertySlug" value={propertySlug} readOnly />
@@ -296,7 +310,7 @@ const InquiryModal = ({
 
             <input
               type="text"
-              name="honeypot"
+              name="website_url"
               tabIndex={-1}
               autoComplete="off"
               className="absolute opacity-0 -z-10"
@@ -310,6 +324,9 @@ const InquiryModal = ({
             {serverMessage && (
               <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2">
                 <p className="text-xs text-red-600">{serverMessage}</p>
+                {showContactLinks && (
+                  <FormAltContactLinks className="text-xs text-red-600 mt-2" />
+                )}
               </div>
             )}
 

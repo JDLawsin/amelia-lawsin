@@ -21,6 +21,7 @@ import {
   isSundayInManila,
 } from "@/lib/booking-slots";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
+import FormAltContactLinks from "@/components/contact/FormAltContactLinks";
 import {
   errorInputStyles,
   inputStyles,
@@ -115,6 +116,10 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
     serverState && !serverState.success && "message" in serverState
       ? serverState.message
       : undefined;
+  const showContactLinks =
+    serverState && !serverState.success && "showContactLinks" in serverState
+      ? Boolean(serverState.showContactLinks)
+      : false;
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -162,7 +167,7 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
             onClose={onClose}
           />
         ) : (
-          <form onSubmit={onSubmit} className="flex flex-col gap-3">
+          <form onSubmit={onSubmit} className="relative flex flex-col gap-3">
             <input type="hidden" name="source" value={source} readOnly />
             {property && (
               <>
@@ -191,7 +196,7 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
 
             <input
               type="text"
-              name="honeypot"
+              name="website_url"
               tabIndex={-1}
               autoComplete="off"
               className="absolute opacity-0 -z-10"
@@ -213,6 +218,9 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
             {serverMessage && (
               <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2">
                 <p className="text-xs text-red-600">{serverMessage}</p>
+                {showContactLinks && (
+                  <FormAltContactLinks className="text-xs text-red-600 mt-2" />
+                )}
               </div>
             )}
 
