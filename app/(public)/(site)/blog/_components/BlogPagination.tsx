@@ -1,19 +1,14 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { createQueryString } from "@/lib/utils";
+import { blogListUrl } from "@/lib/blog-list-url";
 
 type Props = {
   page: number;
   pageSize: number;
   total: number;
   activeTag?: string;
+  activeQuery?: string;
   label?: string;
-};
-
-const buildPageUrl = (page: number, activeTag?: string) => {
-  const params: Record<string, string> = { page: String(page) };
-  if (activeTag) params.tag = activeTag;
-  return `/blog?${createQueryString(params)}`;
 };
 
 /** Server-rendered pagination — no client JS. */
@@ -22,6 +17,7 @@ const BlogPagination = ({
   pageSize,
   total,
   activeTag,
+  activeQuery,
   label = "articles",
 }: Props) => {
   const totalPages = Math.ceil(total / pageSize);
@@ -61,7 +57,11 @@ const BlogPagination = ({
             </span>
           ) : (
             <Link
-              href={buildPageUrl(page - 1, activeTag)}
+              href={blogListUrl({
+                page: page - 1,
+                tag: activeTag,
+                q: activeQuery,
+              })}
               className={navButtonClass}
               aria-label="Previous page"
             >
@@ -77,7 +77,11 @@ const BlogPagination = ({
             ) : (
               <Link
                 key={p}
-                href={buildPageUrl(p as number, activeTag)}
+                href={blogListUrl({
+                  page: p as number,
+                  tag: activeTag,
+                  q: activeQuery,
+                })}
                 aria-label={`Go to page ${p}`}
                 aria-current={page === p ? "page" : undefined}
                 className={
@@ -97,7 +101,11 @@ const BlogPagination = ({
             </span>
           ) : (
             <Link
-              href={buildPageUrl(page + 1, activeTag)}
+              href={blogListUrl({
+                page: page + 1,
+                tag: activeTag,
+                q: activeQuery,
+              })}
               className={navButtonClass}
               aria-label="Next page"
             >

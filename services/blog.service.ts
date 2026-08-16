@@ -63,19 +63,18 @@ export type BlogFilters = {
   pageSize?: number;
 };
 
-const buildBlogWhereClause = (
+const buildBlogWhereClause = async (
   filters: BlogFilters = {},
-): Prisma.BlogWhereInput => {
+): Promise<Prisma.BlogWhereInput> => {
   const where: Prisma.BlogWhereInput = {
     isPublished: true,
     deletedAt: null,
   };
 
-  if (filters.q) {
-    where.OR = [
-      { title: { contains: filters.q, mode: "insensitive" } },
-      { excerpt: { contains: filters.q, mode: "insensitive" } },
-    ];
+  const query = filters.q?.trim();
+  if (query) {
+    const ids = await findPublishedBlogIdsByKeyword(query);
+    where.id = { in: ids };
   }
 
   if (filters.tag) {
@@ -87,6 +86,32 @@ const buildBlogWhereClause = (
   }
 
   return where;
+};
+
+const findPublishedBlogIdsByKeyword = async (
+  q: string,
+): Promise<string[]> => {
+  const pattern = `%${q}%`;
+  const rows = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT b.id
+    FROM blogs b
+    WHERE b."isPublished" = true
+      AND b."deletedAt" IS NULL
+      AND (
+        b.title ILIKE ${pattern}
+        OR b.excerpt ILIKE ${pattern}
+        OR b.content::text ILIKE ${pattern}
+        OR EXISTS (
+          SELECT 1
+          FROM tags_on_blogs tob
+          INNER JOIN blog_tags bt ON bt.id = tob."tagId"
+          WHERE tob."blogId" = b.id
+            AND bt.name ILIKE ${pattern}
+        )
+      )
+  `;
+
+  return rows.map((row) => row.id);
 };
 
 export const getLatestBlogs = async (limit = 3): Promise<BlogPreviewItem[]> => {
@@ -105,7 +130,7 @@ export const getAllBlogs = async (
   filters: BlogFilters = {},
 ): Promise<BlogPreviewItem[]> => {
   const { page = 1, pageSize = 6 } = filters;
-  const where = buildBlogWhereClause(filters);
+  const where = await buildBlogWhereClause(filters);
 
   return prisma.blog.findMany({
     where,
@@ -116,9 +141,11 @@ export const getAllBlogs = async (
   });
 };
 
-export const getBlogsCount = (filters: BlogFilters = {}): Promise<number> => {
+export const getBlogsCount = async (
+  filters: BlogFilters = {},
+): Promise<number> => {
   return prisma.blog.count({
-    where: buildBlogWhereClause(filters),
+    where: await buildBlogWhereClause(filters),
   });
 };
 

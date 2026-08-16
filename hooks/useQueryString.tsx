@@ -41,7 +41,15 @@ const useUpdateQueryString = (): UpdateQueryStringFn => {
       );
 
       const updatedQueryString = createQueryString(updatedParams);
-      const url = `${pathname}?${updatedQueryString}`;
+      const url = updatedQueryString
+        ? `${pathname}?${updatedQueryString}`
+        : pathname;
+      const currentQuery = searchParams.toString();
+      const currentUrl = currentQuery
+        ? `${pathname}?${currentQuery}`
+        : pathname;
+
+      if (url === currentUrl) return;
 
       if (options?.replace) {
         router.replace(url);

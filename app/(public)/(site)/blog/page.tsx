@@ -21,9 +21,18 @@ const PAGE_SIZE = 6;
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string }>;
+  searchParams: Promise<{ tag?: string; q?: string }>;
 }): Promise<Metadata> {
   const params = await searchParams;
+  const query = params.q?.trim();
+
+  if (query) {
+    return {
+      title: `Search: ${query} | Amelia Lawsin Real Estate Blog`,
+      description: `Blog articles matching “${query}” — Cebu real estate guides and tips from licensed agent Amelia Lawsin.`,
+      alternates: { canonical: `/blog?q=${encodeURIComponent(query)}` },
+    };
+  }
 
   if (params.tag) {
     return {
@@ -49,6 +58,7 @@ export async function generateMetadata({
 
 type SearchParams = {
   tag?: string;
+  q?: string;
   page?: string;
 };
 
@@ -59,7 +69,9 @@ type Props = {
 const BlogPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const currentPage = Math.max(1, Number(params.page ?? "1"));
+  const activeQuery = params.q?.trim() || undefined;
   const filters = {
+    q: activeQuery,
     tag: params.tag,
     page: currentPage,
     pageSize: PAGE_SIZE,
@@ -70,7 +82,8 @@ const BlogPage = async ({ searchParams }: Props) => {
     getAllBlogTags(),
   ]);
   const featuredBlogs = blogs.slice(0, 3);
-  const lcpCover = !params.tag ? featuredBlogs[0]?.coverImage : undefined;
+  const lcpCover =
+    !params.tag && !activeQuery ? featuredBlogs[0]?.coverImage : undefined;
 
   const baseUrl = getSiteUrl();
 
@@ -120,7 +133,7 @@ const BlogPage = async ({ searchParams }: Props) => {
         </div>
       </div>
 
-      {!params.tag && featuredBlogs.length > 0 && (
+      {!params.tag && !activeQuery && featuredBlogs.length > 0 && (
         <div className="px-6 pt-8 pb-0 max-w-7xl mx-auto">
           <FeaturedGrid blogs={featuredBlogs} />
           <div className="mt-8" />
@@ -135,6 +148,7 @@ const BlogPage = async ({ searchParams }: Props) => {
           currentPage={currentPage}
           tags={tags}
           activeTag={params.tag}
+          activeQuery={activeQuery}
         />
       </div>
 
