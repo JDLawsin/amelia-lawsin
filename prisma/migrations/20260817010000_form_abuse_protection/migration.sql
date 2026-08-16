@@ -15,3 +15,5 @@ DROP INDEX "bookings_scheduledAt_key";
 
 -- Confirmed slots stay exclusive; PENDING requests do not lock the calendar.
 CREATE UNIQUE INDEX "bookings_confirmed_scheduledAt_key" ON "bookings"("scheduledAt") WHERE status = 'CONFIRMED';
+
+ALTER TABLE "form_write_events" ENABLE ROW LEVEL SECURITY;
