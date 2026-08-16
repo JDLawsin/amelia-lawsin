@@ -104,7 +104,7 @@ const PropertyFactSheetPrint = ({
         </header>
 
         {printImageSrc && (
-          <div className="relative mb-4 aspect-[16/9] overflow-hidden rounded-lg border border-black/10">
+          <div className="relative mb-4 aspect-video overflow-hidden rounded-lg border border-black/10">
             <Image
               src={printImageSrc}
               alt={title}
