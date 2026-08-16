@@ -37,6 +37,7 @@ import UnitSelectorLoader from "./_components/UnitSelectorLoader";
 import RelatedProperties from "./_components/RelatedProperties";
 import ContactSidebarLoader from "./_components/ContactSidebarLoader";
 import PropertyActionsLoader from "./_components/PropertyActionsLoader";
+import PropertyListingToolbarLoader from "./_components/PropertyListingToolbarLoader";
 import PropertyFactSheetPrint from "./_components/PropertyFactSheetPrint";
 import PropertyPrintButton from "./_components/PropertyPrintButton";
 
@@ -268,26 +269,33 @@ const PropertyDetailPage = async ({ params }: Props) => {
         </div>
       )}
 
-      <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 max-w-7xl mx-auto">
-        <div>
-          <h1 className="text-xl font-serif font-medium text-ink leading-snug tracking-tight mb-1.5">
-            {property.title}
-          </h1>
-          {address && (
-            <div className="flex items-center gap-1.5 text-xs text-ash">
-              <MapPin className="w-3 h-3 shrink-0" />
-              {address}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col items-end gap-1.5 shrink-0">
-          <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
-            Save Listing
-          </span>
-          <div className="flex items-center gap-2">
-            <PropertyPrintButton />
-            <PropertyActionsLoader slug={property.slug} size="md" />
+      <div className="px-6 pt-5 pb-3 max-w-7xl mx-auto">
+        <div className="flex items-start justify-between gap-4 lg:gap-6">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl font-serif font-medium text-ink leading-snug tracking-tight mb-1.5 text-pretty">
+              {property.title}
+            </h1>
+            {address && (
+              <div className="flex items-center gap-1.5 text-xs text-ash">
+                <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
+                <span className="line-clamp-2">{address}</span>
+              </div>
+            )}
           </div>
+
+          <div className="hidden shrink-0 flex-col items-end gap-1.5 lg:flex">
+            <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
+              Save Listing
+            </span>
+            <div className="flex items-center gap-2">
+              <PropertyPrintButton />
+              <PropertyActionsLoader slug={property.slug} size="md" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 lg:hidden">
+          <PropertyListingToolbarLoader slug={property.slug} />
         </div>
       </div>
 

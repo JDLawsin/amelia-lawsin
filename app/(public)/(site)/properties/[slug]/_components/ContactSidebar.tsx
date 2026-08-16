@@ -95,7 +95,10 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
           Send an inquiry
         </button>
 
-        <PropertyPrintButton variant="sidebar" className="mb-2" />
+        <PropertyPrintButton
+          variant="sidebar"
+          className="mb-2 hidden lg:flex"
+        />
 
         <div className="h-px bg-wire my-4" />
 
