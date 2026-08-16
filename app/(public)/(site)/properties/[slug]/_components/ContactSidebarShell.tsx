@@ -1,5 +1,6 @@
 import { SITE_CONFIG } from "@/constants";
 import { formatPrice } from "@/lib/utils";
+import { buildPropertyWhatsAppUrl } from "@/lib/whatsapp-url";
 import type { PropertyDetail } from "@/services/property.service";
 
 export type ContactSidebarProps = {
@@ -34,6 +35,7 @@ const ContactSidebarShell = ({ property, shareUrl }: ContactSidebarProps) => {
   );
   const messengerUrl = `${SITE_CONFIG.messengerUrl}?text=${messageText}`;
   const smsUrl = `sms:${SITE_CONFIG.phone}?body=${messageText}`;
+  const whatsappUrl = buildPropertyWhatsAppUrl(property.title, shareUrl);
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
   const financingTags = [
@@ -60,12 +62,31 @@ const ContactSidebarShell = ({ property, shareUrl }: ContactSidebarProps) => {
           Message on Messenger
         </a>
 
+        {whatsappUrl && (
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-full h-11 bg-[#25D366] text-white text-sm font-medium rounded-xl hover:bg-[#20bd5a] transition-colors mb-2"
+          >
+            Chat on WhatsApp
+          </a>
+        )}
+
         <a
           href={smsUrl}
           className="flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2"
         >
           Send SMS / Viber
         </a>
+
+        <button
+          type="button"
+          disabled
+          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl opacity-70 mb-2"
+        >
+          Schedule a viewing
+        </button>
 
         <button
           type="button"

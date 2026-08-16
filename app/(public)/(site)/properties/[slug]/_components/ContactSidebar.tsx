@@ -12,7 +12,9 @@ import clsx from "clsx";
 import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
+import { buildPropertyWhatsAppUrl } from "@/lib/whatsapp-url";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
+import ScheduleViewingButton from "@/components/contact/ScheduleViewingButton";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
 import type { ContactSidebarProps } from "./ContactSidebarShell";
 
@@ -31,6 +33,7 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
   );
   const messengerUrl = `${SITE_CONFIG.messengerUrl}?text=${messageText}`;
   const smsUrl = `sms:${SITE_CONFIG.phone}?body=${messageText}`;
+  const whatsappUrl = buildPropertyWhatsAppUrl(property.title, shareUrl);
 
   const financingTags = [
     property.isPagibigAccredited && "Pag-IBIG",
@@ -56,12 +59,33 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
           Message on Messenger
         </a>
 
+        {whatsappUrl && (
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-full h-11 bg-[#25D366] text-white text-sm font-medium rounded-xl hover:bg-[#20bd5a] transition-colors mb-2"
+          >
+            Chat on WhatsApp
+          </a>
+        )}
+
         <a
           href={smsUrl}
           className="flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2"
         >
           Send SMS / Viber
         </a>
+
+        <ScheduleViewingButton
+          source="Property listing"
+          property={{
+            title: property.title,
+            slug: property.slug,
+            location,
+          }}
+          className="mb-2"
+        />
 
         <button
           onClick={() => setInquiryOpen(true)}

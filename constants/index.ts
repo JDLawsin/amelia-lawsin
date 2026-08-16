@@ -14,6 +14,7 @@ export const SITE_CONFIG = {
 
   // Contact
   phone: "+63 956 500 5442",
+  whatsappNumber: "639565005442",
   email: "amelialawsin08@gmail.com",
   location: "Cebu, Philippines",
 
