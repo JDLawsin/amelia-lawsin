@@ -69,6 +69,7 @@ const propertyDetailSelect = {
   developerName: true,
   projectPhase: true,
   expectedTurnover: true,
+  virtualTourUrl: true,
   createdAt: true,
   images: {
     select: {

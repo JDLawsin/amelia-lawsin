@@ -5,6 +5,7 @@ import {
   PropertyType,
 } from "@/app/generated/prisma/enums";
 
+import { isSupportedVirtualTourUrl } from "@/lib/virtual-tour-url";
 import { z } from "zod";
 
 const optionalNumber = z.preprocess(
@@ -22,6 +23,18 @@ const optionalString = z
   .trim()
   .transform((v) => v || undefined)
   .optional();
+
+const optionalVirtualTourUrl = z.preprocess(
+  (v) => (v === "" || v == null ? undefined : v),
+  z
+    .string()
+    .trim()
+    .url("Enter a valid URL")
+    .refine(isSupportedVirtualTourUrl, {
+      message: "Only YouTube, Vimeo, and Matterport URLs are supported",
+    })
+    .optional(),
+);
 
 const booleanField = z.preprocess(
   (v) => v === "on" || v === "true" || v === true,
@@ -144,12 +157,17 @@ export const ImageItemSchema = z.object({
   isPrimary: z.boolean().default(false),
 });
 
+export const MediaSchema = z.object({
+  imageItems: z.array(ImageItemSchema).default([]),
+  virtualTourUrl: optionalVirtualTourUrl,
+});
+
 export const FullPropertySchema = BasicsSchema.merge(LocationSchema)
   .merge(SpecsSchema)
   .merge(FeaturesSchema)
   .merge(DeveloperSchema)
+  .merge(MediaSchema)
   .extend({
-    imageItems: z.array(ImageItemSchema).default([]),
     units: z.array(PropertyUnitSchema).default([]),
     amenities: z.array(PropertyAmenitySchema).default([]),
     paymentSchemes: z.array(PropertyPaymentSchemeSchema).default([]),
@@ -168,7 +186,7 @@ export const STEP_SCHEMAS = {
   Amenities: PropertyAmenitySchema,
   "Payment Plans": PropertyPaymentSchemeSchema,
   Landmarks: PropertyLandmarkSchema,
-  Media: z.array(ImageItemSchema),
+  Media: MediaSchema,
 } as const;
 
 export type StepName = keyof typeof STEP_SCHEMAS;
@@ -213,7 +231,7 @@ export const STEP_FIELD_NAMES = {
   Amenities: ["amenities"],
   "Payment Plans": ["paymentSchemes"],
   Landmarks: ["landmarks"],
-  Media: ["imageItems"] as const,
+  Media: ["imageItems", "virtualTourUrl"] as const,
 } as const;
 
 export const PROPERTY_TABS: StepName[] = [

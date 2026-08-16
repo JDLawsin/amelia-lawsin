@@ -104,6 +104,7 @@ model Property {
   developerName         String?
   projectPhase          String?
   expectedTurnover      String?
+  virtualTourUrl        String?
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
   deletedAt             DateTime?

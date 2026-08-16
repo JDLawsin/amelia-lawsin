@@ -47,6 +47,18 @@ const PropertyMap = dynamic(() => import("./_components/PropertyMap"), {
   ),
 });
 
+const PropertyVirtualTour = dynamic(
+  () => import("./_components/PropertyVirtualTour"),
+  {
+    loading: () => (
+      <div
+        className="aspect-video rounded-2xl bg-cloud border border-wire animate-pulse motion-reduce:animate-none"
+        aria-hidden="true"
+      />
+    ),
+  },
+);
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -170,6 +182,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
     property.projectPhase ||
     property.expectedTurnover;
   const hasMap = property.latitude != null && property.longitude != null;
+  const hasVirtualTour = Boolean(property.virtualTourUrl);
 
   const primaryImage =
     property.images.find((i) => i.isPrimary) ?? property.images[0];
@@ -219,6 +232,18 @@ const PropertyDetailPage = async ({ params }: Props) => {
 
       <PropertyGalleryGrid images={property.images} title={property.title} />
       <PropertyGalleryLoader images={property.images} title={property.title} />
+
+      {hasVirtualTour && (
+        <div className="px-6 pt-4 max-w-7xl mx-auto">
+          <h2 className="text-sm font-serif font-medium text-ink mb-3">
+            Virtual tour
+          </h2>
+          <PropertyVirtualTour
+            url={property.virtualTourUrl!}
+            title={property.title}
+          />
+        </div>
+      )}
 
       <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 max-w-7xl mx-auto">
         <div>

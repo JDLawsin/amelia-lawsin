@@ -40,6 +40,7 @@ export const mapPropertyData = (data: FullPropertyFormValues) => ({
   developerName: data.developerName ?? null,
   projectPhase: data.projectPhase ?? null,
   expectedTurnover: data.expectedTurnover ?? null,
+  virtualTourUrl: data.virtualTourUrl ?? null,
 });
 
 export const mapUnit = (unit: FullPropertyFormValues["units"][number]) => ({
@@ -102,6 +103,7 @@ export const mapPropertyToForm = (property: PropertyAdminDetail) => ({
   developerName: property.developerName ?? undefined,
   projectPhase: property.projectPhase ?? undefined,
   expectedTurnover: property.expectedTurnover ?? undefined,
+  virtualTourUrl: property.virtualTourUrl ?? undefined,
 
   // Relations - will be populated separately
   imageItems:

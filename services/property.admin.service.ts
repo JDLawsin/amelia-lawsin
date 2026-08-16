@@ -67,6 +67,7 @@ const propertyAdminDetailSelect = {
   developerName: true,
   projectPhase: true,
   expectedTurnover: true,
+  virtualTourUrl: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
