@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import LoadingStatusText from "@/components/ui/LoadingStatusText";
 import { X, Search, Heart } from "lucide-react";
 import { useFavorites } from "@/providers/FavoritesProvider";
 import { getFavoritesBySlugs } from "@/app/_actions/favorites.actions";
@@ -175,8 +176,11 @@ export const FavoritesPanel = ({ open, onClose }: Props) => {
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-0">
         {isPending && !hasFetched ? (
-          <div className="py-8 text-center text-xs text-ash">
-            Loading saved properties…
+          <div className="py-8 text-center" role="status" aria-live="polite">
+            <LoadingStatusText
+              context="favorites"
+              className="text-xs text-ash"
+            />
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-8 text-center px-4">

@@ -15,6 +15,7 @@ import { formatPrice } from "@/lib/utils";
 import { buildPropertyWhatsAppUrl } from "@/lib/whatsapp-url";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
 import ScheduleViewingButton from "@/components/contact/ScheduleViewingButton";
+import PropertyPrintButton from "./PropertyPrintButton";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
 import type { ContactSidebarProps } from "./ContactSidebarShell";
 
@@ -89,10 +90,12 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
 
         <button
           onClick={() => setInquiryOpen(true)}
-          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl hover:text-ink hover:border-ink transition-colors"
+          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl hover:text-ink hover:border-ink transition-colors mb-2"
         >
           Send an inquiry
         </button>
+
+        <PropertyPrintButton variant="sidebar" className="mb-2" />
 
         <div className="h-px bg-wire my-4" />
 

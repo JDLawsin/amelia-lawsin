@@ -2,6 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRotatingLoadingMessage } from "@/hooks/useRotatingLoadingMessage";
 import { Button } from "./shadcn/button";
 
 interface Props {
@@ -38,6 +39,8 @@ export const GoogleButton = ({
   loading = false,
   className,
 }: Props) => {
+  const loadingMessage = useRotatingLoadingMessage("auth", 2500, loading);
+
   return (
     <Button
       type="button"
@@ -57,7 +60,7 @@ export const GoogleButton = ({
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
 
       <span className="text-sm font-medium">
-        {loading ? "Signing in..." : "Continue with Google"}
+        {loading ? loadingMessage : "Continue with Google"}
       </span>
     </Button>
   );

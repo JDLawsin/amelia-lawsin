@@ -91,9 +91,17 @@ const ContactSidebarShell = ({ property, shareUrl }: ContactSidebarProps) => {
         <button
           type="button"
           disabled
-          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl opacity-70"
+          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl opacity-70 mb-2"
         >
           Send an inquiry
+        </button>
+
+        <button
+          type="button"
+          disabled
+          className="flex items-center justify-center w-full h-11 bg-cloud text-ash text-sm border border-wire rounded-xl opacity-70 mb-2"
+        >
+          Print fact sheet
         </button>
 
         <div className="h-px bg-wire my-4" />

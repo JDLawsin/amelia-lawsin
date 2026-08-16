@@ -1,0 +1,100 @@
+export const LOADING_MESSAGES = {
+  home: [
+    "Looking for your dream property…",
+    "Scanning Cebu listings…",
+    "Finding homes that fit you…",
+    "Curating properties across Cebu…",
+    "Checking condos, houses, and lots…",
+    "Matching you with the right neighborhood…",
+    "Almost ready to show you around…",
+    "Whether you're local or abroad, we've got you…",
+  ],
+  properties: [
+    "Looking for your dream property…",
+    "Scanning Cebu listings…",
+    "Finding homes that fit you…",
+    "Checking what's available today…",
+    "Filtering by location, price, and type…",
+    "From IT Park to the south — searching everywhere…",
+    "Pag-IBIG-ready or brand new? One moment…",
+    "Your next home might be in this list…",
+  ],
+  "property-detail": [
+    "Opening this listing…",
+    "Pulling up the details…",
+    "Almost ready to show you around…",
+    "Gathering photos and specs…",
+    "Loading floor plans and amenities…",
+    "Checking price, location, and features…",
+    "Getting everything ready for your viewing…",
+    "Worth the wait — details coming up…",
+  ],
+  blog: [
+    "Fetching the latest insights…",
+    "Opening this article…",
+    "Loading Cebu real estate tips…",
+    "Bringing you market updates…",
+    "Expert advice, almost ready…",
+    "From buying guides to OFW tips…",
+    "Sharpening the details for you…",
+    "Good reads take a moment…",
+  ],
+  favorites: [
+    "Gathering your saved homes…",
+    "Pulling up your shortlist…",
+    "Finding your favorite listings…",
+    "Loading your saved properties…",
+    "Your dream-home shortlist, coming up…",
+    "Revisiting the ones you loved…",
+    "Almost ready to compare your picks…",
+    "Saved for later — loading now…",
+  ],
+  compare: [
+    "Line up the details…",
+    "Comparing square meters and views…",
+    "Putting properties side by side…",
+    "Checking the specs for you…",
+    "Bedrooms, price, location — lining them up…",
+    "Which one fits best? Almost there…",
+    "Side-by-side, just a moment…",
+    "Making the decision easier…",
+  ],
+  map: [
+    "Plotting the neighborhood…",
+    "Loading the map…",
+    "Finding the location…",
+    "Pinning this address…",
+    "Checking what's nearby…",
+    "Showing you where this home sits…",
+    "Landmarks and streets, coming up…",
+    "Getting the lay of the land…",
+  ],
+  auth: [
+    "Connecting securely…",
+    "Almost there…",
+    "Signing you in…",
+    "Verifying your account…",
+    "One moment while we log you in…",
+    "Keeping your account safe…",
+    "Welcome back — almost ready…",
+  ],
+  generic: [
+    "Loading…",
+    "Just a moment…",
+    "Getting things ready…",
+    "Almost there…",
+    "Hang tight — nearly done…",
+    "Preparing your page…",
+    "Thanks for your patience…",
+  ],
+} as const;
+
+export type LoadingContext = keyof typeof LOADING_MESSAGES;
+
+export const getLoadingMessage = (
+  context: LoadingContext,
+  index = 0,
+): string => {
+  const messages = LOADING_MESSAGES[context];
+  return messages[index % messages.length];
+};

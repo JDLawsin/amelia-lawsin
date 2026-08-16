@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LoadingStatusText from "@/components/ui/LoadingStatusText";
 
 const MAP_LOAD_TIMEOUT_MS = 15000;
 
@@ -120,9 +121,16 @@ const MapEmbed = ({
       className={`relative overflow-hidden border border-wire ${containerClassName}`}
     >
       {!loaded && !showFallback && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-cloud">
-          <div className="w-8 h-8 border-2 border-wire border-t-ink rounded-full animate-spin" />
-          <p className="mt-3 text-xs font-medium text-ink">Loading map...</p>
+        <div
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-cloud"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="w-8 h-8 border-2 border-wire border-t-ink rounded-full animate-spin motion-reduce:animate-none" />
+          <LoadingStatusText
+            context="map"
+            className="mt-3 text-xs font-medium text-ink"
+          />
         </div>
       )}
       <iframe

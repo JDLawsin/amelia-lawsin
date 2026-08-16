@@ -37,6 +37,8 @@ import UnitSelectorLoader from "./_components/UnitSelectorLoader";
 import RelatedProperties from "./_components/RelatedProperties";
 import ContactSidebarLoader from "./_components/ContactSidebarLoader";
 import PropertyActionsLoader from "./_components/PropertyActionsLoader";
+import PropertyFactSheetPrint from "./_components/PropertyFactSheetPrint";
+import PropertyPrintButton from "./_components/PropertyPrintButton";
 
 const PropertyMap = dynamic(() => import("./_components/PropertyMap"), {
   loading: () => (
@@ -199,7 +201,28 @@ const PropertyDetailPage = async ({ params }: Props) => {
   }
 
   return (
-    <main className="bg-white min-h-screen">
+    <>
+      <PropertyFactSheetPrint
+        title={property.title}
+        shareUrl={shareUrl}
+        price={price}
+        priceNote={note}
+        address={address}
+        statusLabel={STATUS_LABELS[property.status]}
+        typeLabel={TYPE_LABELS[property.type]}
+        listingTypeLabel={
+          property.listingType === "RESALE" ? "Resale" : "Brand New"
+        }
+        description={property.description}
+        imageUrl={primaryImage?.url}
+        bedrooms={property.bedrooms}
+        bathrooms={property.bathrooms}
+        floorArea={property.floorArea}
+        lotArea={property.lotArea}
+        parking={property.parking}
+        amenities={property.amenities.map((item) => item.amenity.name)}
+      />
+      <main className="bg-white min-h-screen print:hidden">
       <JsonLd
         data={[
           realEstateListingJsonLd(baseUrl, property),
@@ -261,7 +284,10 @@ const PropertyDetailPage = async ({ params }: Props) => {
           <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
             Save Listing
           </span>
-          <PropertyActionsLoader slug={property.slug} size="md" />
+          <div className="flex items-center gap-2">
+            <PropertyPrintButton />
+            <PropertyActionsLoader slug={property.slug} size="md" />
+          </div>
         </div>
       </div>
 
@@ -642,6 +668,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
         </div>
       </div>
     </main>
+    </>
   );
 };
 
