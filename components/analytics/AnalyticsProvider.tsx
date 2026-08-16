@@ -2,27 +2,21 @@
 
 import Script from "next/script";
 import type { ReactNode } from "react";
+import { useCookieConsent } from "@/hooks/useCookieConsent";
 
 type Props = {
   children: ReactNode;
 };
 
 /**
- * Loads Google Analytics 4 when NEXT_PUBLIC_GA_MEASUREMENT_ID is set.
- *
- * Setup:
- * 1. Create a GA4 property at https://analytics.google.com
- * 2. Add to .env.local: NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
- * 3. Update the Privacy Policy "Analytics" section when enabling
- *
- * Alternatives:
- * - @vercel/analytics — page views only, no cookies, no button tracking
- * - Plausible / Fathom — privacy-focused, paid, simple dashboards
+ * Loads Google Analytics 4 when NEXT_PUBLIC_GA_MEASUREMENT_ID is set and the
+ * visitor has accepted analytics cookies via the consent banner.
  */
 const AnalyticsProvider = ({ children }: Props) => {
   const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const { hasAnalyticsConsent } = useCookieConsent();
 
-  if (!measurementId) {
+  if (!measurementId || !hasAnalyticsConsent) {
     return children;
   }
 
