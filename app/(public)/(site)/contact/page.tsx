@@ -1,7 +1,15 @@
 import { SITE_CONFIG } from "@/constants";
 import { ogImageMetadata } from "@/lib/og-metadata";
+import {
+  buildMessengerUrl,
+  buildSmsUrl,
+  CONTACT_LABELS,
+  MOBILE_ONLY_CLASS,
+  phoneTelHref,
+} from "@/lib/contact-channels";
 import { buildWhatsAppUrl, DEFAULT_WHATSAPP_MESSAGE } from "@/lib/whatsapp-url";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import ContactMap from "./_components/ContactMap";
 import InquiryFormLoader from "./_components/InquiryFormLoader";
 import FaqAccordionLoader from "./_components/FaqAccordionLoader";
@@ -38,11 +46,22 @@ const SectionLabel = ({ children }: { children: string }) => (
 
 const whatsappUrl = buildWhatsAppUrl(DEFAULT_WHATSAPP_MESSAGE);
 
-const CHANNELS = [
+type ChannelCard = {
+  title: string;
+  description: string;
+  href: string;
+  external: boolean;
+  primary: boolean;
+  icon: ReactNode;
+  cta: string;
+  mobileOnly?: boolean;
+};
+
+const CROSS_PLATFORM_CHANNELS: ChannelCard[] = [
   {
     title: "Messenger",
     description: "Fastest response — usually within hours",
-    href: SITE_CONFIG.messengerUrl,
+    href: buildMessengerUrl(),
     external: true,
     primary: true,
     icon: (
@@ -50,7 +69,7 @@ const CHANNELS = [
         <path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.914 1.318 5.52 3.396 7.28V22l3.344-1.838c.896.248 1.845.38 2.26.38 5.523 0 10-4.144 10-9.243S17.523 2 12 2z" />
       </svg>
     ),
-    cta: "Message now →",
+    cta: CONTACT_LABELS.messengerShort,
   },
   {
     title: "WhatsApp",
@@ -63,27 +82,7 @@ const CHANNELS = [
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
       </svg>
     ),
-    cta: "Chat on WhatsApp →",
-  },
-  {
-    title: "SMS / Viber",
-    description: SITE_CONFIG.phone,
-    href: SITE_CONFIG.smsUrl,
-    external: false,
-    primary: false,
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#1d1d1f"
-        strokeWidth="1.5"
-      >
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-      </svg>
-    ),
-    cta: "Send SMS →",
+    cta: CONTACT_LABELS.whatsappShort,
   },
   {
     title: "Email",
@@ -104,9 +103,119 @@ const CHANNELS = [
         <polyline points="22,6 12,13 2,6" />
       </svg>
     ),
-    cta: "Send email →",
+    cta: CONTACT_LABELS.emailShort,
   },
 ];
+
+const MOBILE_ONLY_CHANNELS: ChannelCard[] = [
+  {
+    title: "Phone",
+    description: SITE_CONFIG.phone,
+    href: phoneTelHref,
+    external: false,
+    primary: false,
+    mobileOnly: true,
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#1d1d1f"
+        strokeWidth="1.5"
+      >
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+      </svg>
+    ),
+    cta: CONTACT_LABELS.callShort,
+  },
+  {
+    title: "SMS",
+    description: SITE_CONFIG.phone,
+    href: buildSmsUrl(),
+    external: false,
+    primary: false,
+    mobileOnly: true,
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#1d1d1f"
+        strokeWidth="1.5"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+    cta: CONTACT_LABELS.smsShort,
+  },
+  {
+    title: "Viber",
+    description: "Opens in the Viber app",
+    href: SITE_CONFIG.viberUrl,
+    external: false,
+    primary: false,
+    mobileOnly: true,
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#1d1d1f">
+        <path d="M11.5 2C6.81 2 3 5.81 3 10.5c0 2.69 1.28 5.08 3.27 6.62L6 21l3.93-1.27C11.02 20.22 12.24 20.5 13.5 20.5c4.69 0 8.5-3.81 8.5-8.5S18.19 2 11.5 2z" />
+      </svg>
+    ),
+    cta: CONTACT_LABELS.viberShort,
+  },
+];
+
+const ChannelGrid = ({ channels }: { channels: ChannelCard[] }) => (
+  <>
+    {channels.map((channel) => (
+      <a
+        key={channel.title}
+        href={channel.href}
+        target={channel.external ? "_blank" : undefined}
+        rel={channel.external ? "noopener noreferrer" : undefined}
+        className={`
+          group flex flex-col gap-4 p-6 transition-opacity hover:opacity-90
+          ${channel.primary ? "bg-ink" : "bg-white"}
+          ${channel.mobileOnly ? MOBILE_ONLY_CLASS : ""}
+        `}
+      >
+        <div
+          className={`
+            w-10 h-10 rounded-xl flex items-center justify-center
+            ${channel.primary ? "bg-white/10" : "bg-cloud"}
+          `}
+        >
+          {channel.icon}
+        </div>
+        <div>
+          <p
+            className={`text-sm font-medium mb-1 ${channel.primary ? "text-white" : "text-ink"}`}
+          >
+            {channel.title}
+          </p>
+          <p
+            className={`text-xs mb-4 leading-relaxed ${channel.primary ? "text-white/50" : "text-ash"}`}
+          >
+            {channel.description}
+          </p>
+          <span
+            className={`
+              inline-flex items-center text-xs font-medium px-4 py-2 rounded-full transition-colors
+              ${
+                channel.primary
+                  ? "bg-white text-ink hover:bg-white/90"
+                  : "bg-cloud text-ink border border-wire hover:bg-wire/50"
+              }
+            `}
+          >
+            {channel.cta}
+          </span>
+        </div>
+      </a>
+    ))}
+  </>
+);
 
 const INFO_ITEMS = [
   {
@@ -191,8 +300,8 @@ const ContactPage = () => (
           property together.
         </h1>
         <p className="text-sm text-ash leading-relaxed max-w-md mx-auto">
-          Reach out via your preferred channel — Messenger, WhatsApp, SMS, Viber,
-          or email. Free consultation, no commitment required.
+          Reach out via Messenger, WhatsApp, or email. On mobile you can also
+          call, SMS, or Viber. Free consultation, no commitment required.
         </p>
       </div>
     </section>
@@ -202,52 +311,13 @@ const ContactPage = () => (
         <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em] mb-6 text-center">
           Quickest ways to reach me
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-wire rounded-2xl overflow-hidden">
-          {CHANNELS.map((channel) => (
-            <a
-              key={channel.title}
-              href={channel.href}
-              target={channel.external ? "_blank" : undefined}
-              rel={channel.external ? "noopener noreferrer" : undefined}
-              className={`
-                group flex flex-col gap-4 p-6 transition-opacity hover:opacity-90
-                ${channel.primary ? "bg-ink" : "bg-white"}
-              `}
-            >
-              <div
-                className={`
-                w-10 h-10 rounded-xl flex items-center justify-center
-                ${channel.primary ? "bg-white/10" : "bg-cloud"}
-              `}
-              >
-                {channel.icon}
-              </div>
-              <div>
-                <p
-                  className={`text-sm font-medium mb-1 ${channel.primary ? "text-white" : "text-ink"}`}
-                >
-                  {channel.title}
-                </p>
-                <p
-                  className={`text-xs mb-4 leading-relaxed ${channel.primary ? "text-white/50" : "text-ash"}`}
-                >
-                  {channel.description}
-                </p>
-                <span
-                  className={`
-                  inline-flex items-center text-xs font-medium px-4 py-2 rounded-full transition-colors
-                  ${
-                    channel.primary
-                      ? "bg-white text-ink hover:bg-white/90"
-                      : "bg-cloud text-ink border border-wire hover:bg-wire/50"
-                  }
-                `}
-                >
-                  {channel.cta}
-                </span>
-              </div>
-            </a>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-wire rounded-2xl overflow-hidden">
+          <ChannelGrid channels={CROSS_PLATFORM_CHANNELS} />
+        </div>
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 gap-px bg-wire rounded-2xl overflow-hidden mt-px ${MOBILE_ONLY_CLASS}`}
+        >
+          <ChannelGrid channels={MOBILE_ONLY_CHANNELS} />
         </div>
       </div>
     </section>

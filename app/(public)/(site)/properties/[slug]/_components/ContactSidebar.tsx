@@ -13,6 +13,15 @@ import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
 import { buildPropertyWhatsAppUrl } from "@/lib/whatsapp-url";
+import {
+  buildMessengerUrl,
+  buildPropertyInterestMessage,
+  buildSmsUrl,
+  buildViberForwardUrl,
+  CONTACT_LABELS,
+  MOBILE_ONLY_CLASS,
+  phoneTelHref,
+} from "@/lib/contact-channels";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
 import ScheduleViewingButton from "@/components/contact/ScheduleViewingButton";
 import PropertyPrintButton from "./PropertyPrintButton";
@@ -30,11 +39,9 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
   const statusLabel = STATUS_LABELS[property.status];
   const typeLabel = TYPE_LABELS[property.type];
 
-  const messageText = encodeURIComponent(
-    `Hi Amelia! I'm interested in: ${property.title}. Can you send me more details?`,
-  );
-  const messengerUrl = `${SITE_CONFIG.messengerUrl}?text=${messageText}`;
-  const smsUrl = `sms:${SITE_CONFIG.phone}?body=${messageText}`;
+  const interestMessage = buildPropertyInterestMessage(property.title);
+  const messengerUrl = buildMessengerUrl(interestMessage);
+  const smsUrl = buildSmsUrl(interestMessage);
   const whatsappUrl = buildPropertyWhatsAppUrl(property.title, shareUrl);
 
   const financingTags = [
@@ -68,15 +75,29 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
             rel="noopener noreferrer"
             className="flex items-center justify-center w-full h-11 bg-[#25D366] text-white text-sm font-medium rounded-xl hover:bg-[#20bd5a] transition-colors mb-2"
           >
-            Chat on WhatsApp
+            {CONTACT_LABELS.whatsapp}
           </a>
         )}
 
         <a
-          href={smsUrl}
-          className="flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2"
+          href={phoneTelHref}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
         >
-          Send SMS / Viber
+          {CONTACT_LABELS.call}
+        </a>
+
+        <a
+          href={smsUrl}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.sms}
+        </a>
+
+        <a
+          href={SITE_CONFIG.viberUrl}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.viber}
         </a>
 
         <ScheduleViewingButton
@@ -183,8 +204,8 @@ const ShareButtons = ({ title, url }: { title: string; url: string }) => {
           {copied ? "Copied!" : "Copy link"}
         </button>
         <a
-          href={`viber://forward?text=${encodeURIComponent(`${title} ${url}`)}`}
-          className="flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors"
+          href={buildViberForwardUrl(`${title} ${url}`)}
+          className={`flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors ${MOBILE_ONLY_CLASS}`}
         >
           Viber
         </a>

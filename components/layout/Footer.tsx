@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "../ui/Logo";
 import { COMPANY_LINKS, PROPERTY_LINKS, SITE_CONFIG } from "@/constants";
+import { MOBILE_ONLY_CLASS } from "@/lib/contact-channels";
 
 const FacebookIcon = () => (
   <svg
@@ -76,7 +77,7 @@ const Footer = () => (
             <a
               href={SITE_CONFIG.viberUrl}
               aria-label="Viber"
-              className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors"
+              className={`w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors ${MOBILE_ONLY_CLASS}`}
             >
               <ViberIcon />
             </a>

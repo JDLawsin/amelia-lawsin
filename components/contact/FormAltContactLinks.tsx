@@ -1,4 +1,9 @@
-import { SITE_CONFIG } from "@/constants";
+import {
+  buildMessengerUrl,
+  buildSmsUrl,
+  MOBILE_ONLY_CLASS,
+  phoneTelHref,
+} from "@/lib/contact-channels";
 import { buildWhatsAppUrl, DEFAULT_WHATSAPP_MESSAGE } from "@/lib/whatsapp-url";
 
 type Props = {
@@ -24,17 +29,29 @@ const FormAltContactLinks = ({ className }: Props) => {
         </>
       )}
       <a
-        href={SITE_CONFIG.messengerUrl}
+        href={buildMessengerUrl()}
         target="_blank"
         rel="noopener noreferrer"
         className="underline underline-offset-2 hover:text-ink"
       >
         Messenger
       </a>
-      {" · "}
-      <a href={SITE_CONFIG.smsUrl} className="underline underline-offset-2 hover:text-ink">
-        SMS
-      </a>
+      <span className={MOBILE_ONLY_CLASS}>
+        {" · "}
+        <a
+          href={phoneTelHref}
+          className="underline underline-offset-2 hover:text-ink"
+        >
+          Call
+        </a>
+        {" · "}
+        <a
+          href={buildSmsUrl()}
+          className="underline underline-offset-2 hover:text-ink"
+        >
+          SMS
+        </a>
+      </span>
     </p>
   );
 };
