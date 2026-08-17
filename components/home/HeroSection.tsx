@@ -1,6 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { HERO_IMAGE_SIZES, HERO_IMAGE_WIDTH } from "@/lib/image-layout";
+import {
+  HERO_IMAGE_MOBILE_SIZES,
+  HERO_IMAGE_SIZES,
+  HERO_IMAGE_WIDTH,
+} from "@/lib/image-layout";
 import { formatPrice, getPrimaryImage, getPropertyLabel } from "@/lib/utils";
 import { PropertyListItem } from "@/services/property.service";
 import { ctaPrimary, ctaSecondary } from "@/components/ui/cta";
@@ -8,6 +12,67 @@ import { ctaPrimary, ctaSecondary } from "@/components/ui/cta";
 type HeroSectionProps = {
   latestListing: PropertyListItem | null;
 };
+
+const listingCardBaseClassName =
+  "bg-white shadow-apple-lg hover:shadow-apple-hover transition-shadow duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2";
+
+const LatestListingCard = ({
+  listing,
+  className,
+  compact = false,
+}: {
+  listing: PropertyListItem;
+  className?: string;
+  compact?: boolean;
+}) => (
+  <Link
+    href={`/properties/${listing.slug}`}
+    className={[
+      listingCardBaseClassName,
+      compact ? "rounded-xl py-2.5 pl-3 pr-2" : "rounded-2xl p-4",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ")}
+  >
+    <p
+      className={
+        compact
+          ? "text-[10px] text-ash mb-0.5"
+          : "text-xs text-ash mb-1"
+      }
+    >
+      Latest listing
+    </p>
+    <p
+      className={
+        compact
+          ? "text-xs font-medium text-ink line-clamp-1 leading-snug"
+          : "text-sm font-medium text-ink line-clamp-1"
+      }
+    >
+      {getPropertyLabel(listing)}
+    </p>
+    <p
+      className={
+        compact
+          ? "text-xs font-medium text-ink leading-snug"
+          : "text-sm font-medium text-ink mt-0.5"
+      }
+    >
+      {formatPrice(listing)}
+    </p>
+    {listing.city && (
+      <p
+        className={
+          compact ? "text-[10px] text-ash mt-0.5" : "text-xs text-ash mt-1"
+        }
+      >
+        {listing.city}
+      </p>
+    )}
+  </Link>
+);
 
 const HeroSection = ({ latestListing }: HeroSectionProps) => {
   const imageUrl = latestListing
@@ -19,33 +84,60 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
   const imageAlt = latestListing?.title ?? "Latest listing";
 
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
-      <div className="flex flex-col items-center justify-center border-r border-wire md:min-h-105">
-        <div className="flex flex-col gap-5 w-full max-w-7xl px-6 py-16 md:py-20">
-          <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
-            Licensed Real Estate Agent · Cebu
-          </p>
+    <section
+      className="grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,8fr)] bg-cloud md:min-h-105"
+    >
+      <div
+        className="flex flex-col justify-center gap-5 px-6 md:px-10 lg:px-12 pt-16 pb-10 md:py-20 border-b md:border-b-0 md:border-r border-wire"
+      >
+        <p className="text-[10px] font-medium text-ash uppercase tracking-[0.15em]">
+          Licensed Real Estate Agent · Cebu
+        </p>
 
-          <h1 className="text-4xl xl:text-5xl font-serif font-medium text-ink tracking-tight leading-tight min-h-22 xl:min-h-26">
-            Find Your Dream <br className="hidden md:block" />
-            Property in Cebu
-          </h1>
+        <h1 className="text-4xl xl:text-5xl font-serif font-medium text-ink tracking-tight leading-tight min-h-22 xl:min-h-26">
+          Find Your Dream Property in Cebu
+        </h1>
 
-          <p className="text-sm text-ash leading-relaxed">
-            Trusted by local buyers, OFWs, and international investors{" "}
-            <br className="hidden md:block" />
-            across the Philippines
-          </p>
+        <p className="text-sm text-ash leading-relaxed">
+          Trusted by local buyers, OFWs, and international investors across the
+          Philippines
+        </p>
 
-          <div className="flex flex-wrap gap-3">
-            <Link href="/properties" className={ctaPrimary}>
-              Browse properties
-            </Link>
-            <Link href="/contact" className={ctaSecondary}>
-              Contact Amelia
-            </Link>
-          </div>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/properties" className={ctaPrimary}>
+            Browse Properties
+          </Link>
+          <Link href="/contact" className={ctaSecondary}>
+            Contact Amelia
+          </Link>
         </div>
+
+        {imageUrl && (
+          <div className="md:hidden relative -ml-6 w-[calc(100%+1.5rem)]">
+            <div
+              className="relative aspect-video max-h-[40vh] overflow-hidden bg-cloud mr-6"
+            >
+              <Image
+                src={imageUrl}
+                alt={imageAlt}
+                fill
+                sizes={HERO_IMAGE_MOBILE_SIZES}
+                loading="lazy"
+                className="object-cover"
+              />
+              <div
+                className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent"
+              />
+            </div>
+            {latestListing && (
+              <LatestListingCard
+                listing={latestListing}
+                compact
+                className="absolute bottom-4 -right-3 z-10 min-w-36 max-w-44"
+              />
+            )}
+          </div>
+        )}
       </div>
 
       <div className="relative hidden md:flex items-end justify-end min-h-105 overflow-hidden bg-cloud">
@@ -56,8 +148,8 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
             fill
             sizes={HERO_IMAGE_SIZES}
             // Desktop LCP is preloaded via media-scoped <LcpPreloadLink /> in
-            // page.tsx. Keep this lazy so mobile (`hidden md:flex`) does not
-            // download a non-LCP image and steal the featured-card priority slot.
+            // page.tsx. Keep lazy so mobile does not compete with the featured
+            // card LCP slot.
             loading="lazy"
             className="object-cover"
           />
@@ -74,21 +166,10 @@ const HeroSection = ({ latestListing }: HeroSectionProps) => {
         )}
 
         {latestListing && (
-          <Link
-            href={`/properties/${latestListing.slug}`}
-            className="relative z-10 m-6 bg-white rounded-2xl shadow-apple-lg p-4 min-w-48 hover:shadow-apple-hover transition-shadow duration-200"
-          >
-            <p className="text-xs text-ash mb-1">Latest listing</p>
-            <p className="text-sm font-medium text-ink line-clamp-1">
-              {getPropertyLabel(latestListing)}
-            </p>
-            <p className="text-sm font-medium text-ink mt-0.5">
-              {formatPrice(latestListing)}
-            </p>
-            {latestListing.city && (
-              <p className="text-xs text-ash mt-1">{latestListing.city}</p>
-            )}
-          </Link>
+          <LatestListingCard
+            listing={latestListing}
+            className="relative z-10 m-6 min-w-48"
+          />
         )}
       </div>
     </section>

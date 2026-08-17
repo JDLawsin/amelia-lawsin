@@ -11,7 +11,10 @@ export const BLOG_INLINE_IMAGE_SIZES = "(max-width: 768px) 100vw, 720px";
 export const PROPERTY_CARD_IMAGE_SIZES =
   "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px";
 
-export const HERO_IMAGE_SIZES = "(max-width: 1024px) 50vw, 40vw";
+export const HERO_IMAGE_SIZES = "(min-width: 768px) 62vw, 100vw";
+
+/** Full-width strip below hero copy on mobile */
+export const HERO_IMAGE_MOBILE_SIZES = "100vw";
 
 export const PROPERTY_GALLERY_PRIMARY_SIZES =
   "(max-width: 1024px) 100vw, 800px";
