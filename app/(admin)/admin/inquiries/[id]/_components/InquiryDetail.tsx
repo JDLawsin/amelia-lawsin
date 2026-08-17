@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useMemo,
   useState,
   useTransition,
@@ -67,9 +68,11 @@ const MAX_NOTES_LENGTH = 5000;
 
 type Props = {
   inquiry: InquiryAdminDetail;
+  /** True when the server auto-marked this inquiry read on open. */
+  refreshCaches?: boolean;
 };
 
-const InquiryDetail = ({ inquiry }: Props) => {
+const InquiryDetail = ({ inquiry, refreshCaches = false }: Props) => {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [notes, setNotes] = useState(inquiry.notes ?? "");
@@ -79,6 +82,12 @@ const InquiryDetail = ({ inquiry }: Props) => {
     useState<ContactChannel | null>(null);
 
   const status = inquiry.isArchived ? "archived" : inquiry.status;
+
+  useEffect(() => {
+    if (refreshCaches) {
+      router.refresh();
+    }
+  }, [refreshCaches, router]);
 
   const mailtoHref = useMemo(() => buildInquiryMailto(inquiry), [inquiry]);
   const whatsappHref = useMemo(

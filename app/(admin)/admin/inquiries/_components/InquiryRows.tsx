@@ -1,6 +1,9 @@
 import clsx from "clsx";
 import { Badge } from "@/components/ui/shadcn/badge";
-import { TableCell, TableRow } from "@/components/ui/shadcn/table";
+import ClickableTableRow, {
+  ClickableTableCell,
+  TableRowActionsCell,
+} from "@/components/ui/ClickableTableRow";
 import {
   INQUIRY_STATUS_LABELS,
   INQUIRY_STATUS_VARIANTS,
@@ -17,14 +20,15 @@ const InquiryRows = ({ inquiries }: { inquiries: InquiryAdminListItem[] }) => (
         : inquiry.status;
 
       return (
-        <TableRow
+        <ClickableTableRow
           key={inquiry.id}
+          href={`/admin/inquiries/${inquiry.id}`}
           className={clsx(
             "hover:bg-cloud/40 transition-colors border-b border-wire/50 last:border-0",
             !inquiry.isRead && "bg-blue-50/50",
           )}
         >
-          <TableCell className="py-3">
+          <ClickableTableCell className="py-3" primary>
             <div className="flex flex-col gap-0.5 min-w-0">
               <div className="flex items-center gap-2">
                 <span
@@ -45,28 +49,28 @@ const InquiryRows = ({ inquiries }: { inquiries: InquiryAdminListItem[] }) => (
                 </p>
               )}
             </div>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell className="hidden md:table-cell">
+          <ClickableTableCell className="hidden md:table-cell">
             <span className="text-xs text-ash">{inquiry.source}</span>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell>
+          <ClickableTableCell>
             <Badge variant={INQUIRY_STATUS_VARIANTS[status]}>
               {INQUIRY_STATUS_LABELS[status]}
             </Badge>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell className="hidden lg:table-cell">
+          <ClickableTableCell className="hidden lg:table-cell">
             <span className="text-xs text-ash">
               {formatDate(inquiry.createdAt)}
             </span>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell>
+          <TableRowActionsCell>
             <RowActions inquiry={inquiry} />
-          </TableCell>
-        </TableRow>
+          </TableRowActionsCell>
+        </ClickableTableRow>
       );
     })}
   </>

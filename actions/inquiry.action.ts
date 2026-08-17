@@ -1,19 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { withAdminAuth } from "@/lib/auth";
+import { revalidateInquiryPaths } from "@/lib/inquiry-revalidation";
 import { ActionResult } from "@/types";
 import { InquiryStatus } from "@/app/generated/prisma/browser";
-
-const revalidateInquiryPaths = (id?: string) => {
-  revalidatePath("/admin/inquiries");
-  revalidatePath("/admin");
-
-  if (id) {
-    revalidatePath(`/admin/inquiries/${id}`);
-  }
-};
 
 export const markInquiryAsReadAction = withAdminAuth(
   async (id: string, isRead: boolean): Promise<ActionResult> => {

@@ -3,7 +3,10 @@
 import Image from "next/image";
 import clsx from "clsx";
 import { Badge } from "@/components/ui/shadcn/badge";
-import { TableCell, TableRow } from "@/components/ui/shadcn/table";
+import ClickableTableRow, {
+  ClickableTableCell,
+  TableRowActionsCell,
+} from "@/components/ui/ClickableTableRow";
 import { BLOG_STATUS_LABELS, BLOG_STATUS_STYLES } from "@/constants";
 import { BlogAdminListItem } from "@/services/blog.admin.service";
 import { formatDate } from "@/lib/utils";
@@ -16,14 +19,15 @@ const BlogRows = ({ blogs }: { blogs: BlogAdminListItem[] }) => (
       const status = isDeleted ? "deleted" : blog.isPublished ? "published" : "draft";
 
       return (
-        <TableRow
+        <ClickableTableRow
           key={blog.id}
+          href={`/admin/blogs/${blog.slug}/update`}
           className={clsx(
             "hover:bg-cloud/40 transition-colors border-b border-wire/50 last:border-0",
             isDeleted && "opacity-50",
           )}
         >
-          <TableCell className="py-3">
+          <ClickableTableCell className="py-3" primary>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-cloud rounded-lg overflow-hidden shrink-0 border border-wire">
                 {blog.coverImage ? (
@@ -51,24 +55,24 @@ const BlogRows = ({ blogs }: { blogs: BlogAdminListItem[] }) => (
                 )}
               </div>
             </div>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell>
+          <ClickableTableCell>
             <Badge className={BLOG_STATUS_STYLES[status]}>
               {BLOG_STATUS_LABELS[status]}
             </Badge>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell>
+          <ClickableTableCell>
             <span className="text-xs text-ash">
               {blog.publishedAt ? formatDate(blog.publishedAt) : "—"}
             </span>
-          </TableCell>
+          </ClickableTableCell>
 
-          <TableCell>
+          <TableRowActionsCell>
             <RowActions blog={blog} />
-          </TableCell>
-        </TableRow>
+          </TableRowActionsCell>
+        </ClickableTableRow>
       );
     })}
   </>

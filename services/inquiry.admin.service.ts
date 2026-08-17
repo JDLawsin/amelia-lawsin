@@ -154,3 +154,11 @@ export const getUnreadInquiryCount = async (): Promise<number> =>
   prisma.inquiry.count({
     where: { isRead: false, isArchived: false },
   });
+
+/** Marks inquiry read in the database only — safe to call during RSC render. */
+export const markAdminInquiryAsRead = async (id: string): Promise<void> => {
+  await prisma.inquiry.updateMany({
+    where: { id, isRead: false },
+    data: { isRead: true },
+  });
+};
