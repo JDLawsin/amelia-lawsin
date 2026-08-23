@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import clsx from "clsx";
 import { PropertyListItem } from "@/services/property.service";
 import type { PropertyBrowseView } from "@/lib/property-browse";
@@ -43,6 +44,22 @@ const PropertyGrid = ({
   onPropertySelect,
   onPropertyHover,
 }: PropertyGridProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastHighlighted = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!highlightedSlug || highlightedSlug === lastHighlighted.current) return;
+    lastHighlighted.current = highlightedSlug;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const el = container.querySelector(
+      `[data-property-slug="${highlightedSlug}"]`,
+    );
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [highlightedSlug]);
+
   if (!properties.length) {
     return (
       <div className="px-6">
@@ -57,7 +74,10 @@ const PropertyGrid = ({
     return (
       <>
         <h2 className="sr-only scroll-mt-24">Property listings</h2>
-        <div className="px-6 flex flex-col gap-2 scroll-mt-24">
+        <div
+          ref={containerRef}
+          className="px-6 flex flex-col gap-2 scroll-mt-24"
+        >
           {properties.map((property, i) => (
             <div
               key={property.id}
@@ -87,6 +107,7 @@ const PropertyGrid = ({
     <>
       <h2 className="sr-only scroll-mt-24">Property listings</h2>
       <div
+        ref={containerRef}
         className={clsx(
           "px-6 grid overflow-hidden scroll-mt-24",
           isPhotos

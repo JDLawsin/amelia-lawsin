@@ -42,6 +42,8 @@ type PropertiesMapViewProps = {
   onBoundsChange?: (bbox: MapBbox) => void;
   boundsSearchEnabled?: boolean;
   fitBoundsKey?: string;
+  viewedSlugs?: Set<string>;
+  favoriteSlugs?: Set<string>;
 };
 
 const PropertiesMapView = ({
@@ -54,6 +56,8 @@ const PropertiesMapView = ({
   onBoundsChange,
   boundsSearchEnabled,
   fitBoundsKey,
+  viewedSlugs,
+  favoriteSlugs,
 }: PropertiesMapViewProps) => {
   return (
     <PropertiesMapInner
@@ -66,6 +70,8 @@ const PropertiesMapView = ({
       onBoundsChange={onBoundsChange}
       boundsSearchEnabled={boundsSearchEnabled}
       fitBoundsKey={fitBoundsKey}
+      viewedSlugs={viewedSlugs}
+      favoriteSlugs={favoriteSlugs}
     />
   );
 };

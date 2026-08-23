@@ -1,21 +1,17 @@
 "use client";
 
-import * as React from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/shadcn/button";
+import { Sheet, SheetTrigger } from "@/components/ui/shadcn/sheet";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Logo from "../ui/Logo";
 import { useAuth } from "@/providers/AuthProvider";
 import MobileToolsButtons from "@/components/tools/MobileToolsButtons";
-
-const NavbarMobileMenu = dynamic(
-  () => import("@/components/layout/NavbarMobileMenu"),
-  { ssr: false },
-);
+import NavbarMobileMenu from "@/components/layout/NavbarMobileMenu";
 
 const NavbarUserMenu = dynamic(
   () => import("@/components/layout/NavbarUserMenu"),
@@ -35,7 +31,6 @@ export const Navbar = () => {
   const { user, role } = useAuth();
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -43,78 +38,76 @@ export const Navbar = () => {
   };
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 w-full",
-        "border-b border-wire",
-        "bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60",
-        "px-6 2xl:px-0",
-        "shadow-apple-sm",
-      )}
-    >
-      <div className="container flex h-20 max-w-7xl mx-auto items-center justify-between gap-8">
-        <Link href="/" className="flex items-center shrink-0">
-          <Logo />
-        </Link>
+    <Sheet>
+      <header
+        className={cn(
+          "sticky top-0 z-50 w-full",
+          "border-b border-wire",
+          "bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60",
+          "px-6 2xl:px-0",
+          "shadow-apple-sm",
+        )}
+      >
+        <div className="container flex h-20 max-w-7xl mx-auto items-center justify-between gap-8">
+          <Link href="/" className="flex items-center shrink-0">
+            <Logo />
+          </Link>
 
-        <nav
-          className="hidden md:flex items-center gap-1"
-          aria-label="Main navigation"
-        >
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "inline-flex h-9 items-center px-4 py-2 rounded-md",
-                  "text-sm font-medium transition-colors",
-                  "hover:bg-cloud hover:text-ink",
-                  isActive ? "text-ink font-semibold" : "text-ash",
-                )}
+          <nav
+            className="hidden md:flex items-center gap-1"
+            aria-label="Main navigation"
+          >
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "inline-flex h-9 items-center px-4 py-2 rounded-md",
+                    "text-sm font-medium transition-colors",
+                    "hover:bg-cloud hover:text-ink",
+                    isActive ? "text-ink font-semibold" : "text-ash",
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-1 sm:gap-3">
+            <MobileToolsButtons />
+
+            <Button
+              asChild
+              className="hidden md:inline-flex h-10 px-5 bg-ink text-white hover:bg-ink/90"
+            >
+              <Link href="/contact">{"Get in touch"}</Link>
+            </Button>
+
+            {user && (
+              <NavbarUserMenu user={user} role={role} onLogout={handleLogout} />
+            )}
+
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden h-9 w-9"
+                aria-label="Open navigation menu"
+                onPointerDown={(event) => {
+                  event.currentTarget.blur();
+                }}
               >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center gap-1 sm:gap-3">
-          <MobileToolsButtons />
-
-          <Button
-            asChild
-            className="hidden md:inline-flex h-10 px-5 bg-ink text-white hover:bg-ink/90"
-          >
-            <Link href="/contact">{"Get in touch"}</Link>
-          </Button>
-
-          {user && (
-            <NavbarUserMenu user={user} role={role} onLogout={handleLogout} />
-          )}
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden h-9 w-9"
-            aria-label="Open navigation menu"
-            aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu className="size-4" aria-hidden="true" />
-          </Button>
+                <Menu className="size-4" aria-hidden="true" />
+              </Button>
+            </SheetTrigger>
+          </div>
         </div>
-      </div>
-
-      {mobileOpen && (
-        <NavbarMobileMenu
-          open={mobileOpen}
-          onOpenChange={setMobileOpen}
-          links={NAV_LINKS}
-        />
-      )}
-    </header>
+      </header>
+      <NavbarMobileMenu links={NAV_LINKS} />
+    </Sheet>
   );
 };
 

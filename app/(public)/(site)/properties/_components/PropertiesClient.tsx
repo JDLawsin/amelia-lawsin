@@ -36,6 +36,8 @@ import PropertiesMapBrowse from "./PropertiesMapBrowse";
 
 import Pagination from "@/components/ui/Pagination";
 
+import clsx from "clsx";
+
 
 
 type Props = {
@@ -186,7 +188,14 @@ const PropertiesClient = ({
 
   return (
 
-    <div className="flex flex-col pb-10 max-w-7xl mx-auto w-full">
+    <div
+      className={clsx(
+        "flex flex-col max-w-7xl mx-auto w-full",
+        isMapView && isMobile
+          ? "h-[calc(100dvh-5rem)] overflow-hidden"
+          : "pb-10",
+      )}
+    >
 
       <div
         className={
@@ -239,13 +248,15 @@ const PropertiesClient = ({
       <ResultsMeta total={displayTotal} />
 
       {isMapView ? (
-        <PropertiesMapBrowse
-          initialProperties={properties}
-          initialTotal={total}
-          pageSize={pageSize}
-          filterSignature={listFilterSignature}
-          onTotalChange={setMapLiveTotal}
-        />
+        <div className={isMobile ? "flex-1 min-h-0" : undefined}>
+          <PropertiesMapBrowse
+            initialProperties={properties}
+            initialTotal={total}
+            pageSize={pageSize}
+            filterSignature={listFilterSignature}
+            onTotalChange={setMapLiveTotal}
+          />
+        </div>
 
       ) : isMobile ? (
 

@@ -8,12 +8,21 @@ import {
   parsePropertyListFilters,
 } from "@/lib/property-filters";
 import { useSearchParams } from "next/navigation";
+import { useFavorites } from "@/providers/FavoritesProvider";
 import PropertiesMapView from "./PropertiesMapView";
 import PropertyResultsSheet from "./PropertyResultsSheet";
 import PropertyInfiniteList from "./PropertyInfiniteList";
 import MapLoadingOverlay from "./MapLoadingOverlay";
 import MapPropertyPreviewCard from "./MapPropertyPreviewCard";
+import MapPropertyLegend from "./MapPropertyLegend";
+import MapCoverageNotice from "./MapCoverageNotice";
 import type { MapBbox } from "./PropertiesMapInner";
+import { countMapPropertyTypes } from "@/lib/property-type-map";
+import {
+  getMapViewedSlugs,
+  markMapPropertyViewed,
+} from "@/lib/map-viewed-store";
+import { clearMapViewport } from "@/lib/map-viewport-store";
 
 type PropertiesMapBrowseProps = {
   initialProperties: PropertyListItem[];
@@ -40,13 +49,23 @@ const PropertiesMapBrowse = ({
   onTotalChange,
 }: PropertiesMapBrowseProps) => {
   const searchParams = useSearchParams();
+  const { favoriteSet } = useFavorites();
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
-  const [previewSlug, setPreviewSlug] = useState<string | null>(null);
+  const [previewHidden, setPreviewHidden] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(true);
   const [mapBbox, setMapBbox] = useState<MapBbox | null>(null);
   const [fitBoundsKey, setFitBoundsKey] = useState(filterSignature);
+  const [viewedSlugs, setViewedSlugs] = useState<Set<string>>(
+    () => new Set(),
+  );
   const lastStableTotal = useRef(initialTotal);
+
+  useEffect(() => {
+    setViewedSlugs(getMapViewedSlugs());
+  }, []);
+
+  const favoriteSlugSet = favoriteSet;
 
   const mapQuery = useMemo(() => {
     const filters = parsePropertyListFilters(searchParams, { pageSize });
@@ -77,9 +96,7 @@ const PropertiesMapBrowse = ({
   }
 
   const displayTotal =
-    isValidating && total === 0
-      ? lastStableTotal.current
-      : total;
+    isValidating && total === 0 ? lastStableTotal.current : total;
 
   useEffect(() => {
     onTotalChange?.(displayTotal);
@@ -89,9 +106,10 @@ const PropertiesMapBrowse = ({
     setMapBbox(null);
     setFitBoundsKey(filterSignature);
     setSelectedSlug(null);
-    setPreviewSlug(null);
+    setPreviewHidden(false);
     setHoveredSlug(null);
     lastStableTotal.current = initialTotal;
+    clearMapViewport();
   }, [filterSignature, initialTotal]);
 
   const listHighlightSlug =
@@ -101,13 +119,15 @@ const PropertiesMapBrowse = ({
         ? hoveredSlug
         : (properties[0]?.slug ?? null);
 
-  const previewProperty = previewSlug
-    ? properties.find((p) => p.slug === previewSlug)
+  const previewProperty = selectedSlug
+    ? properties.find((p) => p.slug === selectedSlug)
     : null;
 
   const handleSelect = useCallback((slug: string) => {
+    markMapPropertyViewed(slug);
+    setViewedSlugs(getMapViewedSlugs());
     setSelectedSlug(slug);
-    setPreviewSlug(slug);
+    setPreviewHidden(false);
     setSheetOpen(true);
   }, []);
 
@@ -132,11 +152,17 @@ const PropertiesMapBrowse = ({
 
   const resetMapBounds = () => {
     setMapBbox(null);
+    clearMapViewport();
     setFitBoundsKey(`${filterSignature}-reset-${Date.now()}`);
   };
 
   const showValidatingOverlay =
     isValidating && !isLoading && properties.length > 0;
+
+  const mapTypeCounts = useMemo(
+    () => countMapPropertyTypes(properties),
+    [properties],
+  );
 
   const mapProps = {
     properties,
@@ -146,28 +172,57 @@ const PropertiesMapBrowse = ({
     boundsSearchEnabled: true,
     fitBoundsKey,
     onSelect: handleSelect,
+    viewedSlugs,
+    favoriteSlugs: favoriteSlugSet,
   };
 
-  const bboxPill = mapBbox ? (
-    <div className="absolute top-4 left-4 z-[1000] flex items-center gap-2 pointer-events-auto max-lg:left-1/2 max-lg:-translate-x-1/2 max-lg:max-w-[calc(100%-2rem)]">
-      <span className="text-xs text-ink bg-white border border-wire shadow-apple rounded-full px-3 py-2 min-h-11 inline-flex items-center whitespace-nowrap">
-        Showing homes in this area
-      </span>
-      <button
-        type="button"
-        onClick={resetMapBounds}
-        className="text-xs font-medium text-ink bg-white border border-wire shadow-apple rounded-full px-3 py-2 min-h-11 hover:bg-cloud transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
-      >
-        Reset map
-      </button>
+  const renderMapTopBar = (context: "map-desktop" | "map-mobile") => (
+    <div className="absolute top-4 left-4 right-4 z-20 flex items-start justify-between gap-3 pointer-events-none">
+      <div className="pointer-events-auto min-w-0 flex-1">
+        <MapCoverageNotice
+          mapCount={properties.length}
+          totalCount={displayTotal}
+          context={context}
+        />
+      </div>
+      {mapBbox ? (
+        <button
+          type="button"
+          onClick={resetMapBounds}
+          className="pointer-events-auto text-xs font-medium text-ink bg-white border border-wire shadow-apple rounded-full px-3 py-2 min-h-11 hover:bg-cloud transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+        >
+          Reset map
+        </button>
+      ) : null}
     </div>
-  ) : null;
+  );
+
+  const previewCardOverlay =
+    previewProperty && !previewHidden ? (
+      <div
+        className="absolute z-20 pointer-events-auto
+          lg:bottom-4 lg:right-4 lg:left-auto
+          max-lg:bottom-4 max-lg:left-4 max-lg:right-4 max-lg:pb-[env(safe-area-inset-bottom,0px)]"
+      >
+        <MapPropertyPreviewCard
+          property={previewProperty}
+          onClose={() => setPreviewHidden(true)}
+        />
+      </div>
+    ) : null;
+
+  const legendOverlay = (
+    <div
+      className="absolute bottom-4 left-4 z-20 pointer-events-auto w-72 max-w-[calc(100%-2rem)] max-lg:hidden"
+    >
+      <MapPropertyLegend typeCounts={mapTypeCounts} defaultOpen={false} />
+    </div>
+  );
 
   return (
     <>
-      {/* Desktop split — CSS breakpoint avoids hydration layout mismatch */}
       <div className="hidden lg:grid lg:grid-cols-[2fr_3fr] lg:gap-0 lg:min-h-[calc(100vh-12rem)]">
-        <div className="relative h-[calc(100vh-12rem)] min-h-80 border-r border-wire lg:sticky lg:top-[10rem] lg:self-start">
+        <div className="relative isolate z-0 overflow-hidden h-[calc(100vh-12rem)] min-h-80 border-r border-wire lg:sticky lg:top-[10rem] lg:self-start">
           <PropertiesMapView
             {...mapProps}
             hoveredSlug={hoveredSlug}
@@ -176,16 +231,11 @@ const PropertiesMapBrowse = ({
           {showValidatingOverlay && (
             <MapLoadingOverlay variant="updating" />
           )}
-          {bboxPill}
-          {previewProperty && (
-            <MapPropertyPreviewCard
-              property={previewProperty}
-              onClose={() => setPreviewSlug(null)}
-              placement="desktop"
-            />
-          )}
+          {renderMapTopBar("map-desktop")}
+          {previewCardOverlay}
+          {legendOverlay}
         </div>
-        <div className="overflow-y-auto max-h-[calc(100vh-12rem)]">
+        <div className="relative z-20 overflow-y-auto max-h-[calc(100vh-12rem)] bg-background">
           <PropertyInfiniteList
             key={filterSignature}
             initialProperties={initialProperties}
@@ -200,28 +250,19 @@ const PropertiesMapBrowse = ({
         </div>
       </div>
 
-      {/* Mobile full-bleed map + bottom sheet */}
-      <div className="lg:hidden relative min-h-[calc(100dvh-var(--map-chrome,8rem))]">
-        <div className="absolute inset-0 z-0">
+      <div className="lg:hidden relative h-full min-h-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <PropertiesMapView
             {...mapProps}
             hoveredSlug={null}
-            className="h-full min-h-[calc(100dvh-var(--map-chrome,8rem))]"
+            className="h-full w-full"
           />
           {showValidatingOverlay && (
             <MapLoadingOverlay variant="updating" />
           )}
+          {renderMapTopBar("map-mobile")}
+          {previewCardOverlay}
         </div>
-
-        {bboxPill}
-
-        {previewProperty && (
-          <MapPropertyPreviewCard
-            property={previewProperty}
-            onClose={() => setPreviewSlug(null)}
-            placement="mobile"
-          />
-        )}
 
         <PropertyResultsSheet
           properties={properties}
@@ -231,6 +272,7 @@ const PropertiesMapBrowse = ({
           open={sheetOpen}
           onOpenChange={setSheetOpen}
           isValidating={showValidatingOverlay}
+          mapTypeCounts={mapTypeCounts}
         />
       </div>
     </>

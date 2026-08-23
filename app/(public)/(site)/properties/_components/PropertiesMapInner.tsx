@@ -1,19 +1,33 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet.markercluster";
 import {
   MapContainer,
   TileLayer,
+  ZoomControl,
   useMap,
   useMapEvents,
 } from "react-leaflet";
 import { PropertyListItem } from "@/services/property.service";
 import {
-  createPriceMarkerIcon,
-  formatMapPriceLabel,
+  createPropertyMarkerIcon,
+  getMapMarkerTier,
 } from "@/lib/map-markers";
+import {
+  getMapViewport,
+  saveMapViewport,
+} from "@/lib/map-viewport-store";
+import {
+  CEBU_MAP_CENTER,
+  CEBU_MAP_DEFAULT_ZOOM,
+  CEBU_MAP_MAX_BOUNDS,
+  CEBU_MAP_MAX_BOUNDS_VISCOSITY,
+  CEBU_MAP_MAX_ZOOM,
+  CEBU_MAP_MIN_ZOOM,
+  clampToCebuMapBounds,
+} from "@/lib/cebu-map-bounds";
 
 export type MapBbox = {
   minLat: number;
@@ -22,7 +36,25 @@ export type MapBbox = {
   maxLng: number;
 };
 
-const CEBU_CENTER: [number, number] = [10.3157, 123.8854];
+const CARTO_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+const clampZoom = (zoom: number) =>
+  Math.min(CEBU_MAP_MAX_ZOOM, Math.max(CEBU_MAP_MIN_ZOOM, zoom));
+
+const MapCebuBoundsLock = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    const bounds = L.latLngBounds(CEBU_MAP_MAX_BOUNDS);
+    map.setMaxBounds(bounds);
+    map.options.maxBoundsViscosity = CEBU_MAP_MAX_BOUNDS_VISCOSITY;
+    map.setMinZoom(CEBU_MAP_MIN_ZOOM);
+    map.setMaxZoom(CEBU_MAP_MAX_ZOOM);
+  }, [map]);
+
+  return null;
+};
 
 type PropertiesMapInnerProps = {
   properties: PropertyListItem[];
@@ -34,17 +66,77 @@ type PropertiesMapInnerProps = {
   onBoundsChange?: (bbox: MapBbox) => void;
   boundsSearchEnabled?: boolean;
   fitBoundsKey?: string;
+  viewedSlugs?: Set<string>;
+  favoriteSlugs?: Set<string>;
 };
 
 const useSuppressBoundsRef = () => useRef(false);
 
+const MapZoomWatcher = ({
+  onZoomChange,
+}: {
+  onZoomChange: (zoom: number) => void;
+}) => {
+  const map = useMap();
+
+  useMapEvents({
+    zoomend: () => onZoomChange(map.getZoom()),
+  });
+
+  useEffect(() => {
+    onZoomChange(map.getZoom());
+  }, [map, onZoomChange]);
+
+  return null;
+};
+
+const MapViewportSaver = ({
+  filterSignature,
+  suppressBoundsRef,
+}: {
+  filterSignature: string;
+  suppressBoundsRef: ReturnType<typeof useSuppressBoundsRef>;
+}) => {
+  const map = useMap();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    const onMoveEnd = () => {
+      if (suppressBoundsRef.current) return;
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        const center = map.getCenter();
+        const [lat, lng] = clampToCebuMapBounds(center.lat, center.lng);
+        saveMapViewport({
+          center: [lat, lng],
+          zoom: clampZoom(map.getZoom()),
+          filterSignature,
+        });
+      }, 300);
+    };
+
+    map.on("moveend", onMoveEnd);
+    return () => {
+      map.off("moveend", onMoveEnd);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [map, filterSignature, suppressBoundsRef]);
+
+  return null;
+};
+
 const FitBounds = ({
   properties,
   fitBoundsKey,
+  filterSignature,
   suppressBoundsRef,
 }: {
   properties: PropertyListItem[];
   fitBoundsKey: string;
+  filterSignature: string;
   suppressBoundsRef: ReturnType<typeof useSuppressBoundsRef>;
 }) => {
   const map = useMap();
@@ -54,6 +146,24 @@ const FitBounds = ({
     if (lastKey.current === fitBoundsKey) return;
     lastKey.current = fitBoundsKey;
 
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    suppressBoundsRef.current = true;
+
+    const saved = getMapViewport(filterSignature);
+    if (saved) {
+      const [lat, lng] = clampToCebuMapBounds(
+        saved.center[0],
+        saved.center[1],
+      );
+      map.setView([lat, lng], clampZoom(saved.zoom), {
+        animate: !prefersReducedMotion,
+      });
+      return;
+    }
+
     const coords = properties
       .filter((p) => p.latitude != null && p.longitude != null)
       .map(
@@ -61,19 +171,17 @@ const FitBounds = ({
           [Number(p.latitude), Number(p.longitude)] as [number, number],
       );
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    suppressBoundsRef.current = true;
-
     if (coords.length === 0) {
-      map.setView(CEBU_CENTER, 11, { animate: !prefersReducedMotion });
+      map.setView(CEBU_MAP_CENTER, CEBU_MAP_DEFAULT_ZOOM, {
+        animate: !prefersReducedMotion,
+      });
       return;
     }
 
     if (coords.length === 1) {
-      map.setView(coords[0], 14, { animate: !prefersReducedMotion });
+      map.setView(coords[0], clampZoom(14), {
+        animate: !prefersReducedMotion,
+      });
       return;
     }
 
@@ -82,7 +190,7 @@ const FitBounds = ({
       maxZoom: 14,
       animate: !prefersReducedMotion,
     });
-  }, [map, properties, fitBoundsKey, suppressBoundsRef]);
+  }, [map, properties, fitBoundsKey, filterSignature, suppressBoundsRef]);
 
   return null;
 };
@@ -118,7 +226,7 @@ const FlyToSelected = ({
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const zoom = Math.max(map.getZoom(), 14);
+    const zoom = clampZoom(Math.max(map.getZoom(), 14));
 
     suppressBoundsRef.current = true;
     map.flyTo(
@@ -206,17 +314,38 @@ const ClusterMarkers = ({
   selectedSlug,
   hoveredSlug,
   onSelect,
+  mapZoom,
+  viewedSlugs,
+  favoriteSlugs,
 }: {
   properties: PropertyListItem[];
   selectedSlug: string | null;
   hoveredSlug?: string | null;
   onSelect: (slug: string) => void;
+  mapZoom: number;
+  viewedSlugs: Set<string>;
+  favoriteSlugs: Set<string>;
 }) => {
   const map = useMap();
+  const tier = getMapMarkerTier(mapZoom);
 
   useEffect(() => {
     const cluster = L.markerClusterGroup({
       chunkedLoading: true,
+    });
+
+    cluster.on("clusterclick", (event: L.LeafletEvent) => {
+      const clusterLayer = event.layer as L.Layer & {
+        getBounds: () => L.LatLngBounds;
+      };
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      map.fitBounds(clusterLayer.getBounds(), {
+        padding: [48, 48],
+        maxZoom: Math.min(16, CEBU_MAP_MAX_ZOOM),
+        animate: !prefersReducedMotion,
+      });
     });
 
     properties.forEach((property) => {
@@ -228,13 +357,14 @@ const ClusterMarkers = ({
 
       const isSelected = selectedSlug === property.slug;
       const isHovered = hoveredSlug === property.slug && !isSelected;
-      const label = formatMapPriceLabel(property);
 
       const marker = L.marker([lat, lng], {
-        icon: createPriceMarkerIcon(
-          label,
-          isSelected ? "selected" : isHovered ? "hover" : "default",
-        ),
+        icon: createPropertyMarkerIcon(property, {
+          state: isSelected ? "selected" : isHovered ? "hover" : "default",
+          tier,
+          isViewed: viewedSlugs.has(property.slug),
+          isFavorite: favoriteSlugs.has(property.slug),
+        }),
         zIndexOffset: isSelected ? 1000 : isHovered ? 500 : 0,
       });
       marker.on("click", () => onSelect(property.slug));
@@ -245,7 +375,16 @@ const ClusterMarkers = ({
     return () => {
       map.removeLayer(cluster);
     };
-  }, [map, properties, selectedSlug, hoveredSlug, onSelect]);
+  }, [
+    map,
+    properties,
+    selectedSlug,
+    hoveredSlug,
+    onSelect,
+    tier,
+    viewedSlugs,
+    favoriteSlugs,
+  ]);
 
   return null;
 };
@@ -260,8 +399,11 @@ const PropertiesMapInner = ({
   onBoundsChange,
   boundsSearchEnabled = true,
   fitBoundsKey,
+  viewedSlugs = new Set(),
+  favoriteSlugs = new Set(),
 }: PropertiesMapInnerProps) => {
   const suppressBoundsRef = useSuppressBoundsRef();
+  const [mapZoom, setMapZoom] = useState(11);
 
   const mapProperties = useMemo(
     () =>
@@ -278,21 +420,34 @@ const PropertiesMapInner = ({
   const boundsKey = fitBoundsKey ?? filterSignature;
 
   return (
-    <div className={className}>
+    <div className={`properties-map ${className ?? ""}`}>
       <MapContainer
-        center={CEBU_CENTER}
-        zoom={11}
+        center={CEBU_MAP_CENTER}
+        zoom={CEBU_MAP_DEFAULT_ZOOM}
+        minZoom={CEBU_MAP_MIN_ZOOM}
+        maxZoom={CEBU_MAP_MAX_ZOOM}
+        maxBounds={CEBU_MAP_MAX_BOUNDS}
+        maxBoundsViscosity={CEBU_MAP_MAX_BOUNDS_VISCOSITY}
         className="h-full w-full min-h-80 z-0"
         style={{ minHeight: "320px", height: "100%" }}
         scrollWheelZoom
+        zoomControl={false}
       >
+        <MapCebuBoundsLock />
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution={CARTO_ATTRIBUTION}
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        />
+        <ZoomControl position="bottomright" />
+        <MapZoomWatcher onZoomChange={setMapZoom} />
+        <MapViewportSaver
+          filterSignature={filterSignature}
+          suppressBoundsRef={suppressBoundsRef}
         />
         <FitBounds
           properties={mapProperties}
           fitBoundsKey={boundsKey}
+          filterSignature={filterSignature}
           suppressBoundsRef={suppressBoundsRef}
         />
         <FlyToSelected
@@ -311,6 +466,9 @@ const PropertiesMapInner = ({
           selectedSlug={selectedSlug}
           hoveredSlug={hoveredSlug}
           onSelect={onSelect}
+          mapZoom={mapZoom}
+          viewedSlugs={viewedSlugs}
+          favoriteSlugs={favoriteSlugs}
         />
       </MapContainer>
     </div>

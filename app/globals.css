@@ -215,11 +215,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.35rem;
   min-height: 2.75rem;
   min-width: 2.75rem;
-  padding: 0.35rem 0.65rem;
+  padding: 0.35rem 0.65rem 0.35rem 0.5rem;
   border-radius: 9999px;
   border: 2px solid var(--color-ink);
+  border-left: 3px solid var(--type-accent, var(--color-ink));
   background: #fff;
   color: var(--color-ink);
   font-size: 0.6875rem;
@@ -228,7 +230,8 @@
   font-variant-numeric: tabular-nums;
   box-shadow: 0 2px 8px rgba(29, 29, 31, 0.12);
   transform: translate(-50%, -100%);
-  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
   cursor: pointer;
   pointer-events: auto;
   white-space: nowrap;
@@ -242,8 +245,76 @@
 .property-map-price-marker__chip.is-selected {
   background: var(--color-ink);
   color: #fff;
+  border-color: var(--color-ink);
+  border-left-color: var(--type-accent, var(--color-ink));
   transform: translate(-50%, -100%) scale(1.08);
   box-shadow: 0 4px 14px rgba(29, 29, 31, 0.25);
+  animation: map-marker-pulse 1.6s ease-out 1;
+}
+
+.property-map-price-marker__chip.is-mini {
+  min-height: 2rem;
+  min-width: 2rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.625rem;
+  gap: 0;
+}
+
+.property-map-price-marker__chip.is-viewed:not(.is-selected) {
+  opacity: 0.72;
+}
+
+.property-map-price-marker__chip.is-favorite:not(.is-selected) {
+  box-shadow:
+    0 2px 8px rgba(29, 29, 31, 0.12),
+    0 0 0 2px rgba(255, 45, 85, 0.35);
+}
+
+@keyframes map-marker-pulse {
+  0% {
+    box-shadow: 0 4px 14px rgba(29, 29, 31, 0.25);
+  }
+  40% {
+    box-shadow:
+      0 4px 18px rgba(29, 29, 31, 0.35),
+      0 0 0 6px rgba(29, 29, 31, 0.12);
+  }
+  100% {
+    box-shadow: 0 4px 14px rgba(29, 29, 31, 0.25);
+  }
+}
+
+.properties-map .leaflet-tile-pane {
+  opacity: 0.92;
+}
+
+@media (max-width: 1023px) {
+  .properties-map .leaflet-control-zoom a {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    line-height: 2.75rem;
+    font-size: 1.125rem;
+  }
+}
+
+.property-map-price-marker__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+}
+
+.property-map-price-marker__icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: #fff;
+}
+
+.property-map-price-marker__chip.is-selected .property-map-price-marker__icon {
+  color: #fff;
 }
 
 .property-map-price-marker__label {
@@ -296,6 +367,10 @@
 @media (prefers-reduced-motion: reduce) {
   .property-map-price-marker__chip {
     transition: none;
+  }
+
+  .property-map-price-marker__chip.is-selected {
+    animation: none;
   }
 }
 
