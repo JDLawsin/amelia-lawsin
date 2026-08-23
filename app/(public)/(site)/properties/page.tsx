@@ -1,40 +1,42 @@
 import {
   getAllProperties,
   getPropertiesCount,
-  PropertyFilters,
 } from "@/services/property.service";
 import { ogImageMetadata } from "@/lib/og-metadata";
 import { getSiteUrl } from "@/lib/site";
 import { breadcrumbListJsonLd } from "@/lib/structured-data";
+import {
+  parsePropertyFiltersFromProps,
+} from "@/lib/property-browse";
+import { DEFAULT_PROPERTIES_PAGE_SIZE } from "@/lib/property-filters";
 import JsonLd from "@/components/ui/JsonLd";
 import { Suspense } from "react";
 import PropertiesLoadingFallback from "./_components/PropertiesLoadingFallback";
 import PropertiesClient from "./_components/PropertiesClient";
+import PropertiesPageHeader from "./_components/PropertiesPageHeader";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = DEFAULT_PROPERTIES_PAGE_SIZE;
 
-type SearchParams = PropertyFilters;
+type SearchParams = Record<string, string | string[] | undefined>;
 type Props = {
   searchParams: Promise<SearchParams>;
 };
 
+const toFilterParams = (params: SearchParams) => {
+  const flat: Record<string, string | number | undefined> = {};
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined) continue;
+    flat[key] = Array.isArray(value) ? value[0] : value;
+  }
+  return flat;
+};
+
 const PropertiesPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
-  const currentPage = Math.max(1, Number(params.page ?? "1"));
-  const filters = {
-    q: params.q,
-    status: params.status,
-    type: params.type,
-    city: params.city,
-    minPrice: params.minPrice ? Number(params.minPrice) : undefined,
-    maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
-    bedrooms:
-      params.bedrooms !== undefined ? Number(params.bedrooms) : undefined,
-    special: params.special,
-    sort: params.sort ?? "newest",
-    page: currentPage,
+  const filters = parsePropertyFiltersFromProps(toFilterParams(params), {
     pageSize: PAGE_SIZE,
-  };
+  });
+  const currentPage = filters.page ?? 1;
 
   const [properties, total] = await Promise.all([
     getAllProperties(filters),
@@ -42,6 +44,15 @@ const PropertiesPage = async ({ searchParams }: Props) => {
   ]);
 
   const baseUrl = getSiteUrl();
+  const hasActiveFilters =
+    Boolean(filters.status) ||
+    Boolean(filters.type) ||
+    Boolean(filters.q) ||
+    Boolean(filters.city) ||
+    Boolean(filters.special) ||
+    filters.minPrice != null ||
+    filters.maxPrice != null ||
+    filters.bedrooms != null;
 
   return (
     <main className="min-h-screen bg-background">
@@ -51,33 +62,9 @@ const PropertiesPage = async ({ searchParams }: Props) => {
           { name: "Properties", url: "/properties" },
         ])}
       />
-      <div className="bg-cloud border-b border-wire px-6 py-5">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-xs text-ash mb-1">
-            {"Home"} <span className="mx-1 opacity-50">/</span> {"Properties"}
-          </p>
-          <div className="flex items-end justify-between">
-            <div>
-              <h1 className="text-2xl font-serif font-semibold text-ink leading-tight">
-                {"All Properties"}
-              </h1>
-              <p className="text-sm text-ash mt-0.5">
-                {"Explore listings across Cebu — condos, houses, lots & more"}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-serif font-medium text-ink">
-                {total}
-              </p>
-              <p className="text-xs text-ash">
-                {filters.status || filters.type || filters.q
-                  ? "matching results"
-                  : "active listings"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Suspense fallback={null}>
+        <PropertiesPageHeader total={total} hasActiveFilters={hasActiveFilters} />
+      </Suspense>
 
       <Suspense fallback={<PropertiesLoadingFallback />}>
         <PropertiesClient
@@ -95,22 +82,22 @@ export default PropertiesPage;
 
 export async function generateMetadata({ searchParams }: Props) {
   const params = await searchParams;
+  const flat = toFilterParams(params);
 
   const parts: string[] = [];
-  if (params.type) parts.push(params.type.replace("_", " ").toLowerCase());
-  if (params.status) parts.push(params.status.replace("_", " ").toLowerCase());
-  if (params.city) parts.push(`in ${params.city}`);
+  if (flat.type) parts.push(String(flat.type).replace("_", " ").toLowerCase());
+  if (flat.status)
+    parts.push(String(flat.status).replace("_", " ").toLowerCase());
+  if (flat.city) parts.push(`in ${flat.city}`);
 
   const title =
     parts.length > 0
       ? `${parts.join(" ")} properties | Amelia Lawsin`
       : "Properties | Amelia Lawsin Real Estate Agent Cebu";
 
-  const description = `Browse ${params.type ?? "all"} properties ${params.city ? `in ${params.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`;
+  const description = `Browse ${flat.type ?? "all"} properties ${flat.city ? `in ${flat.city}` : "across Cebu"}. Licensed real estate agent Amelia Lawsin.`;
   const ogAlt = "Browse Cebu properties with Amelia Lawsin";
 
-  // Canonical to the unfiltered base to consolidate ranking signals across
-  // the many filter permutations; filters still drive the title/description.
   return {
     title: { absolute: title },
     description,

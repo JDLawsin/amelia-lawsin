@@ -11,6 +11,10 @@ export const BLOG_INLINE_IMAGE_SIZES = "(max-width: 768px) 100vw, 720px";
 export const PROPERTY_CARD_IMAGE_SIZES =
   "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px";
 
+/** 2-col mobile photo grid */
+export const PROPERTY_CARD_COMPACT_IMAGE_SIZES =
+  "(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 384px";
+
 export const HERO_IMAGE_SIZES = "(min-width: 768px) 62vw, 100vw";
 
 /** Full-width strip below hero copy on mobile */

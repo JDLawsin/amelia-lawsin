@@ -1,5 +1,3 @@
-// app/(public)/properties/_components/PropertyListRow.tsx
-
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
@@ -38,13 +36,28 @@ const PropertyListRow = ({
     .filter(Boolean)
     .join(", ");
 
+  const hasSpecs =
+    property.bedrooms != null ||
+    property.bathrooms != null ||
+    property.floorArea != null ||
+    (property.lotArea != null && !property.floorArea);
+
+  const financingTags = [
+    property.isPagibigAccredited && "Pag-IBIG",
+    property.isRentToOwn && "Rent-to-Own",
+  ].filter(Boolean) as string[];
+
   return (
-    <div className="group flex gap-2 bg-white rounded-xl border border-wire p-3 hover:border-wire hover:shadow-sm transition-all duration-200">
+    <div
+      className="group flex gap-2 bg-white rounded-xl border border-wire p-3 hover:border-wire hover:shadow-sm transition-[box-shadow,border-color] duration-200 motion-reduce:transition-none"
+    >
       <Link
         href={`/properties/${property.slug}`}
-        className="flex gap-4 flex-1 min-w-0"
+        className="flex items-stretch gap-3 flex-1 min-w-0"
       >
-        <div className="relative w-28 h-20 shrink-0 rounded-lg overflow-hidden bg-cloud">
+        <div
+          className="relative w-22 sm:w-28 shrink-0 self-stretch min-h-18 rounded-lg overflow-hidden bg-cloud"
+        >
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -52,7 +65,7 @@ const PropertyListRow = ({
               fill
               sizes="112px"
               loading={loading}
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover group-hover:scale-105 transition-transform duration-300 motion-reduce:group-hover:scale-100 motion-reduce:transition-none"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -60,7 +73,7 @@ const PropertyListRow = ({
             </div>
           )}
           {property.isFeatured && (
-            <div className="absolute top-1.5 left-1.5">
+            <div className="absolute top-1 left-1">
               <span className="text-[8px] font-medium bg-ink text-white px-1.5 py-0.5 rounded uppercase tracking-wide">
                 Featured
               </span>
@@ -68,28 +81,46 @@ const PropertyListRow = ({
           )}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 flex flex-col justify-between min-w-0">
-          <div>
-            <div className="flex items-start justify-between gap-4">
-              <p className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-ink transition-colors">
-                {property.title}
-              </p>
-              <span className="text-base font-serif font-medium text-ink shrink-0">
-                {price}
-              </span>
-            </div>
-
-            {location && (
-              <div className="flex items-center gap-1 text-xs text-ash mt-0.5">
-                <MapPin className="w-3 h-3 shrink-0" />
-                {location}
-              </div>
-            )}
+        <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+          <div className="min-w-0">
+            <p
+              className="text-sm font-medium text-ink leading-snug line-clamp-2 sm:line-clamp-1 group-hover:text-ink/80 transition-colors"
+            >
+              {property.title}
+            </p>
+            <p className="text-base font-serif font-medium text-ink tabular-nums mt-0.5">
+              {price}
+            </p>
           </div>
 
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-3 text-xs text-ash">
+          {location && (
+            <div className="flex items-center gap-1 text-xs text-ash min-w-0">
+              <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
+              <span className="line-clamp-1">{location}</span>
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span
+              className={clsx(
+                "text-[10px] font-medium px-2 py-0.5 rounded-md whitespace-nowrap",
+                STATUS_STYLES[property.status],
+              )}
+            >
+              {STATUS_LABELS[property.status]}
+            </span>
+            {financingTags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[10px] px-2 py-0.5 rounded-md whitespace-nowrap bg-ink/8 text-ink border border-wire/25"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {hasSpecs && (
+            <p className="text-xs text-ash leading-relaxed">
               {property.bedrooms != null && (
                 <span>
                   {property.bedrooms === 0
@@ -98,43 +129,42 @@ const PropertyListRow = ({
                 </span>
               )}
               {property.bathrooms != null && (
-                <span>· {property.bathrooms} bath</span>
+                <span>
+                  {property.bedrooms != null ? " · " : ""}
+                  {property.bathrooms} bath
+                </span>
               )}
               {property.floorArea != null && (
-                <span>· {property.floorArea}sqm</span>
+                <span>
+                  {(property.bedrooms != null || property.bathrooms != null)
+                    ? " · "
+                    : ""}
+                  {property.floorArea} sqm
+                </span>
               )}
               {property.lotArea != null && !property.floorArea && (
-                <span>· {property.lotArea}sqm lot</span>
-              )}
-            </div>
-
-            {/* Tags */}
-            <div className="flex items-center gap-1.5">
-              <span
-                className={clsx(
-                  "text-[9px] font-medium px-2 py-0.5 rounded-md",
-                  STATUS_STYLES[property.status],
-                )}
-              >
-                {STATUS_LABELS[property.status]}
-              </span>
-              {property.isPagibigAccredited && (
-                <span className="text-[9px] px-2 py-0.5 rounded-md bg-ink/8 text-ink border border-wire/25">
-                  Pag-IBIG
+                <span>
+                  {(property.bedrooms != null || property.bathrooms != null)
+                    ? " · "
+                    : ""}
+                  {property.lotArea} sqm lot
                 </span>
               )}
-              {property.isRentToOwn && (
-                <span className="text-[9px] px-2 py-0.5 rounded-md bg-ink/8 text-ink border border-wire/25">
-                  Rent-to-Own
-                </span>
-              )}
-            </div>
-          </div>
+            </p>
+          )}
         </div>
       </Link>
-      <div className="flex items-center gap-1 shrink-0 pl-1">
-        <FavoriteButton slug={property.slug} size="sm" />
-        <CompareButton slug={property.slug} size="sm" />
+      <div className="flex flex-col items-center gap-1.5 shrink-0 self-start z-10">
+        <FavoriteButton
+          slug={property.slug}
+          size="sm"
+          className="w-11 h-11 shadow-apple-sm"
+        />
+        <CompareButton
+          slug={property.slug}
+          size="sm"
+          className="w-11 h-11 shadow-apple-sm"
+        />
       </div>
     </div>
   );

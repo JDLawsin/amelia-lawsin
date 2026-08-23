@@ -1,11 +1,15 @@
 import clsx from "clsx";
 import { PropertyListItem } from "@/services/property.service";
+import type { PropertyBrowseView } from "@/lib/property-browse";
 import PropertyListRow from "./PropertyListRow";
 import PropertyCard from "./PropertyCard";
 
 type PropertyGridProps = {
   properties: PropertyListItem[];
-  view: "grid" | "list";
+  view: PropertyBrowseView;
+  highlightedSlug?: string | null;
+  onPropertySelect?: (slug: string) => void;
+  onPropertyHover?: (slug: string | null) => void;
 };
 
 const EmptyState = () => (
@@ -18,6 +22,7 @@ const EmptyState = () => (
         fill="none"
         stroke="#5A7A64"
         strokeWidth="1.5"
+        aria-hidden="true"
       >
         <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
         <circle cx="12" cy="10" r="3" />
@@ -31,7 +36,13 @@ const EmptyState = () => (
   </div>
 );
 
-const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
+const PropertyGrid = ({
+  properties,
+  view,
+  highlightedSlug,
+  onPropertySelect,
+  onPropertyHover,
+}: PropertyGridProps) => {
   if (!properties.length) {
     return (
       <div className="px-6">
@@ -45,34 +56,61 @@ const PropertyGrid = ({ properties, view }: PropertyGridProps) => {
   if (view === "list") {
     return (
       <>
-        <h2 className="sr-only">Property listings</h2>
-        <div className="px-6 flex flex-col gap-2">
+        <h2 className="sr-only scroll-mt-24">Property listings</h2>
+        <div className="px-6 flex flex-col gap-2 scroll-mt-24">
           {properties.map((property, i) => (
-            <PropertyListRow
+            <div
               key={property.id}
-              property={property}
-              loading={i === 0 ? "eager" : undefined}
-            />
+              data-property-slug={property.slug}
+              className={clsx(
+                highlightedSlug === property.slug &&
+                  "ring-2 ring-ink ring-offset-2 rounded-xl",
+              )}
+              onClick={() => onPropertySelect?.(property.slug)}
+              onMouseEnter={() => onPropertyHover?.(property.slug)}
+              onMouseLeave={() => onPropertyHover?.(null)}
+            >
+              <PropertyListRow
+                property={property}
+                loading={i === 0 ? "eager" : undefined}
+              />
+            </div>
           ))}
         </div>
       </>
     );
   }
 
+  const isPhotos = view === "photos";
+
   return (
     <>
-      <h2 className="sr-only">Property listings</h2>
+      <h2 className="sr-only scroll-mt-24">Property listings</h2>
       <div
         className={clsx(
-          "px-6 grid gap-3 overflow-hidden",
-          "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+          "px-6 grid overflow-hidden scroll-mt-24",
+          isPhotos
+            ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3"
+            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3",
         )}
       >
         {properties.map((property, i) => (
-          <div key={property.id} className="bg-white h-full">
+          <div
+            key={property.id}
+            data-property-slug={property.slug}
+            className={clsx(
+              "bg-white h-full",
+              highlightedSlug === property.slug &&
+                "ring-2 ring-ink ring-offset-2 rounded-xl",
+            )}
+            onClick={() => onPropertySelect?.(property.slug)}
+            onMouseEnter={() => onPropertyHover?.(property.slug)}
+            onMouseLeave={() => onPropertyHover?.(null)}
+          >
             <PropertyCard
               property={property}
               loading={i === 0 ? "eager" : undefined}
+              variant={isPhotos ? "compact" : "default"}
             />
           </div>
         ))}

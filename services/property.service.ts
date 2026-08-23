@@ -26,6 +26,8 @@ const propertyListSelect = {
   isBankFinancingReady: true,
   isInHouseFinancing: true,
   isRentToOwn: true,
+  latitude: true,
+  longitude: true,
   images: {
     select: { url: true, isPrimary: true },
     orderBy: { order: "asc" as const },
@@ -178,6 +180,12 @@ export type PropertyFilters = {
   sort?: string;
   page?: number;
   pageSize?: number;
+  bbox?: {
+    minLat: number;
+    maxLat: number;
+    minLng: number;
+    maxLng: number;
+  };
 };
 
 const buildWhereClause = (
@@ -235,6 +243,17 @@ const buildWhereClause = (
       { developerName: { contains: filters.q, mode: "insensitive" } },
       { address: { contains: filters.q, mode: "insensitive" } },
     ];
+  }
+
+  if (filters.bbox) {
+    where.latitude = {
+      gte: filters.bbox.minLat,
+      lte: filters.bbox.maxLat,
+    };
+    where.longitude = {
+      gte: filters.bbox.minLng,
+      lte: filters.bbox.maxLng,
+    };
   }
 
   return where;
@@ -303,6 +322,25 @@ export const getPropertiesCount = async (
 ): Promise<number> => {
   return prisma.property.count({
     where: buildWhereClause(filters),
+  });
+};
+
+export const getMapProperties = async (
+  filters: PropertyFilters = {},
+  limit = 200,
+): Promise<PropertyListItem[]> => {
+  const where = buildWhereClause(filters);
+  const orderBy = buildOrderBy(filters.sort);
+
+  return prisma.property.findMany({
+    where: {
+      ...where,
+      latitude: { not: null },
+      longitude: { not: null },
+    },
+    select: propertyListSelect,
+    orderBy,
+    take: limit,
   });
 };
 

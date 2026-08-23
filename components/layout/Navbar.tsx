@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Logo from "../ui/Logo";
 import { useAuth } from "@/providers/AuthProvider";
+import MobileToolsButtons from "@/components/tools/MobileToolsButtons";
 
 const NavbarMobileMenu = dynamic(
   () => import("@/components/layout/NavbarMobileMenu"),
@@ -79,7 +80,9 @@ export const Navbar = () => {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1 sm:gap-3">
+          <MobileToolsButtons />
+
           <Button
             asChild
             className="hidden md:inline-flex h-10 px-5 bg-ink text-white hover:bg-ink/90"

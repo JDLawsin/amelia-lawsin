@@ -1,11 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Heart, GitCompare, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useFavorites } from "@/providers/FavoritesProvider";
 import { useCompare } from "@/providers/CompareProvider";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { BodyPortal } from "@/components/ui/BodyPortal";
 import { IconTooltip } from "@/components/ui/IconTooltip";
 import {
@@ -13,7 +15,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/shadcn/popover";
-import { toolsFabAnchorClassName } from "@/components/tools/tools-layout";
+import {
+  toolsFabAnchorClassName,
+} from "@/components/tools/tools-layout";
+import {
+  TOOLS_OPEN_COMPARE_EVENT,
+  TOOLS_OPEN_FAVORITES_EVENT,
+} from "@/lib/tools-events";
 
 const FavoritesPanel = dynamic(
   () =>
@@ -43,6 +51,11 @@ export const ToolsFab = () => {
   const [compareSheetOpen, setCompareSheetOpen] = useState(false);
   const { favorites } = useFavorites();
   const { compareSlugs } = useCompare();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMapBrowse =
+    pathname === "/properties" && searchParams.get("view") === "map";
 
   const totalCount = favorites.length + compareSlugs.length;
 
@@ -58,6 +71,33 @@ export const ToolsFab = () => {
     setMenuOpen(false);
   };
 
+  useEffect(() => {
+    const onOpenFavorites = () => {
+      setActiveTool("favorites");
+      setMenuOpen(false);
+    };
+    const onOpenCompare = () => {
+      if (compareSlugs.length >= 2) {
+        setActiveTool(null);
+        setCompareSheetOpen(true);
+        setMenuOpen(false);
+        return;
+      }
+      setActiveTool("compare");
+      setMenuOpen(false);
+    };
+
+    window.addEventListener(TOOLS_OPEN_FAVORITES_EVENT, onOpenFavorites);
+    window.addEventListener(TOOLS_OPEN_COMPARE_EVENT, onOpenCompare);
+
+    return () => {
+      window.removeEventListener(TOOLS_OPEN_FAVORITES_EVENT, onOpenFavorites);
+      window.removeEventListener(TOOLS_OPEN_COMPARE_EVENT, onOpenCompare);
+    };
+  }, [compareSlugs.length]);
+
+  if (isMapBrowse) return null;
+
   return (
     <BodyPortal>
       <div className={toolsFabAnchorClassName}>
@@ -69,10 +109,15 @@ export const ToolsFab = () => {
                 aria-label="Open saved properties and compare"
                 aria-expanded={menuOpen}
                 className={cn(
-                  "relative flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-ink text-white shadow-apple-lg hover:bg-ink/90 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ink touch-manipulation",
+                  "relative flex shrink-0 items-center justify-center rounded-full bg-ink text-white shadow-apple-lg ring-2 ring-white/90 hover:bg-ink/90 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ink touch-manipulation",
+                  isMobile ? "w-14 h-14" : "w-12 h-12",
                 )}
               >
-                <LayoutGrid className="w-5 h-5" aria-hidden="true" />
+                {isMobile ? (
+                  <Heart className="w-6 h-6" aria-hidden="true" />
+                ) : (
+                  <LayoutGrid className="w-5 h-5" aria-hidden="true" />
+                )}
                 {totalCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-medium border-2 border-white tabular-nums">
                     {totalCount > 99 ? "99+" : totalCount}

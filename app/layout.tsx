@@ -90,9 +90,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${playfair.variable} font-sans bg-cloud`}
+        suppressHydrationWarning
       >
         <Toaster position="top-right" reverseOrder={false} />
         <AnalyticsProvider>{children}</AnalyticsProvider>

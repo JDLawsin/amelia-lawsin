@@ -1,7 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 
 const ToolsFab = dynamic(
   () =>
@@ -11,24 +11,10 @@ const ToolsFab = dynamic(
   { ssr: false },
 );
 
-const ToolsFabLoader = () => {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const mount = () => setReady(true);
-
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(mount, { timeout: 2000 });
-      return () => window.cancelIdleCallback(id);
-    }
-
-    const id = globalThis.setTimeout(mount, 1500);
-    return () => globalThis.clearTimeout(id);
-  }, []);
-
-  if (!ready) return null;
-
-  return <ToolsFab />;
-};
+const ToolsFabLoader = () => (
+  <Suspense fallback={null}>
+    <ToolsFab />
+  </Suspense>
+);
 
 export default ToolsFabLoader;

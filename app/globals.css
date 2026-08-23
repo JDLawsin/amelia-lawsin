@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -194,6 +197,105 @@
   .animate-brand-pulse {
     animation: none;
     opacity: 0.8;
+  }
+}
+
+/* Property map price markers */
+.property-map-price-marker {
+  background: transparent !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.property-map-price-marker__chip {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-ink);
+  background: #fff;
+  color: var(--color-ink);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 8px rgba(29, 29, 31, 0.12);
+  transform: translate(-50%, -100%);
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.property-map-price-marker__chip.is-hovered {
+  transform: translate(-50%, -100%) scale(1.05);
+  box-shadow: 0 4px 12px rgba(29, 29, 31, 0.18);
+}
+
+.property-map-price-marker__chip.is-selected {
+  background: var(--color-ink);
+  color: #fff;
+  transform: translate(-50%, -100%) scale(1.08);
+  box-shadow: 0 4px 14px rgba(29, 29, 31, 0.25);
+}
+
+.property-map-price-marker__label {
+  white-space: nowrap;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background: transparent !important;
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+  background: var(--color-ink) !important;
+  color: #fff !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums;
+  border-radius: 9999px !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  line-height: 2rem !important;
+  box-shadow: 0 2px 8px rgba(29, 29, 31, 0.2);
+}
+
+.property-map-cluster {
+  background: transparent !important;
+  border: none !important;
+}
+
+.property-map-cluster__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 8px rgba(29, 29, 31, 0.2);
+  transform: translate(-50%, -50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .property-map-price-marker__chip {
+    transition: none;
   }
 }
 
