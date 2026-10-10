@@ -99,6 +99,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
+    caret-color: var(--color-ink);
   }
   h1,
   h2,
@@ -107,6 +108,16 @@
     @apply font-serif;
     text-wrap: balance;
   }
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-snow);
+}
+
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline-color: var(--color-ink);
+  outline-offset: 3px;
 }
 
 @layer utilities {

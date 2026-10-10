@@ -42,7 +42,7 @@ const PropertyCard = ({
   return (
     <div
       className={clsx(
-        "group relative block bg-white border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-[box-shadow,border-color] duration-200 motion-reduce:transition-none h-full",
+        "group relative block h-full overflow-hidden bg-white shadow-apple transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-apple-hover focus-within:ring-2 focus-within:ring-ink/40 focus-within:ring-offset-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         isCompact ? "rounded-xl" : "rounded-2xl",
         className,
       )}
@@ -64,7 +64,10 @@ const PropertyCard = ({
           className="max-sm:w-10 max-sm:h-10 shadow-apple-sm"
         />
       </div>
-      <Link href={`/properties/${property.slug}`} className="block h-full">
+      <Link
+        href={`/properties/${property.slug}`}
+        className="block h-full focus-visible:outline-none"
+      >
         <div
           className={clsx(
             "relative overflow-hidden bg-cloud",

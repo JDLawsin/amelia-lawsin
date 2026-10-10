@@ -1,11 +1,9 @@
 import { TESTIMONIALS } from "@/constants";
-import SectionLabel from "@/components/ui/SectionLabel";
 
 const TestimonialsSection = () => (
-  <section className="py-14 px-6 bg-white border-b border-wire">
+  <section className="border-b border-wire bg-white px-6 py-20 md:py-24">
     <div className="max-w-7xl mx-auto">
-      <SectionLabel>What clients say</SectionLabel>
-      <h2 className="text-2xl md:text-3xl font-serif font-medium text-ink tracking-tight leading-snug text-center mb-10">
+      <h2 className="mx-auto mb-12 max-w-2xl text-center text-3xl font-serif font-medium leading-tight tracking-[-0.025em] text-ink md:text-4xl">
         Real experiences from real clients
       </h2>
 
@@ -15,10 +13,10 @@ const TestimonialsSection = () => (
             key={testimonial.name}
             className="bg-white px-6 py-7 flex flex-col"
           >
-            <p className="text-3xl text-wire font-serif leading-none mb-4">
+            <p className="mb-5 text-5xl font-serif leading-none text-wire" aria-hidden="true">
               &ldquo;
             </p>
-            <p className="text-sm text-ash leading-relaxed flex-1 mb-5">
+            <p className="mb-6 flex-1 text-sm leading-relaxed text-ash">
               {testimonial.message}
             </p>
             <div className="flex items-center gap-3 pt-4">

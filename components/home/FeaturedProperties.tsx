@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { PropertyListItem } from "@/services/property.service";
 import PropertyCard from "@/app/(public)/(site)/properties/_components/PropertyCard";
-import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaSecondary } from "@/components/ui/cta";
 import FeaturedPropertiesSnapRow from "./FeaturedPropertiesSnapRow";
 
@@ -13,11 +12,10 @@ const FeaturedProperties = ({ properties }: Props) => {
   if (!properties.length) return null;
 
   return (
-    <section className="py-14 px-6 bg-cloud border-b border-wire">
+    <section className="border-b border-wire bg-cloud px-6 py-20 md:py-24">
       <div className="max-w-7xl mx-auto">
-        <SectionLabel>Featured properties</SectionLabel>
-        <h2 className="text-2xl md:text-3xl font-serif font-medium text-ink tracking-tight leading-snug text-center mb-10">
-          Handpicked listings across Cebu
+        <h2 className="mx-auto mb-12 max-w-2xl text-center text-3xl font-serif font-medium leading-tight tracking-[-0.025em] text-ink md:text-4xl">
+          Handpicked featured properties across Cebu
         </h2>
 
         <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">

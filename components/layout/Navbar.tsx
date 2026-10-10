@@ -44,12 +44,16 @@ export const Navbar = () => {
           "sticky top-0 z-50 w-full",
           "border-b border-wire",
           "bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60",
-          "px-6 2xl:px-0",
+          "px-5 sm:px-6 2xl:px-0",
           "shadow-apple-sm",
         )}
       >
-        <div className="container flex h-20 max-w-7xl mx-auto items-center justify-between gap-8">
-          <Link href="/" className="flex items-center shrink-0">
+        <div className="container flex h-19 max-w-7xl mx-auto items-center justify-between gap-8">
+          <Link
+            href="/"
+            aria-label="Amelia Lawsin home"
+            className="flex items-center shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-4"
+          >
             <Logo />
           </Link>
 
@@ -63,11 +67,14 @@ export const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "inline-flex h-9 items-center px-4 py-2 rounded-md",
-                    "text-sm font-medium transition-colors",
+                    "text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/35 focus-visible:ring-offset-2",
                     "hover:bg-cloud hover:text-ink",
-                    isActive ? "text-ink font-semibold" : "text-ash",
+                    isActive
+                      ? "bg-cloud text-ink font-semibold"
+                      : "text-ash",
                   )}
                 >
                   {link.label}

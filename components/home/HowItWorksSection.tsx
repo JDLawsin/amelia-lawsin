@@ -1,11 +1,9 @@
 import { HOW_IT_WORKS } from "@/constants";
-import SectionLabel from "@/components/ui/SectionLabel";
 
 const HowItWorksSection = () => (
-  <section className="py-14 px-6 bg-cloud border-b border-wire">
+  <section className="border-b border-wire bg-cloud px-6 py-20 md:py-24">
     <div className="max-w-7xl mx-auto">
-      <SectionLabel>How it works</SectionLabel>
-      <h2 className="text-2xl md:text-3xl font-serif font-medium text-ink tracking-tight leading-snug text-center mb-10">
+      <h2 className="mx-auto mb-14 max-w-2xl text-center text-3xl font-serif font-medium leading-tight tracking-[-0.025em] text-ink md:text-4xl">
         Simple steps to find your property
       </h2>
 
@@ -26,10 +24,10 @@ const HowItWorksSection = () => (
               </div>
             </div>
 
-            <h3 className="text-sm font-medium text-ink tracking-tight">
+            <h3 className="text-base font-medium text-ink tracking-tight">
               {step.title}
             </h3>
-            <p className="text-xs text-ash leading-relaxed">
+            <p className="max-w-56 text-sm text-ash leading-relaxed">
               {step.description}
             </p>
           </div>

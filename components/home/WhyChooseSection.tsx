@@ -1,5 +1,3 @@
-import SectionLabel from "@/components/ui/SectionLabel";
-
 const icons = {
   experience: (
     <svg
@@ -101,24 +99,23 @@ const WHY_CHOOSE = [
 ];
 
 const WhyChooseSection = () => (
-  <section className="border-b border-wire bg-white py-14 px-6">
+  <section className="border-b border-wire bg-white px-6 py-20 md:py-24">
     <div className="max-w-7xl mx-auto">
-      <SectionLabel>Why choose Amelia</SectionLabel>
-      <h2 className="text-2xl md:text-3xl font-serif font-medium text-ink tracking-tight leading-snug text-center mb-10">
+      <h2 className="mx-auto mb-12 max-w-2xl text-center text-3xl font-serif font-medium leading-tight tracking-[-0.025em] text-ink md:text-4xl">
         Your trusted partner every step of the way
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 divide-y divide-wire border-y border-wire md:grid-cols-3 md:divide-x md:divide-y-0">
         {WHY_CHOOSE.map((item) => (
           <div
             key={item.title}
-            className="border border-wire rounded-2xl p-6 hover:shadow-apple-sm transition-shadow duration-200"
+            className="px-1 py-8 sm:px-6 md:px-8 md:py-10"
           >
-            <div className="w-9 h-9 bg-ink rounded-xl flex items-center justify-center mb-4">
+            <div className="mb-5 flex size-10 items-center justify-center rounded-xl bg-ink">
               {item.icon}
             </div>
-            <h3 className="text-sm font-medium text-ink mb-2">{item.title}</h3>
-            <p className="text-xs text-ash leading-relaxed">
+            <h3 className="mb-2 text-base font-medium text-ink">{item.title}</h3>
+            <p className="max-w-sm text-sm leading-relaxed text-ash">
               {item.description}
             </p>
           </div>

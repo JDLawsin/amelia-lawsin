@@ -17,10 +17,10 @@ const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => {
   });
 
   return (
-  <Link
-    href={`/blog/${blog.slug}`}
-    className="group flex flex-col bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
-  >
+    <Link
+      href={`/blog/${blog.slug}`}
+      className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-apple transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-apple-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+    >
     <div className="relative aspect-[16/9] overflow-hidden bg-cloud">
       {coverSrc ? (
         <Image
@@ -30,7 +30,7 @@ const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => {
           sizes={BLOG_CARD_IMAGE_SIZES}
           loading={loading}
           decoding="async"
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -75,7 +75,7 @@ const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => {
         )}
       </div>
     </div>
-  </Link>
+    </Link>
   );
 };
 
