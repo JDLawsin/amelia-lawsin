@@ -139,6 +139,20 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run start`      | Start the production server                                |
 | `npm run lint`       | Run ESLint                                                 |
 | `npm run type-check` | Run the TypeScript type checker (`tsc --noEmit`)           |
+| `npm run test:e2e`   | Run the Playwright E2E suite in Chromium                    |
+
+### End-to-end tests
+
+Install Chromium once with `npm run test:e2e:install`, then run
+`npm run test:e2e`. Playwright starts the local Next.js development server when
+`PLAYWRIGHT_BASE_URL` is unset.
+
+The navigation and logged-out admin redirect tests run with the normal app
+configuration. Set `E2E_DRAFT_PROPERTY_SLUG` to exercise the draft 404. The
+publish flow also needs `E2E_DRAFT_PROPERTY_TITLE`, `E2E_ADMIN_EMAIL`, and
+`E2E_ADMIN_PASSWORD` for an email/password admin in the same development
+Supabase project. Set `E2E_ALLOW_WRITES=1` to enable inquiry and booking
+submissions. Use development or disposable test data, never production.
 
 ## Project Structure
 
