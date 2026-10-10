@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useEffectEvent, useRef } from "react";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -117,8 +117,6 @@ export const useFormDraft = <
   debounceMs = 400,
 }: UseFormDraftOptions<TFieldValues, TMeta>) => {
   const readyRef = useRef(false);
-  const metaRef = useRef(meta);
-  metaRef.current = meta;
 
   const {
     reset,
@@ -127,8 +125,10 @@ export const useFormDraft = <
     formState: { isDirty },
   } = form;
 
-  const isDirtyRef = useRef(isDirty);
-  isDirtyRef.current = isDirty;
+  const saveDraft = useEffectEvent((values: unknown) => {
+    if (!isDirty) return;
+    writeDraft(storageKey, values, meta);
+  });
 
   // Restore once on mount
   useEffect(() => {
@@ -163,11 +163,10 @@ export const useFormDraft = <
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const subscription = watch((values) => {
-      if (!readyRef.current || !isDirtyRef.current) return;
+      if (!readyRef.current) return;
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        if (!isDirtyRef.current) return;
-        writeDraft(storageKey, values, metaRef.current);
+        saveDraft(values);
       }, debounceMs);
     });
 

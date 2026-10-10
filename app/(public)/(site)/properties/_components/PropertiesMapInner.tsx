@@ -48,7 +48,6 @@ const MapCebuBoundsLock = () => {
   useEffect(() => {
     const bounds = L.latLngBounds(CEBU_MAP_MAX_BOUNDS);
     map.setMaxBounds(bounds);
-    map.options.maxBoundsViscosity = CEBU_MAP_MAX_BOUNDS_VISCOSITY;
     map.setMinZoom(CEBU_MAP_MIN_ZOOM);
     map.setMaxZoom(CEBU_MAP_MAX_ZOOM);
   }, [map]);

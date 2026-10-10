@@ -11,7 +11,7 @@ import {
   PROPERTY_CARD_IMAGE_WIDTH,
 } from "@/lib/image-layout";
 import { getPropertyTypeMapMeta } from "@/lib/property-type-map";
-import { getPropertyTypeIcon } from "@/lib/property-type-icons";
+import { PropertyTypeIcon } from "@/lib/property-type-icons";
 import { STATUS_LABELS, STATUS_STYLES } from "@/constants";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { CompareButton } from "@/components/tools/CompareButton";
@@ -40,7 +40,6 @@ const MapPropertyPreviewCard = ({
     .filter(Boolean)
     .join(" · ");
   const typeMeta = getPropertyTypeMapMeta(property.type);
-  const TypeIcon = getPropertyTypeIcon(property.type);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -109,7 +108,8 @@ const MapPropertyPreviewCard = ({
               className="flex shrink-0 items-center justify-center w-3.5 h-3.5 rounded-full"
               style={{ backgroundColor: typeMeta.accent }}
             >
-              <TypeIcon
+              <PropertyTypeIcon
+                type={property.type}
                 className="w-2 h-2 text-white"
                 strokeWidth={2.25}
                 aria-hidden="true"

@@ -137,10 +137,6 @@ const PropertiesClient = ({
 
 
 
-  useEffect(() => {
-    if (!isMapView) setMapLiveTotal(null);
-  }, [isMapView]);
-
   const displayTotal =
     isMapView && mapLiveTotal != null ? mapLiveTotal : total;
 
@@ -250,6 +246,7 @@ const PropertiesClient = ({
       {isMapView ? (
         <div className={isMobile ? "flex-1 min-h-0" : undefined}>
           <PropertiesMapBrowse
+            key={listFilterSignature}
             initialProperties={properties}
             initialTotal={total}
             pageSize={pageSize}

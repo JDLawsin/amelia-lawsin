@@ -12,17 +12,19 @@ export const useRotatingLoadingMessage = (
   enabled = true,
 ): string => {
   const messages = LOADING_MESSAGES[context];
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [context]);
+  const [rotation, setRotation] = useState({ context, index: 0 });
+  const index = rotation.context === context ? rotation.index : 0;
 
   useEffect(() => {
     if (!enabled || messages.length <= 1) return;
 
     const timer = setInterval(() => {
-      setIndex((current) => (current + 1) % messages.length);
+      setRotation((current) => ({
+        context,
+        index:
+          ((current.context === context ? current.index : 0) + 1) %
+          messages.length,
+      }));
     }, intervalMs);
 
     return () => clearInterval(timer);

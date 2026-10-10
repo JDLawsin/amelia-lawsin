@@ -1,7 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+} from "react";
 import { useDebounce } from "@uidotdev/usehooks";
 import useUpdateQueryString from "@/hooks/useQueryString";
 
@@ -30,6 +36,7 @@ const useDebouncedQueryParam = (
 ) => {
   const searchParams = useSearchParams();
   const updateQueryString = useUpdateQueryString();
+  const updateQueryStringEvent = useEffectEvent(updateQueryString);
   const urlValue = searchParams.get(key) ?? "";
   const seed = initialValue !== undefined ? initialValue : urlValue;
 
@@ -37,20 +44,14 @@ const useDebouncedQueryParam = (
   const debouncedValue = useDebounce(localValue, delay);
   const committedRef = useRef(seed.trim());
 
-  const updateQueryStringRef = useRef(updateQueryString);
-  useEffect(() => {
-    updateQueryStringRef.current = updateQueryString;
-  });
-
   const trimmedLocal = localValue.trim();
   const trimmedUrl = urlValue.trim();
   const isPending = trimmedLocal !== trimmedUrl;
-  const resetKeysKey = resetKeys.join("\0");
+  const resetKeysKey = JSON.stringify(resetKeys);
 
   // External URL changes only (chip links, back/forward) — not our own commits.
   useEffect(() => {
-    const urlTrimmed = urlValue.trim();
-    if (urlTrimmed === committedRef.current) return;
+    if (trimmedUrl === committedRef.current) return;
 
     // User is ahead of the URL — don't pull stale searchParams into the input.
     if (trimmedLocal !== trimmedUrl && trimmedLocal !== committedRef.current) {
@@ -59,31 +60,32 @@ const useDebouncedQueryParam = (
 
     // Brief empty searchParams during Suspense — ignore if input still matches commit.
     if (
-      !urlTrimmed &&
+      !trimmedUrl &&
       committedRef.current &&
       trimmedLocal === committedRef.current
     ) {
       return;
     }
 
-    committedRef.current = urlTrimmed;
+    committedRef.current = trimmedUrl;
     setLocalValue(urlValue);
-  }, [urlValue, trimmedLocal, debouncedValue]);
+  }, [urlValue, trimmedLocal, trimmedUrl]);
 
   useEffect(() => {
     const next = debouncedValue.trim();
     if (next === trimmedUrl) return;
+    const keysToReset = JSON.parse(resetKeysKey) as string[];
 
     committedRef.current = next;
 
     if (next) {
-      updateQueryStringRef.current({ [key]: next }, resetKeys, {
+      updateQueryStringEvent({ [key]: next }, keysToReset, {
         replace: true,
       });
       return;
     }
 
-    updateQueryStringRef.current({}, [key, ...resetKeys], { replace: true });
+    updateQueryStringEvent({}, [key, ...keysToReset], { replace: true });
   }, [debouncedValue, key, resetKeysKey, trimmedUrl]);
 
   const clear = useCallback(() => {

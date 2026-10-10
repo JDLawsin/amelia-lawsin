@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef } from "react";
 import { PropertyListItem } from "@/services/property.service";
 import {
   buildPropertiesApiQuery,
-  buildPropertyListFilterSignature,
   parsePropertyListFilters,
 } from "@/lib/property-filters";
 
@@ -70,7 +69,7 @@ export const usePropertiesInfinite = ({
         pageSize,
       },
     ],
-    [filterSignature, initialProperties, initialTotal, pageSize],
+    [initialProperties, initialTotal, pageSize],
   );
 
   const { data, error, size, setSize, isValidating, isLoading } =

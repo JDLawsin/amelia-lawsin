@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { PropertyListItem } from "@/services/property.service";
 import {
@@ -56,14 +56,8 @@ const PropertiesMapBrowse = ({
   const [sheetOpen, setSheetOpen] = useState(true);
   const [mapBbox, setMapBbox] = useState<MapBbox | null>(null);
   const [fitBoundsKey, setFitBoundsKey] = useState(filterSignature);
-  const [viewedSlugs, setViewedSlugs] = useState<Set<string>>(
-    () => new Set(),
-  );
-  const lastStableTotal = useRef(initialTotal);
-
-  useEffect(() => {
-    setViewedSlugs(getMapViewedSlugs());
-  }, []);
+  const [viewedSlugs, setViewedSlugs] = useState(getMapViewedSlugs);
+  const [lastStableTotal, setLastStableTotal] = useState(initialTotal);
 
   const favoriteSlugSet = favoriteSet;
 
@@ -86,31 +80,24 @@ const PropertiesMapBrowse = ({
     },
     revalidateOnFocus: false,
     keepPreviousData: true,
+    onSuccess: (nextData) => {
+      if (nextData.total > 0) setLastStableTotal(nextData.total);
+    },
   });
 
   const properties = data?.properties ?? initialProperties;
   const total = data?.total ?? initialTotal;
 
-  if (!isValidating && total > 0) {
-    lastStableTotal.current = total;
-  }
-
   const displayTotal =
-    isValidating && total === 0 ? lastStableTotal.current : total;
+    isValidating && total === 0 ? lastStableTotal : total;
 
   useEffect(() => {
     onTotalChange?.(displayTotal);
   }, [displayTotal, onTotalChange]);
 
   useEffect(() => {
-    setMapBbox(null);
-    setFitBoundsKey(filterSignature);
-    setSelectedSlug(null);
-    setPreviewHidden(false);
-    setHoveredSlug(null);
-    lastStableTotal.current = initialTotal;
     clearMapViewport();
-  }, [filterSignature, initialTotal]);
+  }, []);
 
   const listHighlightSlug =
     selectedSlug && properties.some((p) => p.slug === selectedSlug)

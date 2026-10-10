@@ -3,7 +3,6 @@ import "leaflet.markercluster";
 import type * as L from "leaflet";
 
 declare module "leaflet" {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface MarkerClusterGroupOptions extends L.LayerOptions {
     chunkedLoading?: boolean;
   }
@@ -13,7 +12,6 @@ declare module "leaflet" {
     removeLayer(layer: L.Layer): this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace markerClusterGroup {
     function markerClusterGroup(
       options?: MarkerClusterGroupOptions,

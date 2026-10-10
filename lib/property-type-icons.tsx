@@ -6,6 +6,7 @@ import {
   Store,
   Palmtree,
   type LucideIcon,
+  type LucideProps,
 } from "lucide-react";
 import { PropertyType } from "@/app/generated/prisma/enums";
 
@@ -25,4 +26,26 @@ export const getPropertyTypeIcon = (
     return PROPERTY_TYPE_ICONS[type as PropertyType];
   }
   return Home;
+};
+
+export const PropertyTypeIcon = ({
+  type,
+  ...props
+}: LucideProps & { type: string | null | undefined }) => {
+  switch (type) {
+    case PropertyType.CONDO:
+      return <Building2 {...props} />;
+    case PropertyType.HOUSE_AND_LOT:
+      return <Home {...props} />;
+    case PropertyType.TOWNHOUSE:
+      return <Building {...props} />;
+    case PropertyType.LOT_ONLY:
+      return <LandPlot {...props} />;
+    case PropertyType.COMMERCIAL:
+      return <Store {...props} />;
+    case PropertyType.BEACH_VACATION:
+      return <Palmtree {...props} />;
+    default:
+      return <Home {...props} />;
+  }
 };

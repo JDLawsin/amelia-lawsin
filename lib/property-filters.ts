@@ -65,7 +65,8 @@ export const parsePropertyListFilters = (
   params: SearchParamSource,
   defaults?: { pageSize?: number },
 ): Omit<PropertyFilters, "page"> => {
-  const { page: _page, ...filters } = parsePropertyFilters(params, defaults);
+  const filters = parsePropertyFilters(params, defaults);
+  delete filters.page;
   return filters;
 };
 
