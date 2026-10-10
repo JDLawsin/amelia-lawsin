@@ -50,6 +50,7 @@ export const getDashboardMetrics = async (): Promise<DashboardMetrics> => {
     prisma.property.count({
       where: {
         deletedAt: null,
+        isPublished: true,
         status: {
           in: [
             PropertyStatus.FOR_SALE,
@@ -63,11 +64,12 @@ export const getDashboardMetrics = async (): Promise<DashboardMetrics> => {
       where: { isArchived: false },
     }),
     prisma.property.count({
-      where: { deletedAt: null, isFeatured: true },
+      where: { deletedAt: null, isPublished: true, isFeatured: true },
     }),
     prisma.property.count({
       where: {
         deletedAt: null,
+        isPublished: true,
         status: { in: [PropertyStatus.SOLD, PropertyStatus.RENTED] },
       },
     }),

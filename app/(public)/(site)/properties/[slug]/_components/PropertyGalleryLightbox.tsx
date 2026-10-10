@@ -5,6 +5,11 @@ import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import type { GalleryImage } from "./PropertyGalleryGrid";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
+import {
+  LIGHTBOX_IMAGE_WIDTH,
+  PROPERTY_GALLERY_THUMB_WIDTH,
+} from "@/lib/image-layout";
 
 type Props = {
   images: GalleryImage[];
@@ -75,10 +80,15 @@ const PropertyGalleryLightbox = ({
 
       <div className="relative w-full max-w-4xl max-h-[80vh] mx-16">
         <Image
-          src={images[activeIndex].url}
+          src={
+            cloudinaryDeliveryUrl(images[activeIndex].url, {
+              width: LIGHTBOX_IMAGE_WIDTH,
+              quality: "auto:best",
+            }) ?? images[activeIndex].url
+          }
           alt={images[activeIndex].caption ?? title}
-          width={1200}
-          height={800}
+          width={LIGHTBOX_IMAGE_WIDTH}
+          height={1280}
           className="object-contain w-full h-full max-h-[80vh]"
         />
         {images[activeIndex].caption && (
@@ -116,7 +126,12 @@ const PropertyGalleryLightbox = ({
               aria-current={i === activeIndex ? "true" : undefined}
             >
               <Image
-                src={img.url}
+                src={
+                  cloudinaryDeliveryUrl(img.url, {
+                    width: PROPERTY_GALLERY_THUMB_WIDTH,
+                    quality: "auto",
+                  }) ?? img.url
+                }
                 alt=""
                 width={48}
                 height={32}

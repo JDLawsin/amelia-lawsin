@@ -26,6 +26,8 @@ const propertyListSelect = {
   isBankFinancingReady: true,
   isInHouseFinancing: true,
   isRentToOwn: true,
+  latitude: true,
+  longitude: true,
   images: {
     select: { url: true, isPrimary: true },
     orderBy: { order: "asc" as const },
@@ -69,6 +71,7 @@ const propertyDetailSelect = {
   developerName: true,
   projectPhase: true,
   expectedTurnover: true,
+  virtualTourUrl: true,
   createdAt: true,
   images: {
     select: {
@@ -177,6 +180,12 @@ export type PropertyFilters = {
   sort?: string;
   page?: number;
   pageSize?: number;
+  bbox?: {
+    minLat: number;
+    maxLat: number;
+    minLng: number;
+    maxLng: number;
+  };
 };
 
 const buildWhereClause = (
@@ -184,6 +193,7 @@ const buildWhereClause = (
 ): Prisma.PropertyWhereInput => {
   const where: Prisma.PropertyWhereInput = {
     deletedAt: null,
+    isPublished: true,
     status: { notIn: ["SOLD", "RENTED"] },
   };
 
@@ -235,6 +245,17 @@ const buildWhereClause = (
     ];
   }
 
+  if (filters.bbox) {
+    where.latitude = {
+      gte: filters.bbox.minLat,
+      lte: filters.bbox.maxLat,
+    };
+    where.longitude = {
+      gte: filters.bbox.minLng,
+      lte: filters.bbox.maxLng,
+    };
+  }
+
   return where;
 };
 
@@ -260,6 +281,7 @@ export const getFeaturedProperties = async (
   return prisma.property.findMany({
     where: {
       isFeatured: true,
+      isPublished: true,
       deletedAt: null,
       status: { notIn: ["SOLD", "RENTED"] },
     },
@@ -273,6 +295,7 @@ export const getActiveListingsCount = async (): Promise<number> => {
   return prisma.property.count({
     where: {
       deletedAt: null,
+      isPublished: true,
       status: { notIn: ["SOLD", "RENTED"] },
     },
   });
@@ -302,36 +325,59 @@ export const getPropertiesCount = async (
   });
 };
 
+export const getMapProperties = async (
+  filters: PropertyFilters = {},
+  limit = 200,
+): Promise<PropertyListItem[]> => {
+  const where = buildWhereClause(filters);
+  const orderBy = buildOrderBy(filters.sort);
+
+  return prisma.property.findMany({
+    where: {
+      ...where,
+      latitude: { not: null },
+      longitude: { not: null },
+    },
+    select: propertyListSelect,
+    orderBy,
+    take: limit,
+  });
+};
+
 export const getPropertiesBySlugs = async (
   slugs: string[],
 ): Promise<PropertyListItem[]> => {
-  if (slugs.length === 0) return [];
+  const capped = slugs.slice(0, 10);
+  if (capped.length === 0) return [];
 
   const properties = await prisma.property.findMany({
     where: {
-      slug: { in: slugs },
+      slug: { in: capped },
       deletedAt: null,
+      isPublished: true,
     },
     select: propertyListSelect,
   });
 
-  return orderBySlugList(properties, slugs);
+  return orderBySlugList(properties, capped);
 };
 
 export const getComparePropertiesBySlugs = async (
   slugs: string[],
 ): Promise<ComparePropertyItem[]> => {
-  if (slugs.length === 0) return [];
+  const capped = slugs.slice(0, 10);
+  if (capped.length === 0) return [];
 
   const properties = await prisma.property.findMany({
     where: {
-      slug: { in: slugs },
+      slug: { in: capped },
       deletedAt: null,
+      isPublished: true,
     },
     select: comparePropertySelect,
   });
 
-  return orderBySlugList(properties, slugs);
+  return orderBySlugList(properties, capped);
 };
 
 export const getPropertyBySlug = async (
@@ -341,6 +387,7 @@ export const getPropertyBySlug = async (
     where: {
       slug,
       deletedAt: null,
+      isPublished: true,
     },
     select: propertyDetailSelect,
   });
@@ -353,6 +400,7 @@ export const getRelatedProperties = async (
   return prisma.property.findMany({
     where: {
       deletedAt: null,
+      isPublished: true,
       status: { notIn: ["SOLD", "RENTED"] },
       type: property.type,
       city: property.city,
@@ -368,6 +416,7 @@ export async function getLatestListing(): Promise<PropertyListItem | null> {
   return prisma.property.findFirst({
     where: {
       deletedAt: null,
+      isPublished: true,
       status: { notIn: ["SOLD", "RENTED"] },
       images: { some: {} },
     },

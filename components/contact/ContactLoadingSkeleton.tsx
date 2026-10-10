@@ -14,8 +14,8 @@ const ContactLoadingSkeleton = () => (
           property together.
         </h1>
         <p className="text-sm text-ash leading-relaxed max-w-md mx-auto">
-          Reach out via your preferred channel — Messenger, SMS, Viber, or
-          email. Free consultation, no commitment required.
+          Reach out via Messenger, WhatsApp, or email. On mobile you can also
+          call, SMS, or Viber. Free consultation, no commitment required.
         </p>
       </div>
     </section>
@@ -23,7 +23,7 @@ const ContactLoadingSkeleton = () => (
     <section className="bg-cloud border-b border-wire" aria-hidden="true">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="h-3 w-44 rounded bg-wire/40 mx-auto mb-6" />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-wire rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-wire rounded-2xl overflow-hidden">
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="bg-white p-6 min-h-[11.5rem]">
               <div className="w-10 h-10 rounded-xl bg-cloud mb-4" />

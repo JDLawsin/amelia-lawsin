@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+import { buildViberForwardUrl, MOBILE_ONLY_CLASS } from "@/lib/contact-channels";
 
 type Props = {
   title: string;
@@ -19,7 +20,7 @@ const ShareButtons = ({ title, url, variant = "inline" }: Props) => {
   };
 
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-  const viberUrl = `viber://forward?text=${encodeURIComponent(`${title} ${url}`)}`;
+  const viberUrl = buildViberForwardUrl(`${title} ${url}`);
 
   if (variant === "inline") {
     return (
@@ -81,7 +82,7 @@ const ShareButtons = ({ title, url, variant = "inline" }: Props) => {
         </button>
         <a
           href={viberUrl}
-          className="w-full bg-cloud rounded-lg py-2 text-xs text-ash text-center hover:text-ink transition-colors"
+          className={`w-full bg-cloud rounded-lg py-2 text-xs text-ash text-center hover:text-ink transition-colors ${MOBILE_ONLY_CLASS}`}
         >
           Share on Viber
         </a>

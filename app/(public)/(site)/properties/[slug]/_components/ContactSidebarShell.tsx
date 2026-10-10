@@ -1,5 +1,15 @@
 import { SITE_CONFIG } from "@/constants";
 import { formatPrice } from "@/lib/utils";
+import { buildPropertyWhatsAppUrl } from "@/lib/whatsapp-url";
+import {
+  buildMessengerUrl,
+  buildPropertyInterestMessage,
+  buildSmsUrl,
+  buildViberForwardUrl,
+  CONTACT_LABELS,
+  MOBILE_ONLY_CLASS,
+  phoneTelHref,
+} from "@/lib/contact-channels";
 import type { PropertyDetail } from "@/services/property.service";
 
 export type ContactSidebarProps = {
@@ -29,11 +39,10 @@ const ContactSidebarShell = ({ property, shareUrl }: ContactSidebarProps) => {
     .filter(Boolean)
     .join(", ");
 
-  const messageText = encodeURIComponent(
-    `Hi Amelia! I'm interested in: ${property.title}. Can you send me more details?`,
-  );
-  const messengerUrl = `${SITE_CONFIG.messengerUrl}?text=${messageText}`;
-  const smsUrl = `sms:${SITE_CONFIG.phone}?body=${messageText}`;
+  const interestMessage = buildPropertyInterestMessage(property.title);
+  const messengerUrl = buildMessengerUrl(interestMessage);
+  const smsUrl = buildSmsUrl(interestMessage);
+  const whatsappUrl = buildPropertyWhatsAppUrl(property.title, shareUrl);
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
   const financingTags = [
@@ -60,19 +69,60 @@ const ContactSidebarShell = ({ property, shareUrl }: ContactSidebarProps) => {
           Message on Messenger
         </a>
 
+        {whatsappUrl && (
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-full h-11 bg-[#25D366] text-white text-sm font-medium rounded-xl hover:bg-[#20bd5a] transition-colors mb-2"
+          >
+            Chat on WhatsApp
+          </a>
+        )}
+
+        <a
+          href={phoneTelHref}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.call}
+        </a>
+
         <a
           href={smsUrl}
-          className="flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2"
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
         >
-          Send SMS / Viber
+          {CONTACT_LABELS.sms}
+        </a>
+
+        <a
+          href={SITE_CONFIG.viberUrl}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.viber}
         </a>
 
         <button
           type="button"
           disabled
-          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl opacity-70"
+          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl opacity-70 mb-2"
+        >
+          Schedule a viewing
+        </button>
+
+        <button
+          type="button"
+          disabled
+          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl opacity-70 mb-2"
         >
           Send an inquiry
+        </button>
+
+        <button
+          type="button"
+          disabled
+          className="flex items-center justify-center w-full h-11 bg-cloud text-ash text-sm border border-wire rounded-xl opacity-70 mb-2"
+        >
+          Print fact sheet
         </button>
 
         <div className="h-px bg-wire my-4" />
@@ -124,8 +174,8 @@ const ContactSidebarShell = ({ property, shareUrl }: ContactSidebarProps) => {
             Copy link
           </button>
           <a
-            href={`viber://forward?text=${encodeURIComponent(`${property.title} ${shareUrl}`)}`}
-            className="flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors"
+            href={buildViberForwardUrl(`${property.title} ${shareUrl}`)}
+            className={`flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors ${MOBILE_ONLY_CLASS}`}
           >
             Viber
           </a>

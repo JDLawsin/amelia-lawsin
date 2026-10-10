@@ -7,6 +7,8 @@ import { Plus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { FullPropertyFormValues } from "@/app/(admin)/admin/properties/_schema/property.schema";
 import { PropertyStatus } from "@/app/generated/prisma/enums";
+import { compressImage } from "@/lib/image/compressImage";
+import { ALLOWED_TYPES, MAX_SIZE } from "@/constants";
 
 interface UnitsStepProps {
   control: Control<FullPropertyFormValues>;
@@ -27,13 +29,26 @@ const UnitsStep = ({ control }: UnitsStepProps) => {
     name: "units",
   });
 
-  const handleFloorPlanChange = (
+  const handleFloorPlanChange = async (
     index: number,
     file: File | undefined,
   ) => {
+    if (!file) {
+      update(index, {
+        ...fields[index],
+        floorPlanImageFile: undefined,
+      } as FullPropertyFormValues["units"][number]);
+      return;
+    }
+
+    if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_SIZE) {
+      return;
+    }
+
+    const compressed = await compressImage(file, { preset: "floorPlan" });
     update(index, {
       ...fields[index],
-      floorPlanImageFile: file,
+      floorPlanImageFile: compressed,
     } as FullPropertyFormValues["units"][number]);
   };
 

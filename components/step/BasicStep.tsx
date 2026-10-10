@@ -142,6 +142,21 @@ const BasicStep = ({ control }: Props) => (
     <SectionLabel>Visibility</SectionLabel>
 
     <Controller
+      name="isPublished"
+      control={control}
+      render={({ field }) => (
+        <FormCheckbox
+          id="isPublished"
+          name="isPublished"
+          label="Publish listing"
+          hint="Published listings appear on the public site. Leave unchecked to save as a draft."
+          checked={Boolean(field.value)}
+          onCheckedChange={field.onChange}
+        />
+      )}
+    />
+
+    <Controller
       name="isFeatured"
       control={control}
       render={({ field }) => (
@@ -149,7 +164,7 @@ const BasicStep = ({ control }: Props) => (
           id="isFeatured"
           name="isFeatured"
           label="Mark as featured"
-          hint="Featured properties appear on the homepage and are highlighted in listings."
+          hint="Featured properties appear on the homepage and are highlighted in listings. Only applies when published."
           checked={Boolean(field.value)}
           onCheckedChange={field.onChange}
         />

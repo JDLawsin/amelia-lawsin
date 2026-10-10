@@ -1,7 +1,11 @@
 "use client";
 
 import SearchInput from "@/components/ui/SearchInput";
-import { STATUS_LABELS, TYPE_LABELS } from "@/constants";
+import {
+  PROPERTY_VISIBILITY_LABELS,
+  STATUS_LABELS,
+  TYPE_LABELS,
+} from "@/constants";
 import useUpdateQueryString from "@/hooks/useQueryString";
 import { useDebounce } from "@uidotdev/usehooks";
 import {
@@ -11,12 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
+import { PropertyAdminVisibilityFilter } from "@/services/property.admin.service";
 import { useState, useEffect } from "react";
 
 const FiltersBar = ({
   filters,
 }: {
-  filters: { q?: string; status?: string; type?: string };
+  filters: {
+    q?: string;
+    status?: string;
+    type?: string;
+    visibility?: PropertyAdminVisibilityFilter;
+  };
 }) => {
   const updateQueryString = useUpdateQueryString();
   const [searchValue, setSearchValue] = useState(filters.q ?? "");
@@ -42,6 +52,27 @@ const FiltersBar = ({
       />
 
       <Select
+        value={filters.visibility ?? "all"}
+        onValueChange={(v) =>
+          updateQueryString({
+            visibility: v === "all" ? "" : v,
+            page: "1",
+          })
+        }
+      >
+        <SelectTrigger className="h-9 w-full sm:w-40 rounded-xl bg-white">
+          <SelectValue placeholder="All visibility" />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.entries(PROPERTY_VISIBILITY_LABELS).map(([v, l]) => (
+            <SelectItem key={v} value={v}>
+              {l}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
         value={filters.status ?? "all"}
         onValueChange={(v) =>
           updateQueryString({
@@ -51,10 +82,10 @@ const FiltersBar = ({
         }
       >
         <SelectTrigger className="h-9 w-full sm:w-35 rounded-xl bg-white">
-          <SelectValue placeholder="All status" />
+          <SelectValue placeholder="All market status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All status</SelectItem>
+          <SelectItem value="all">All market status</SelectItem>
           {Object.entries(STATUS_LABELS).map(([v, l]) => (
             <SelectItem key={v} value={v}>
               {l}

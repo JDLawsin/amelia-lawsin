@@ -7,6 +7,7 @@ import {
   BLOG_IMAGE_HEIGHT,
   BLOG_IMAGE_WIDTH,
 } from "@/lib/image-layout";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
 
 type RelatedBlogsProps = {
   blogs: BlogPreviewItem[];
@@ -30,7 +31,12 @@ const RelatedBlogs = ({ blogs }: RelatedBlogsProps) => {
             <div className="relative overflow-hidden bg-cloud aspect-video">
               {blog.coverImage ? (
                 <Image
-                  src={blog.coverImage}
+                  src={
+                    cloudinaryDeliveryUrl(blog.coverImage, {
+                      width: 384,
+                      quality: "auto",
+                    }) ?? blog.coverImage
+                  }
                   alt={blog.title}
                   width={BLOG_IMAGE_WIDTH}
                   height={BLOG_IMAGE_HEIGHT}

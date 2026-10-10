@@ -47,7 +47,7 @@ export const CompareButton = ({
       : "Add to compare";
 
   return (
-    <div className={cn("relative inline-flex", className)}>
+    <div className="relative inline-flex">
       <IconTooltip label={label}>
         <button
           type="button"
@@ -61,6 +61,7 @@ export const CompareButton = ({
             comparing
               ? "bg-ink text-white"
               : "bg-white/90 backdrop-blur-sm text-ash hover:text-ink hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed",
+            className,
           )}
         >
           <GitCompare

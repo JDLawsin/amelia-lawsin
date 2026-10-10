@@ -48,6 +48,7 @@ const CreateBlogContainer = ({ allTags }: Props) => {
         allTags={allTags}
         formAction={formAction}
         isPending={isPending}
+        actionSuccess={state?.success === true}
       />
     </div>
   );

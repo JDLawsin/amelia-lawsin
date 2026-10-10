@@ -18,7 +18,7 @@ const InquiryFormShell = () => (
 
       <input
         type="text"
-        name="honeypot"
+        name="website_url"
         tabIndex={-1}
         autoComplete="off"
         className="absolute opacity-0 -z-10"

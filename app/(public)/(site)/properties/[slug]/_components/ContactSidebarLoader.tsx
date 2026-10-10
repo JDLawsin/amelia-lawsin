@@ -13,27 +13,28 @@ const ContactSidebar = dynamic(() => import("./ContactSidebar"), {
 /** Defers sidebar hydration until near the viewport to reduce main-thread work. */
 const ContactSidebarLoader = (props: ContactSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(
+    () =>
+      typeof window !== "undefined" && !("IntersectionObserver" in window),
+  );
 
   useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+
     const el = ref.current;
     if (!el) return;
 
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setShouldLoad(true);
-            observer.disconnect();
-          }
-        },
-        { rootMargin: "300px" },
-      );
-      observer.observe(el);
-      return () => observer.disconnect();
-    }
-
-    setShouldLoad(true);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (

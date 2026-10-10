@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { ComparePropertyItem } from "@/services/property.service";
 import { formatPrice, getPrimaryImage } from "@/lib/utils";
 import { useCompare } from "@/providers/CompareProvider";
+import { PROPERTY_GALLERY_THUMB_WIDTH } from "@/lib/image-layout";
 
 type Props = {
   property: ComparePropertyItem;
@@ -13,7 +14,10 @@ type Props = {
 export const ComparePropertyRow = ({ property }: Props) => {
   const { removeCompare } = useCompare();
 
-  const imageUrl = getPrimaryImage(property.images);
+  const imageUrl = getPrimaryImage(property.images, {
+    width: PROPERTY_GALLERY_THUMB_WIDTH,
+    quality: "auto",
+  });
   const price = formatPrice(property);
   const location = [property.barangay, property.city]
     .filter(Boolean)

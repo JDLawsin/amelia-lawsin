@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
 import { Upload, X, Star, ChevronUp, ChevronDown } from "lucide-react";
 import clsx from "clsx";
-import { ALLOWED_TYPES, MAX_FILES, MAX_SIZE } from "@/constants";
+import { DROPZONE_ACCEPT, MAX_FILES, MAX_SIZE } from "@/constants";
 import { compressImage } from "@/lib/image/compressImage";
 
 export type ImageItem = {
@@ -41,7 +41,7 @@ const ImageItemsEditor = ({
 
       const filesToAdd = acceptedFiles.slice(0, remainingSlots);
       const compressed = await Promise.all(
-        filesToAdd.map((file) => compressImage(file)),
+        filesToAdd.map((file) => compressImage(file, { preset: "property" })),
       );
 
       const newItems: ImageItem[] = compressed.map((file, index) => ({
@@ -60,7 +60,7 @@ const ImageItemsEditor = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": ALLOWED_TYPES },
+    accept: DROPZONE_ACCEPT,
     multiple: true,
     maxSize,
   });

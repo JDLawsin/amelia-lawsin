@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
-import { getAdminInquiryById } from "@/services/inquiry.admin.service";
-import { markInquiryAsReadAction } from "@/actions/inquiry.action";
+import {
+  getAdminInquiryById,
+  markAdminInquiryAsRead,
+} from "@/services/inquiry.admin.service";
 import InquiryDetail from "./_components/InquiryDetail";
 
 type Props = {
@@ -13,15 +15,17 @@ const InquiryDetailPage = async ({ params }: Props) => {
 
   if (!inquiry) notFound();
 
-  if (!inquiry.isRead) {
-    await markInquiryAsReadAction(id, true);
+  const wasUnread = !inquiry.isRead;
+
+  if (wasUnread) {
+    await markAdminInquiryAsRead(id);
   }
 
-  const displayInquiry = inquiry.isRead
-    ? inquiry
-    : { ...inquiry, isRead: true };
+  const displayInquiry = wasUnread ? { ...inquiry, isRead: true } : inquiry;
 
-  return <InquiryDetail inquiry={displayInquiry} />;
+  return (
+    <InquiryDetail inquiry={displayInquiry} refreshCaches={wasUnread} />
+  );
 };
 
 export default InquiryDetailPage;

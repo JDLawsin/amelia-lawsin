@@ -14,6 +14,7 @@ export const SITE_CONFIG = {
 
   // Contact
   phone: "+63 956 500 5442",
+  whatsappNumber: "639565005442",
   email: "amelialawsin08@gmail.com",
   location: "Cebu, Philippines",
 
@@ -191,7 +192,7 @@ export const STATUS_VARIANT: Record<
 };
 
 export const BLOG_STATUS_LABELS: Record<string, string> = {
-  all: "All",
+  all: "All visibility",
   published: "Published",
   draft: "Draft",
   deleted: "Deleted",
@@ -206,8 +207,45 @@ export const BLOG_STATUS_VARIANTS: Record<
   deleted: "destructive",
 };
 
+/** Color classes for blog visibility badges */
+export const BLOG_STATUS_STYLES: Record<string, string> = {
+  published: "border-transparent bg-emerald-100 text-emerald-800",
+  draft: "border-transparent bg-amber-100 text-amber-800",
+  deleted: "border-transparent bg-red-100 text-red-800",
+};
+
+/** Visibility filters shared by property admin (Draft / Published / Deleted) */
+export const PROPERTY_VISIBILITY_LABELS: Record<string, string> = {
+  all: "All visibility",
+  published: "Published",
+  draft: "Draft",
+  deleted: "Deleted",
+};
+
+/** Color classes for visibility badges (Published = green, Draft = muted, Deleted = red) */
+export const PROPERTY_VISIBILITY_STYLES: Record<string, string> = {
+  published: "border-transparent bg-emerald-100 text-emerald-800",
+  draft: "border-transparent bg-amber-100 text-amber-800",
+  deleted: "border-transparent bg-red-100 text-red-800",
+};
+
+export const PROPERTY_VISIBILITY_VARIANTS: Record<
+  string,
+  "default" | "secondary" | "outline" | "destructive"
+> = {
+  published: "default",
+  draft: "secondary",
+  deleted: "destructive",
+};
+
 export const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 export const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+/** react-dropzone Accept map — MIME keys, not extensions */
+export const DROPZONE_ACCEPT = {
+  "image/jpeg": [],
+  "image/png": [],
+  "image/webp": [],
+} as const;
 export const MAX_FILES = 10;
 
 export const INQUIRY_STATUS_LABELS: Record<

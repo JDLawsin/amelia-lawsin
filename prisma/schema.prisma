@@ -54,6 +54,12 @@ enum InquiryStatus {
   CLOSED
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
 model Profile {
   id          String   @id 
   email       String   @unique
@@ -75,6 +81,7 @@ model Property {
   type                  PropertyType
   status                PropertyStatus
   listingType           ListingType             @default(BRAND_NEW)
+  isPublished           Boolean                 @default(false)
   isFeatured            Boolean                 @default(false)
   address               String
   city                  String                  @default("Cebu City")
@@ -103,6 +110,7 @@ model Property {
   developerName         String?
   projectPhase          String?
   expectedTurnover      String?
+  virtualTourUrl        String?
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
   deletedAt             DateTime?
@@ -114,6 +122,7 @@ model Property {
 
   @@index([city])
   @@index([type, status])
+  @@index([isPublished])
   @@index([isFeatured])
   @@index([deletedAt])
 
@@ -273,17 +282,17 @@ model TagsOnBlogs {
 
 model Inquiry {
   id               String        @id @default(uuid())
-  name             String
-  email            String
-  phone            String?
-  propertyType     String?
-  propertyTitle    String?
-  propertySlug     String?
-  propertyPrice    String?
-  propertyLocation String?
-  propertyStatus   String?
-  source           String
-  message          String
+  name             String        @db.VarChar(100)
+  email            String        @db.VarChar(254)
+  phone            String?       @db.VarChar(50)
+  propertyType     String?       @db.VarChar(50)
+  propertyTitle    String?       @db.VarChar(200)
+  propertySlug     String?       @db.VarChar(200)
+  propertyPrice    String?       @db.VarChar(100)
+  propertyLocation String?       @db.VarChar(200)
+  propertyStatus   String?       @db.VarChar(50)
+  source           String        @db.VarChar(50)
+  message          String        @db.VarChar(2000)
   status           InquiryStatus @default(NEW)
   isRead           Boolean       @default(false)
   isArchived       Boolean       @default(false)
@@ -297,4 +306,33 @@ model Inquiry {
   @@index([isRead])
   @@index([isArchived])
   @@map("inquiries")
+}
+
+model Booking {
+  id               String        @id @default(uuid())
+  name             String        @db.VarChar(100)
+  email            String        @db.VarChar(254)
+  phone            String?       @db.VarChar(50)
+  scheduledAt      DateTime // unique among CONFIRMED rows only (SQL partial unique index)
+  propertyTitle    String?       @db.VarChar(200)
+  propertySlug     String?       @db.VarChar(200)
+  propertyLocation String?       @db.VarChar(200)
+  notes            String?       @db.VarChar(500)
+  source           String        @db.VarChar(50)
+  status           BookingStatus @default(PENDING)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("bookings")
+}
+
+model FormWriteEvent {
+  id        String   @id @default(uuid())
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@map("form_write_events")
 }

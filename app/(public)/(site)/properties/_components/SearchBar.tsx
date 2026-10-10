@@ -14,12 +14,14 @@ type SearchBarProps = {
   isFilterOpen: boolean;
   onFilterToggle: () => void;
   activeFilterCount: number;
+  compact?: boolean;
 };
 
 const SearchBar = ({
   isFilterOpen,
   onFilterToggle,
   activeFilterCount,
+  compact = false,
 }: SearchBarProps) => {
   const updateQueryString = useUpdateQueryString();
   const searchParams = useSearchParams();
@@ -61,7 +63,12 @@ const SearchBar = ({
   }, [debouncedSearch]);
 
   return (
-    <div className="flex items-center gap-3 px-6 pt-5">
+    <div
+      className={clsx(
+        "flex items-center gap-3 px-6",
+        compact ? "pt-3 pb-2" : "pt-5",
+      )}
+    >
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash" />
         <Input

@@ -11,6 +11,7 @@ import {
   toolsPanelPositionClassName,
   toolsPanelSizeClassName,
 } from "@/components/tools/tools-layout";
+import LoadingStatusText from "@/components/ui/LoadingStatusText";
 
 type Props = {
   open: boolean;
@@ -75,8 +76,8 @@ export const ComparePanel = ({ open, onClose, onCompareNow }: Props) => {
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-0">
         {isPending && !hasFetched ? (
-          <div className="py-8 text-center text-xs text-ash">
-            Loading compare list…
+          <div className="py-8 text-center" role="status" aria-live="polite">
+            <LoadingStatusText context="compare" className="text-xs text-ash" />
           </div>
         ) : properties.length === 0 ? (
           <div className="py-8 text-center px-4">

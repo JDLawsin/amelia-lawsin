@@ -55,7 +55,7 @@ const FiltersBar = ({ filters }: Props) => {
         }
       >
         <SelectTrigger className="h-9 w-full sm:w-40 rounded-xl bg-white">
-          <SelectValue placeholder="All status" />
+          <SelectValue placeholder="All visibility" />
         </SelectTrigger>
         <SelectContent>
           {Object.entries(BLOG_STATUS_LABELS).map(([v, l]) => (

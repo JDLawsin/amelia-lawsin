@@ -11,7 +11,14 @@ export const BLOG_INLINE_IMAGE_SIZES = "(max-width: 768px) 100vw, 720px";
 export const PROPERTY_CARD_IMAGE_SIZES =
   "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px";
 
-export const HERO_IMAGE_SIZES = "(max-width: 1024px) 50vw, 40vw";
+/** 2-col mobile photo grid */
+export const PROPERTY_CARD_COMPACT_IMAGE_SIZES =
+  "(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 384px";
+
+export const HERO_IMAGE_SIZES = "(min-width: 768px) 62vw, 100vw";
+
+/** Full-width strip below hero copy on mobile */
+export const HERO_IMAGE_MOBILE_SIZES = "100vw";
 
 export const PROPERTY_GALLERY_PRIMARY_SIZES =
   "(max-width: 1024px) 100vw, 800px";
@@ -32,8 +39,17 @@ export const HERO_IMAGE_WIDTH = 1200;
 export const HERO_IMAGE_HEIGHT = 900;
 
 /** 3:2 — property detail gallery primary cell */
-export const PROPERTY_GALLERY_PRIMARY_WIDTH = 1200;
+export const PROPERTY_GALLERY_PRIMARY_WIDTH = 1600;
 export const PROPERTY_GALLERY_PRIMARY_HEIGHT = 800;
+
+/** Gallery strip thumbs */
+export const PROPERTY_GALLERY_THUMB_WIDTH = 400;
+
+/** Full-screen lightbox / full-bleed */
+export const LIGHTBOX_IMAGE_WIDTH = 1920;
+
+/** Open Graph / social share */
+export const OG_IMAGE_WIDTH = 1200;
 
 /** Full-width about hero (amelia.webp — 1080×1168 source) */
 export const ABOUT_HERO_IMAGE_SIZES = "(max-width: 768px) 100vw, 768px";

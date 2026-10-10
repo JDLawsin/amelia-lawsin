@@ -5,7 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import clsx from "clsx";
-import { ALLOWED_TYPES, MAX_FILES } from "@/constants";
+import { DROPZONE_ACCEPT, MAX_FILES } from "@/constants";
 import { compressImage } from "@/lib/image/compressImage";
 import { FieldError } from "react-hook-form";
 import Image from "next/image";
@@ -33,7 +33,9 @@ const MultiImageUpload = ({
     async (acceptedFiles: File[]) => {
       // 1. Compress images client-side before upload
       const compressedFiles = await Promise.all(
-        acceptedFiles.map((file) => compressImage(file)),
+        acceptedFiles.map((file) =>
+          compressImage(file, { preset: "property" }),
+        ),
       );
 
       // 2. Prevent duplicates by comparing name and size
@@ -55,7 +57,7 @@ const MultiImageUpload = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": ALLOWED_TYPES },
+    accept: DROPZONE_ACCEPT,
     multiple: true,
   });
 

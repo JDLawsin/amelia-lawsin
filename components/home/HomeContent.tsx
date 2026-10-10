@@ -42,7 +42,10 @@ const HomeContent = async () => {
   // steal the high-priority network slot). Desktop LCP = hero image.
   const mobileLcpProperty = featuredProperties[0];
   const mobileLcpImage = mobileLcpProperty
-    ? getPrimaryImage(mobileLcpProperty.images)
+    ? getPrimaryImage(mobileLcpProperty.images, {
+        width: PROPERTY_CARD_IMAGE_WIDTH,
+        quality: "auto",
+      })
     : null;
   if (mobileLcpImage) {
     preloadLcpImage(mobileLcpImage, mobileLcpProperty.title, {
@@ -53,7 +56,10 @@ const HomeContent = async () => {
   }
 
   const heroImage = latestListing
-    ? getPrimaryImage(latestListing.images)
+    ? getPrimaryImage(latestListing.images, {
+        width: HERO_IMAGE_WIDTH,
+        quality: "auto:best",
+      })
     : null;
 
   const baseUrl = getSiteUrl();

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Control, useController } from "react-hook-form";
+import { Control, Controller, useController } from "react-hook-form";
 import SectionLabel from "@/components/ui/SectionLabel";
+import FormInput from "@/components/ui/FormInput";
 import ImageItemsEditor, {
   ImageItem,
 } from "@/components/ui/ImageItemsEditor";
@@ -48,6 +49,26 @@ const MediaStep = ({ control }: MediaStepProps) => {
           value={JSON.stringify(deletedImageIds)}
         />
       )}
+
+      <SectionLabel>Virtual Tour / Video</SectionLabel>
+      <p className="text-xs text-ash -mt-2">
+        Optional. Paste a YouTube, Vimeo, or Matterport link for remote buyers.
+      </p>
+
+      <Controller
+        name="virtualTourUrl"
+        control={control}
+        render={({ field, fieldState }) => (
+          <FormInput
+            id="virtualTourUrl"
+            label="Tour or video URL"
+            placeholder="https://www.youtube.com/watch?v=..."
+            errors={fieldState.error ? [fieldState.error.message!] : undefined}
+            {...field}
+            value={field.value ?? ""}
+          />
+        )}
+      />
     </div>
   );
 };

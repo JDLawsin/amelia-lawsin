@@ -10,14 +10,17 @@ import {
   PROPERTY_TYPES,
   textareaStyles,
 } from "./inquiry-form.constants";
+import FormAltContactLinks from "@/components/contact/FormAltContactLinks";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
 
 const SuccessState = ({
   message,
   onReset,
+  alreadyOnFile,
 }: {
   message: string;
   onReset: () => void;
+  alreadyOnFile?: boolean;
 }) => (
   <div className="flex flex-col items-center justify-center py-12 text-center gap-4 animate-in fade-in zoom-in-95 duration-300">
     <div className="w-14 h-14 bg-cloud border border-wire rounded-full flex items-center justify-center">
@@ -38,16 +41,20 @@ const SuccessState = ({
     </div>
     <div>
       <p className="text-base font-serif font-medium text-ink mb-1">
-        Inquiry sent!
+        {alreadyOnFile ? "We already have this inquiry" : "Inquiry sent!"}
       </p>
       <p className="text-sm text-ash leading-relaxed max-w-xs mb-4">{message}</p>
-      <button
-        type="button"
-        onClick={onReset}
-        className="text-xs font-medium text-ink underline underline-offset-2 hover:text-ash transition-colors"
-      >
-        Send another inquiry
-      </button>
+      {alreadyOnFile ? (
+        <FormAltContactLinks className="text-xs text-ash" />
+      ) : (
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-xs font-medium text-ink underline underline-offset-2 hover:text-ash transition-colors"
+        >
+          Send another inquiry
+        </button>
+      )}
     </div>
   </div>
 );
@@ -88,6 +95,10 @@ const InquiryForm = () => {
     state && !state.success && "errors" in state ? state.errors : {};
   const serverMessage =
     state && !state.success && "message" in state ? state.message : undefined;
+  const showContactLinks =
+    state && !state.success && "showContactLinks" in state
+      ? Boolean(state.showContactLinks)
+      : false;
 
   return (
     <div className="relative">
@@ -104,7 +115,7 @@ const InquiryForm = () => {
 
         <input
           type="text"
-          name="honeypot"
+          name="website_url"
           tabIndex={-1}
           autoComplete="off"
           className="absolute opacity-0 -z-10"
@@ -124,6 +135,9 @@ const InquiryForm = () => {
         {serverMessage && (
           <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 animate-in slide-in-from-top-1 duration-200">
             <p className="text-xs text-red-600">{serverMessage}</p>
+            {showContactLinks && (
+              <FormAltContactLinks className="text-xs text-red-600 mt-2" />
+            )}
           </div>
         )}
 
@@ -252,7 +266,11 @@ const InquiryForm = () => {
 
       {showSuccess && state?.success && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <SuccessState message={state.message} onReset={handleReset} />
+          <SuccessState
+            message={state.message}
+            onReset={handleReset}
+            alreadyOnFile={state.alreadyOnFile}
+          />
         </div>
       )}
     </div>

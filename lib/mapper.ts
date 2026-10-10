@@ -11,6 +11,7 @@ export const mapPropertyData = (data: FullPropertyFormValues) => ({
   type: data.type as PropertyType,
   status: data.status,
   listingType: data.listingType,
+  isPublished: data.isPublished,
   isFeatured: data.isFeatured,
   address: data.address,
   city: data.city,
@@ -39,6 +40,7 @@ export const mapPropertyData = (data: FullPropertyFormValues) => ({
   developerName: data.developerName ?? null,
   projectPhase: data.projectPhase ?? null,
   expectedTurnover: data.expectedTurnover ?? null,
+  virtualTourUrl: data.virtualTourUrl ?? null,
 });
 
 export const mapUnit = (unit: FullPropertyFormValues["units"][number]) => ({
@@ -64,6 +66,7 @@ export const mapPropertyToForm = (property: PropertyAdminDetail) => ({
   type: property.type as PropertyType,
   status: property.status,
   listingType: property.listingType,
+  isPublished: property.isPublished,
   isFeatured: property.isFeatured,
 
   // Location
@@ -100,6 +103,7 @@ export const mapPropertyToForm = (property: PropertyAdminDetail) => ({
   developerName: property.developerName ?? undefined,
   projectPhase: property.projectPhase ?? undefined,
   expectedTurnover: property.expectedTurnover ?? undefined,
+  virtualTourUrl: property.virtualTourUrl ?? undefined,
 
   // Relations - will be populated separately
   imageItems:

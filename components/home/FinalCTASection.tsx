@@ -1,6 +1,15 @@
-import { SITE_CONFIG } from "@/constants";
 import Link from "next/link";
 import { ctaPrimaryDark, ctaSecondaryDark } from "@/components/ui/cta";
+import {
+  buildMessengerUrl,
+  buildSmsUrl,
+  CONTACT_LABELS,
+  MOBILE_ONLY_CLASS,
+  phoneTelHref,
+} from "@/lib/contact-channels";
+import { buildWhatsAppUrl, DEFAULT_WHATSAPP_MESSAGE } from "@/lib/whatsapp-url";
+
+const whatsappUrl = buildWhatsAppUrl(DEFAULT_WHATSAPP_MESSAGE);
 
 const FinalCTASection = () => (
   <section className="bg-ink">
@@ -16,16 +25,34 @@ const FinalCTASection = () => (
 
       <div className="flex flex-wrap justify-center gap-3 mt-2">
         <a
-          href={SITE_CONFIG.messengerUrl}
+          href={buildMessengerUrl()}
           target="_blank"
           rel="noopener noreferrer"
           className={ctaPrimaryDark}
         >
-          Message on Messenger
+          {CONTACT_LABELS.messenger}
         </a>
 
-        <a href={SITE_CONFIG.smsUrl} className={ctaSecondaryDark}>
-          Send SMS / Viber
+        {whatsappUrl && (
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={ctaSecondaryDark}
+          >
+            {CONTACT_LABELS.whatsapp}
+          </a>
+        )}
+
+        <a href={phoneTelHref} className={`${ctaSecondaryDark} ${MOBILE_ONLY_CLASS}`}>
+          {CONTACT_LABELS.call}
+        </a>
+
+        <a
+          href={buildSmsUrl()}
+          className={`${ctaSecondaryDark} ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.sms}
         </a>
 
         <Link href="/properties" className={ctaSecondaryDark}>

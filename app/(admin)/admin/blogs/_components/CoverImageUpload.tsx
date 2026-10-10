@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Upload, X } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import { MAX_SIZE, ALLOWED_TYPES } from "@/constants";
+import { compressImage } from "@/lib/image/compressImage";
 import clsx from "clsx";
 
 type Props = {
@@ -16,6 +17,7 @@ type Props = {
 
 const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isCompressing, setIsCompressing] = useState(false);
 
   const objectUrl = useMemo(() => {
     if (!value) return null;
@@ -30,7 +32,7 @@ const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
 
   const previewUrl = objectUrl ?? existingUrl ?? null;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -44,7 +46,13 @@ const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
       return;
     }
 
-    onChange(file);
+    setIsCompressing(true);
+    try {
+      const compressed = await compressImage(file, { preset: "blog" });
+      onChange(compressed);
+    } finally {
+      setIsCompressing(false);
+    }
   };
 
   const handleRemove = () => {
@@ -62,6 +70,7 @@ const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
         accept={ALLOWED_TYPES.join(",")}
         onChange={handleFileChange}
         className="hidden"
+        disabled={isCompressing}
       />
 
       {previewUrl ? (
@@ -79,6 +88,7 @@ const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
             variant="secondary"
             size="icon-sm"
             onClick={handleRemove}
+            disabled={isCompressing}
             className="absolute top-2 right-2 bg-white/90 hover:bg-white"
           >
             <X className="w-4 h-4" />
@@ -88,15 +98,23 @@ const CoverImageUpload = ({ value, onChange, existingUrl, error }: Props) => {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
+          disabled={isCompressing}
           className={clsx(
             "w-full rounded-2xl border-2 border-dashed p-8 flex flex-col items-center justify-center gap-2 transition-colors",
             error
               ? "border-destructive bg-destructive/5"
               : "border-wire bg-cloud hover:border-ink/30",
+            isCompressing && "opacity-70 cursor-wait",
           )}
         >
-          <Upload className="w-6 h-6 text-fog" />
-          <p className="text-sm text-ink font-medium">Upload cover image</p>
+          {isCompressing ? (
+            <Loader2 className="w-6 h-6 text-fog animate-spin" />
+          ) : (
+            <Upload className="w-6 h-6 text-fog" />
+          )}
+          <p className="text-sm text-ink font-medium">
+            {isCompressing ? "Optimizing image…" : "Upload cover image"}
+          </p>
           <p className="text-xs text-ash">JPEG, PNG, or WebP up to 5MB</p>
         </button>
       )}

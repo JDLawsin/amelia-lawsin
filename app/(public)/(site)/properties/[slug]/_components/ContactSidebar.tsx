@@ -12,8 +12,21 @@ import clsx from "clsx";
 import { PropertyDetail } from "@/services/property.service";
 import { SITE_CONFIG, STATUS_LABELS, TYPE_LABELS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
+import { buildPropertyWhatsAppUrl } from "@/lib/whatsapp-url";
+import {
+  buildMessengerUrl,
+  buildPropertyInterestMessage,
+  buildSmsUrl,
+  buildViberForwardUrl,
+  CONTACT_LABELS,
+  MOBILE_ONLY_CLASS,
+  phoneTelHref,
+} from "@/lib/contact-channels";
 import { submitInquiry, type InquiryState } from "@/app/_actions/inquiry.actions";
+import ScheduleViewingButton from "@/components/contact/ScheduleViewingButton";
+import PropertyPrintButton from "./PropertyPrintButton";
 import InquiryPrivacyNotice from "@/components/legal/InquiryPrivacyNotice";
+import FormAltContactLinks from "@/components/contact/FormAltContactLinks";
 import type { ContactSidebarProps } from "./ContactSidebarShell";
 
 const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
@@ -26,11 +39,10 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
   const statusLabel = STATUS_LABELS[property.status];
   const typeLabel = TYPE_LABELS[property.type];
 
-  const messageText = encodeURIComponent(
-    `Hi Amelia! I'm interested in: ${property.title}. Can you send me more details?`,
-  );
-  const messengerUrl = `${SITE_CONFIG.messengerUrl}?text=${messageText}`;
-  const smsUrl = `sms:${SITE_CONFIG.phone}?body=${messageText}`;
+  const interestMessage = buildPropertyInterestMessage(property.title);
+  const messengerUrl = buildMessengerUrl(interestMessage);
+  const smsUrl = buildSmsUrl(interestMessage);
+  const whatsappUrl = buildPropertyWhatsAppUrl(property.title, shareUrl);
 
   const financingTags = [
     property.isPagibigAccredited && "Pag-IBIG",
@@ -56,19 +68,59 @@ const ContactSidebar = ({ property, shareUrl }: ContactSidebarProps) => {
           Message on Messenger
         </a>
 
+        {whatsappUrl && (
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-full h-11 bg-[#25D366] text-white text-sm font-medium rounded-xl hover:bg-[#20bd5a] transition-colors mb-2"
+          >
+            {CONTACT_LABELS.whatsapp}
+          </a>
+        )}
+
+        <a
+          href={phoneTelHref}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.call}
+        </a>
+
         <a
           href={smsUrl}
-          className="flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2"
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
         >
-          Send SMS / Viber
+          {CONTACT_LABELS.sms}
         </a>
+
+        <a
+          href={SITE_CONFIG.viberUrl}
+          className={`flex items-center justify-center w-full h-11 bg-cloud text-ink text-sm font-medium rounded-xl border border-wire hover:bg-wire/30 transition-colors mb-2 ${MOBILE_ONLY_CLASS}`}
+        >
+          {CONTACT_LABELS.viber}
+        </a>
+
+        <ScheduleViewingButton
+          source="Property listing"
+          property={{
+            title: property.title,
+            slug: property.slug,
+            location,
+          }}
+          className="mb-2"
+        />
 
         <button
           onClick={() => setInquiryOpen(true)}
-          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl hover:text-ink hover:border-ink transition-colors"
+          className="flex items-center justify-center w-full h-11 bg-transparent text-ash text-sm border border-wire rounded-xl hover:text-ink hover:border-ink transition-colors mb-2"
         >
           Send an inquiry
         </button>
+
+        <PropertyPrintButton
+          variant="sidebar"
+          className="mb-2 hidden lg:flex"
+        />
 
         <div className="h-px bg-wire my-4" />
 
@@ -152,8 +204,8 @@ const ShareButtons = ({ title, url }: { title: string; url: string }) => {
           {copied ? "Copied!" : "Copy link"}
         </button>
         <a
-          href={`viber://forward?text=${encodeURIComponent(`${title} ${url}`)}`}
-          className="flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors"
+          href={buildViberForwardUrl(`${title} ${url}`)}
+          className={`flex-1 bg-white border border-wire rounded-xl py-2 text-xs text-ash text-center hover:text-ink hover:border-ink transition-colors ${MOBILE_ONLY_CLASS}`}
         >
           Viber
         </a>
@@ -211,6 +263,12 @@ const InquiryModal = ({
     serverState && !serverState.success && "message" in serverState
       ? serverState.message
       : undefined;
+  const showContactLinks =
+    serverState && !serverState.success && "showContactLinks" in serverState
+      ? Boolean(serverState.showContactLinks)
+      : false;
+  const alreadyOnFile =
+    serverState?.success === true && Boolean(serverState.alreadyOnFile);
 
   const success = serverState?.success ?? false;
 
@@ -243,10 +301,17 @@ const InquiryModal = ({
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             </div>
-            <p className="text-sm font-medium text-ink mb-1">Inquiry sent!</p>
-            <p className="text-xs text-ash">
-              Amelia will get back to you shortly.
+            <p className="text-sm font-medium text-ink mb-1">
+              {alreadyOnFile ? "We already have this inquiry" : "Inquiry sent!"}
             </p>
+            <p className="text-xs text-ash leading-relaxed">
+              {serverState && serverState.success
+                ? serverState.message
+                : "Amelia will get back to you shortly."}
+            </p>
+            {alreadyOnFile && (
+              <FormAltContactLinks className="text-xs text-ash mt-3" />
+            )}
             <button
               onClick={onClose}
               className="mt-4 text-xs text-ash hover:text-ink transition-colors"
@@ -255,7 +320,7 @@ const InquiryModal = ({
             </button>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="flex flex-col gap-3">
+          <form onSubmit={onSubmit} className="relative flex flex-col gap-3">
             <input type="hidden" name="source" value="Property listing" readOnly />
             <input type="hidden" name="propertyTitle" value={propertyTitle} readOnly />
             <input type="hidden" name="propertySlug" value={propertySlug} readOnly />
@@ -266,7 +331,7 @@ const InquiryModal = ({
 
             <input
               type="text"
-              name="honeypot"
+              name="website_url"
               tabIndex={-1}
               autoComplete="off"
               className="absolute opacity-0 -z-10"
@@ -280,6 +345,9 @@ const InquiryModal = ({
             {serverMessage && (
               <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2">
                 <p className="text-xs text-red-600">{serverMessage}</p>
+                {showContactLinks && (
+                  <FormAltContactLinks className="text-xs text-red-600 mt-2" />
+                )}
               </div>
             )}
 

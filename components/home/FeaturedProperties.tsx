@@ -3,6 +3,7 @@ import { PropertyListItem } from "@/services/property.service";
 import PropertyCard from "@/app/(public)/(site)/properties/_components/PropertyCard";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { ctaSecondary } from "@/components/ui/cta";
+import FeaturedPropertiesSnapRow from "./FeaturedPropertiesSnapRow";
 
 type Props = {
   properties: PropertyListItem[];
@@ -19,7 +20,7 @@ const FeaturedProperties = ({ properties }: Props) => {
           Handpicked listings across Cebu
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
           {properties.map((property, i) => (
             <PropertyCard
               key={property.id}
@@ -30,7 +31,9 @@ const FeaturedProperties = ({ properties }: Props) => {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        <FeaturedPropertiesSnapRow properties={properties} />
+
+        <div className="flex justify-center mt-8">
           <Link href="/properties" className={ctaSecondary}>
             View all properties
           </Link>

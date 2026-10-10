@@ -3,9 +3,10 @@ import { PropertyAdminListItem } from "@/services/property.admin.service";
 import PropertyRows from "./PropertyRows";
 
 const COLUMNS: DataTableColumn[] = [
-  { key: "property", label: "Property", className: "w-[40%]" },
+  { key: "property", label: "Property", className: "w-[32%]" },
   { key: "type", label: "Type", className: "hidden md:table-cell" },
-  { key: "status", label: "Status" },
+  { key: "visibility", label: "Visibility" },
+  { key: "status", label: "Status", className: "hidden sm:table-cell" },
   { key: "price", label: "Price", className: "hidden lg:table-cell" },
   { key: "actions", label: "Actions", className: "text-right" },
 ];
@@ -15,7 +16,7 @@ type Props = {
   total: number;
   page: number;
   pageSize: number;
-  filters: { q?: string; status?: string; type?: string };
+  filters: { q?: string; status?: string; type?: string; visibility?: string };
 };
 
 const Properties = ({ properties, total, page, pageSize }: Props) => (

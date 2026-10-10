@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/ui/Logo";
@@ -15,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/shadcn/sidebar";
 import {
   LayoutDashboardIcon,
@@ -56,6 +58,11 @@ type Props = {
 
 const DashboardSidebar = ({ unreadInquiryCount = 0 }: Props) => {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
+  useEffect(() => {
+    setOpenMobile(false);
+  }, [pathname, setOpenMobile]);
 
   return (
     <Sidebar collapsible="icon" className="bg-ink border-r border-white/8">
@@ -65,6 +72,7 @@ const DashboardSidebar = ({ unreadInquiryCount = 0 }: Props) => {
             <Logo variant="dark" />
           </div>
           <SidebarTrigger className="hidden lg:flex text-white/40 hover:text-white hover:bg-white/10 rounded-lg h-8 w-8 items-center justify-center shrink-0" />
+          <SidebarTrigger className="lg:hidden text-white/40 hover:text-white hover:bg-white/10 rounded-lg h-8 w-8 items-center justify-center shrink-0" />
         </div>
       </SidebarHeader>
 

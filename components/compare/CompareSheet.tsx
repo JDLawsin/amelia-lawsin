@@ -18,9 +18,11 @@ import {
   TYPE_LABELS,
 } from "@/constants";
 import { useCompare } from "@/providers/CompareProvider";
+import LoadingStatusText from "@/components/ui/LoadingStatusText";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { useCompareProperties } from "@/lib/hooks/useCompareProperties";
 import { cn, formatPrice, getPrimaryImage } from "@/lib/utils";
+import { PROPERTY_CARD_IMAGE_WIDTH } from "@/lib/image-layout";
 
 type Props = {
   open: boolean;
@@ -77,7 +79,10 @@ const getCompareRows = (
     id: "field-photo",
     label: "Photo",
     render: (property) => {
-      const imageUrl = getPrimaryImage(property.images);
+      const imageUrl = getPrimaryImage(property.images, {
+        width: PROPERTY_CARD_IMAGE_WIDTH,
+        quality: "auto",
+      });
       return (
         <div className="relative w-full h-28 rounded-lg overflow-hidden bg-cloud">
           {imageUrl ? (
@@ -259,8 +264,11 @@ export const CompareSheet = ({ open, onClose }: Props) => {
 
           <div className="flex-1 overflow-auto p-4">
             {isPending && !hasFetched ? (
-              <div className="py-10 text-center text-sm text-ash">
-                Loading comparison…
+              <div className="py-10 text-center" role="status" aria-live="polite">
+                <LoadingStatusText
+                  context="compare"
+                  className="text-sm text-ash"
+                />
               </div>
             ) : properties.length < 2 ? (
               <div className="text-center py-10">

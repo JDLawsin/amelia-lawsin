@@ -4,10 +4,12 @@ import dynamic from "next/dynamic";
 import { ensureMetaDescription } from "@/lib/metadata-helpers";
 import { preloadLcpImage } from "@/lib/preload-lcp-image";
 import {
+  OG_IMAGE_WIDTH,
   PROPERTY_GALLERY_PRIMARY_HEIGHT,
   PROPERTY_GALLERY_PRIMARY_SIZES,
   PROPERTY_GALLERY_PRIMARY_WIDTH,
 } from "@/lib/image-layout";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
 import { MapPin } from "lucide-react";
 import clsx from "clsx";
 import type { Metadata } from "next";
@@ -35,6 +37,9 @@ import UnitSelectorLoader from "./_components/UnitSelectorLoader";
 import RelatedProperties from "./_components/RelatedProperties";
 import ContactSidebarLoader from "./_components/ContactSidebarLoader";
 import PropertyActionsLoader from "./_components/PropertyActionsLoader";
+import PropertyListingToolbarLoader from "./_components/PropertyListingToolbarLoader";
+import PropertyFactSheetPrint from "./_components/PropertyFactSheetPrint";
+import PropertyPrintButton from "./_components/PropertyPrintButton";
 
 const PropertyMap = dynamic(() => import("./_components/PropertyMap"), {
   loading: () => (
@@ -45,12 +50,31 @@ const PropertyMap = dynamic(() => import("./_components/PropertyMap"), {
   ),
 });
 
+const PropertyVirtualTour = dynamic(
+  () => import("./_components/PropertyVirtualTour"),
+  {
+    loading: () => (
+      <div
+        className="aspect-video rounded-2xl bg-cloud border border-wire animate-pulse motion-reduce:animate-none"
+        aria-hidden="true"
+      />
+    ),
+  },
+);
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const RESERVED_PROPERTY_SLUGS = new Set(["opengraph-image", "twitter-image"]);
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+
+  if (RESERVED_PROPERTY_SLUGS.has(slug)) {
+    return {};
+  }
+
   const property = await getPropertyBySlug(slug);
 
   if (!property) {
@@ -97,8 +121,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     `${property.title} — ${TYPE_LABELS[property.type] ?? "Property"} ${STATUS_LABELS[property.status] ?? "listing"} in ${property.city ?? "Cebu"}. Inquire with Amelia Lawsin for viewings and financing.`,
   );
 
-  const ogImages = primaryImage?.url
-    ? [{ url: primaryImage.url, alt: property.title }]
+  const ogImageUrl = cloudinaryDeliveryUrl(primaryImage?.url, {
+    width: OG_IMAGE_WIDTH,
+    quality: "auto:best",
+  });
+
+  const ogImages = ogImageUrl
+    ? [{ url: ogImageUrl, alt: property.title }]
     : ogImageMetadata(
         `/properties/${slug}`,
         `${property.title} — Cebu property listing`,
@@ -134,6 +163,10 @@ const Divider = () => <div className="my-5" />;
 const PropertyDetailPage = async ({ params }: Props) => {
   const { slug } = await params;
 
+  if (RESERVED_PROPERTY_SLUGS.has(slug)) {
+    notFound();
+  }
+
   const property = await getPropertyBySlug(slug);
   if (!property) notFound();
 
@@ -152,11 +185,16 @@ const PropertyDetailPage = async ({ params }: Props) => {
     property.projectPhase ||
     property.expectedTurnover;
   const hasMap = property.latitude != null && property.longitude != null;
+  const hasVirtualTour = Boolean(property.virtualTourUrl);
 
   const primaryImage =
     property.images.find((i) => i.isPrimary) ?? property.images[0];
-  if (primaryImage?.url) {
-    preloadLcpImage(primaryImage.url, property.title, {
+  const primaryDeliveryUrl = cloudinaryDeliveryUrl(primaryImage?.url, {
+    width: PROPERTY_GALLERY_PRIMARY_WIDTH,
+    quality: "auto:best",
+  });
+  if (primaryDeliveryUrl) {
+    preloadLcpImage(primaryDeliveryUrl, property.title, {
       width: PROPERTY_GALLERY_PRIMARY_WIDTH,
       height: PROPERTY_GALLERY_PRIMARY_HEIGHT,
       sizes: PROPERTY_GALLERY_PRIMARY_SIZES,
@@ -164,7 +202,28 @@ const PropertyDetailPage = async ({ params }: Props) => {
   }
 
   return (
-    <main className="bg-white min-h-screen">
+    <>
+      <PropertyFactSheetPrint
+        title={property.title}
+        shareUrl={shareUrl}
+        price={price}
+        priceNote={note}
+        address={address}
+        statusLabel={STATUS_LABELS[property.status]}
+        typeLabel={TYPE_LABELS[property.type]}
+        listingTypeLabel={
+          property.listingType === "RESALE" ? "Resale" : "Brand New"
+        }
+        description={property.description}
+        imageUrl={primaryImage?.url}
+        bedrooms={property.bedrooms}
+        bathrooms={property.bathrooms}
+        floorArea={property.floorArea}
+        lotArea={property.lotArea}
+        parking={property.parking}
+        amenities={property.amenities.map((item) => item.amenity.name)}
+      />
+      <main className="bg-white min-h-screen print:hidden">
       <JsonLd
         data={[
           realEstateListingJsonLd(baseUrl, property),
@@ -198,23 +257,45 @@ const PropertyDetailPage = async ({ params }: Props) => {
       <PropertyGalleryGrid images={property.images} title={property.title} />
       <PropertyGalleryLoader images={property.images} title={property.title} />
 
-      <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 max-w-7xl mx-auto">
-        <div>
-          <h1 className="text-xl font-serif font-medium text-ink leading-snug tracking-tight mb-1.5">
-            {property.title}
-          </h1>
-          {address && (
-            <div className="flex items-center gap-1.5 text-xs text-ash">
-              <MapPin className="w-3 h-3 shrink-0" />
-              {address}
-            </div>
-          )}
+      {hasVirtualTour && (
+        <div className="px-6 pt-4 max-w-7xl mx-auto">
+          <h2 className="text-sm font-serif font-medium text-ink mb-3">
+            Virtual tour
+          </h2>
+          <PropertyVirtualTour
+            url={property.virtualTourUrl!}
+            title={property.title}
+          />
         </div>
-        <div className="flex flex-col items-end gap-1.5 shrink-0">
-          <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
-            Save Listing
-          </span>
-          <PropertyActionsLoader slug={property.slug} size="md" />
+      )}
+
+      <div className="px-6 pt-5 pb-3 max-w-7xl mx-auto">
+        <div className="flex items-start justify-between gap-4 lg:gap-6">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl font-serif font-medium text-ink leading-snug tracking-tight mb-1.5 text-pretty">
+              {property.title}
+            </h1>
+            {address && (
+              <div className="flex items-center gap-1.5 text-xs text-ash">
+                <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
+                <span className="line-clamp-2">{address}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="hidden shrink-0 flex-col items-end gap-1.5 lg:flex">
+            <span className="text-[10px] font-medium uppercase tracking-wide text-ash">
+              Save Listing
+            </span>
+            <div className="flex items-center gap-2">
+              <PropertyPrintButton />
+              <PropertyActionsLoader slug={property.slug} size="md" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 lg:hidden">
+          <PropertyListingToolbarLoader slug={property.slug} />
         </div>
       </div>
 
@@ -595,6 +676,7 @@ const PropertyDetailPage = async ({ params }: Props) => {
         </div>
       </div>
     </main>
+    </>
   );
 };
 

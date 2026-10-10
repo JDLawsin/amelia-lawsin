@@ -3,31 +3,28 @@
  *  streamed content replaces this placeholder (CLS). */
 const HomeLoadingSkeleton = () => (
   <main className="bg-white" aria-busy="true" aria-label="Loading homepage">
-    <section className="grid grid-cols-1 md:grid-cols-2 bg-cloud">
-      <div className="flex flex-col items-center justify-center border-r border-wire md:min-h-105">
-        <div className="flex flex-col gap-5 w-full max-w-7xl px-6 py-16 md:py-20">
-          <div className="h-3 w-48 rounded bg-wire/50" aria-hidden="true" />
+    <section
+      className="grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,8fr)] bg-cloud md:min-h-105"
+      aria-hidden="true"
+    >
+      <div
+        className="flex flex-col justify-center gap-5 px-6 md:px-10 lg:px-12 pt-16 pb-10 md:py-20 border-b md:border-b-0 md:border-r border-wire"
+      >
+        <div className="h-3 w-48 rounded bg-wire/50" />
+        <div className="h-20 xl:h-24 w-full rounded bg-wire/50 min-h-22 xl:min-h-26" />
+        <div className="h-4 w-full max-w-md rounded bg-wire/40" />
+        <div className="flex flex-wrap gap-3">
+          <div className="h-10 w-36 rounded-full bg-wire/50" />
+          <div className="h-10 w-32 rounded-full bg-wire/50" />
+        </div>
+        <div className="md:hidden relative -ml-6 w-[calc(100%+1.5rem)]">
+          <div className="aspect-video max-h-[40vh] mr-6 bg-wire/30" />
           <div
-            className="flex flex-col gap-2 min-h-22 xl:min-h-26"
-            aria-hidden="true"
-          >
-            <div className="h-10 w-full max-w-md rounded bg-wire/50" />
-            <div className="h-10 w-full max-w-sm rounded bg-wire/50" />
-          </div>
-          <div
-            className="h-4 w-72 max-w-full rounded bg-wire/40"
-            aria-hidden="true"
+            className="absolute bottom-4 -right-3 h-[4.5rem] w-44 max-w-[11rem] rounded-xl bg-wire/40"
           />
-          <div className="flex flex-wrap gap-3" aria-hidden="true">
-            <div className="h-10 w-36 rounded-full bg-wire/50" />
-            <div className="h-10 w-32 rounded-full bg-wire/50" />
-          </div>
         </div>
       </div>
-      <div
-        className="relative hidden md:block min-h-105 bg-cloud border-l border-wire"
-        aria-hidden="true"
-      />
+      <div className="relative hidden md:block min-h-105 bg-cloud" />
     </section>
 
     <section className="border-b border-wire" aria-hidden="true">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { estimateReadTime, formatDate } from "@/lib/utils";
 import { BLOG_CARD_IMAGE_SIZES } from "@/lib/image-layout";
+import { cloudinaryDeliveryUrl } from "@/lib/cloudinary-url";
 import { BlogPreviewItem } from "@/services/blog.service";
 
 type BlogCardProps = {
@@ -9,15 +10,21 @@ type BlogCardProps = {
   loading?: "eager" | "lazy";
 };
 
-const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => (
+const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => {
+  const coverSrc = cloudinaryDeliveryUrl(blog.coverImage, {
+    width: 384,
+    quality: "auto",
+  });
+
+  return (
   <Link
     href={`/blog/${blog.slug}`}
     className="group flex flex-col bg-white rounded-2xl border border-wire overflow-hidden shadow-apple hover:shadow-apple-hover hover:border-wire transition-all duration-200"
   >
     <div className="relative aspect-[16/9] overflow-hidden bg-cloud">
-      {blog.coverImage ? (
+      {coverSrc ? (
         <Image
-          src={blog.coverImage}
+          src={coverSrc}
           alt={blog.title}
           fill
           sizes={BLOG_CARD_IMAGE_SIZES}
@@ -69,6 +76,7 @@ const BlogCard = ({ blog, loading = "lazy" }: BlogCardProps) => (
       </div>
     </div>
   </Link>
-);
+  );
+};
 
 export default BlogCard;

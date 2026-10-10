@@ -23,6 +23,7 @@ import {
   Pilcrow,
 } from "lucide-react";
 import { TipTapDoc } from "../_schema/blog.schema";
+import { isSafeHref } from "@/lib/safe-href";
 import clsx from "clsx";
 
 type ToolbarButtonProps = {
@@ -67,6 +68,8 @@ const TipTapEditor = ({ value, onChange, error }: Props) => {
       Link.configure({
         openOnClick: false,
         autolink: true,
+        protocols: ["https"],
+        validate: isSafeHref,
       }),
       Image.configure({
         allowBase64: false,
@@ -106,8 +109,8 @@ const TipTapEditor = ({ value, onChange, error }: Props) => {
 
   const addLink = () => {
     const url = window.prompt("Enter URL");
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
+    if (url && isSafeHref(url)) {
+      editor.chain().focus().setLink({ href: url.trim() }).run();
     }
   };
 
