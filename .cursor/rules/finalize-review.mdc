@@ -1,0 +1,29 @@
+---
+description: Review the completed diff and run matching repository checks before declaring substantial code work done.
+alwaysApply: true
+---
+
+# Finalize review
+
+Run this before completing a feature, non-trivial bug fix, or refactor. Skip documentation-only changes, tiny mechanical edits, and questions with no code changes.
+
+Review one diff through these lenses. Do not spawn one reviewer per lens. Empty lenses need no invented findings.
+
+Choose one review base and keep it consistent:
+
+1. Uncommitted work: `git diff HEAD` plus untracked files created for the task.
+2. Branch work: diff from the merge base with the default branch.
+3. No usable Git base: review only files changed during the task.
+
+## Lenses
+
+1. **Bugs** — logic, runtime behavior, edge cases, and sibling callers of changed interfaces.
+2. **Security and privacy** — authorization on the server, Supabase session handling, Server Actions, upload validation, secrets, personal data, and unsafe logging.
+3. **Quality** — readability, Next.js server/client boundaries, responsiveness, accessibility, performance, and consistency with existing patterns.
+4. **Testability** — behavior tested through public seams; focused unit tests for synchronous logic and Playwright for async Server Components and critical journeys; do not add a second test framework.
+5. **API and documentation** — changed contracts, stale comments, misleading names, and missing operational notes.
+6. **Simplify** — unnecessary layers, duplication, dependencies, and speculative flexibility. Prefer deletion when behavior stays intact.
+
+Report actionable findings as `file:line — severity — lens — issue — fix`. Resolve high severity before completion and small, in-scope medium findings when practical.
+
+Then run the matching existing `npm` scripts for the changed area, such as lint, type checking, build, or tests. For user-visible changes, exercise the affected flow when browser tooling is available. Finish with `.cursor/rules/clean-runtime.mdc`.

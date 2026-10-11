@@ -1,0 +1,15 @@
+# Clean runtime
+
+Use this with `finalize-review` after a feature, non-trivial bug fix, or refactor. Apply the same skip conditions for documentation-only or trivial changes.
+
+Lint, type checking, and tests do not prove an already-running application is quiet.
+
+## Check
+
+1. Read each existing terminal or captured process used during the work: Next.js development server, tests, or supporting services.
+2. After the final save or refresh, scan for warnings, errors, failed compilation, rejected requests, hydration problems, and non-zero exits.
+3. Treat warnings in touched code and unexpected `console.error` or `console.warn` output as failures to resolve.
+4. If a server is already running, its output after the change must be clean. Do not start a server solely for this gate.
+5. If no runtime was active, say so; do not claim runtime cleanliness.
+
+Fix application-caused noise, then re-check. Do not rewrite unrelated framework or dependency noise. Summarize the result in one line instead of pasting logs.
