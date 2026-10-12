@@ -9,6 +9,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import clsx from "clsx";
+import { Dialog } from "radix-ui";
 import {
   getBookedTimeSlots,
   submitBooking,
@@ -37,18 +38,11 @@ export type ScheduleViewingProperty = {
 
 type Props = {
   open: boolean;
-  onClose: () => void;
   source: "Contact page" | "Property listing";
   property?: ScheduleViewingProperty;
 };
 
-const SuccessState = ({
-  message,
-  onClose,
-}: {
-  message: string;
-  onClose: () => void;
-}) => (
+const SuccessState = ({ message }: { message: string }) => (
   <div className="text-center py-6">
     <div className="w-12 h-12 bg-cloud rounded-full flex items-center justify-center mx-auto mb-3">
       <svg
@@ -64,17 +58,18 @@ const SuccessState = ({
     </div>
     <p className="text-sm font-medium text-ink mb-1">Viewing requested!</p>
     <p className="text-xs text-ash leading-relaxed mb-4">{message}</p>
-    <button
-      type="button"
-      onClick={onClose}
-      className="text-xs text-ash hover:text-ink transition-colors"
-    >
-      Close
-    </button>
+    <Dialog.Close asChild>
+      <button
+        type="button"
+        className="text-xs text-ash hover:text-ink transition-colors"
+      >
+        Close
+      </button>
+    </Dialog.Close>
   </div>
 );
 
-const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
+const ScheduleViewingModal = ({ open, source, property }: Props) => {
   const [isPending, startTransition] = useTransition();
   const [isLoadingSlots, startSlotsTransition] = useTransition();
   const [serverState, setServerState] = useState<BookingState>(null);
@@ -104,8 +99,6 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
       setBookedHours(slots);
     });
   }, [open, selectedDate]);
-
-  if (!open) return null;
 
   const success = serverState?.success ?? false;
   const serverErrors =
@@ -141,20 +134,25 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
   const sundaySelected = selectedDate ? isSundayInManila(selectedDate) : false;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-apple-lg max-h-[90vh] overflow-y-auto">
+    <Dialog.Portal>
+      <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+      <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-white p-6 shadow-apple-lg sm:max-h-[90vh]">
+        <Dialog.Description className="sr-only">
+          Request a property viewing with Amelia.
+        </Dialog.Description>
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-base font-serif font-medium text-ink">
+          <Dialog.Title className="text-base font-serif font-medium text-ink">
             Schedule a viewing
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-cloud transition-colors"
-            aria-label="Close"
-          >
-            <X className="w-4 h-4 text-ash" />
-          </button>
+          </Dialog.Title>
+          <Dialog.Close asChild>
+            <button
+              type="button"
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-cloud transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4 text-ash" aria-hidden="true" />
+            </button>
+          </Dialog.Close>
         </div>
 
         {success ? (
@@ -164,7 +162,6 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
                 ? serverState.message
                 : "Amelia will confirm your slot shortly."
             }
-            onClose={onClose}
           />
         ) : (
           <form onSubmit={onSubmit} className="relative flex flex-col gap-3">
@@ -386,8 +383,8 @@ const ScheduleViewingModal = ({ open, onClose, source, property }: Props) => {
             <InquiryPrivacyNotice />
           </form>
         )}
-      </div>
-    </div>
+      </Dialog.Content>
+    </Dialog.Portal>
   );
 };
 

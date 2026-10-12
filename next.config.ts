@@ -8,6 +8,7 @@ import type { NextConfig } from "next";
 const HTML_LIMITED_BOTS = /.*/;
 
 const nextConfig: NextConfig = {
+  distDir: process.env.E2E_DIST_DIR ?? ".next",
   htmlLimitedBots: HTML_LIMITED_BOTS,
   images: {
     formats: ["image/avif", "image/webp"],

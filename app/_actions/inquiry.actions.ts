@@ -26,7 +26,12 @@ export type InquiryState =
   | null;
 
 const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
+  ? new Resend(
+      process.env.RESEND_API_KEY,
+      process.env.NODE_ENV !== "production" && process.env.E2E_RESEND_BASE_URL
+        ? { baseUrl: process.env.E2E_RESEND_BASE_URL }
+        : undefined,
+    )
   : null;
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
